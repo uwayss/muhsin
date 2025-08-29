@@ -27,6 +27,6 @@ const getStyles = (theme: AppTheme) =>
       borderRadius: 8,
       fontSize: theme.typography.fontSize.m,
       borderWidth: 1,
-      borderColor: theme.colors.background,
+      borderColor: theme.colors.foreground,
     },
   });

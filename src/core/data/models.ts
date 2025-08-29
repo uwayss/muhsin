@@ -18,6 +18,25 @@ export type DeedStatus = {
 };
 
 /**
+ * Defines the frequency of a deed.
+ * - 'daily': The deed is available every day.
+ * - 'weekly': The deed is available on specific days of the week.
+ */
+export type DeedFrequency = {
+  type: "daily" | "weekly";
+  // For 'weekly', an array of numbers representing days (0=Sun, 1=Mon, ..., 6=Sat)
+  days?: number[];
+};
+
+/**
+ * Defines an optional goal for a deed.
+ */
+export type DeedGoal = {
+  value: number;
+  unit: string; // e.g., "Pages", "Minutes", "Times"
+};
+
+/**
  * Represents a deed that the user is tracking.
  */
 export type Deed = {
@@ -27,6 +46,10 @@ export type Deed = {
   category: "PRAYERS" | "QURAN" | "LEARNING" | "SOCIAL" | "CUSTOM";
   // Each deed defines its own set of possible completion statuses
   statuses: DeedStatus[];
+  // --- NEW CONFIGURATION FIELDS ---
+  frequency?: DeedFrequency;
+  goal?: DeedGoal;
+  parentId?: string | null;
 };
 
 /**

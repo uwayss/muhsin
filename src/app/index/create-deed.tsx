@@ -9,43 +9,70 @@ import { useTheme } from "@/core/theme/ThemeContext";
 import { IconSelectorModal } from "@/features/deeds/IconSelectorModal";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
-import React, { useState } from "react";
-import {
-  Alert,
-  StyleSheet,
-  TouchableOpacity,
-  TouchableWithoutFeedback,
-  View,
-} from "react-native";
+import React, { useEffect, useState } from "react";
+import { Alert, StyleSheet, TouchableOpacity, View } from "react-native";
 
 const CreateDeedScreen = () => {
   const router = useRouter();
   const { theme } = useTheme();
   const styles = getStyles(theme);
-  const createCustomDeed = useAppStore((state) => state.createCustomDeed);
 
-  const [deedName, setDeedName] = useState("");
-  const [selectedIcon, setSelectedIcon] =
-    useState<React.ComponentProps<typeof MaterialCommunityIcons>["name"]>(
-      "star-outline",
-    );
+  const {
+    draftDeed,
+    startCreatingDeed,
+    updateDraftDeed,
+    clearDraftDeed,
+    saveDraftDeed,
+  } = useAppStore();
+  const allDeeds = useAppStore((state) => state.deeds);
+
   const [isIconModalVisible, setIconModalVisible] = useState(false);
 
+  useEffect(() => {
+    startCreatingDeed();
+    return () => {
+      clearDraftDeed();
+    };
+  }, [startCreatingDeed, clearDraftDeed]);
+
   const handleSave = () => {
-    if (!deedName.trim()) {
+    if (!draftDeed?.name?.trim()) {
       Alert.alert("Missing Name", "Please enter a name for your deed.");
       return;
     }
-    createCustomDeed({ name: deedName.trim(), icon: selectedIcon });
+    saveDraftDeed();
     router.back();
   };
 
   const handleSelectIcon = (
     icon: React.ComponentProps<typeof MaterialCommunityIcons>["name"],
   ) => {
-    setSelectedIcon(icon);
+    updateDraftDeed({ icon });
     setIconModalVisible(false);
   };
+
+  const getFrequencyLabel = () => {
+    if (!draftDeed?.frequency) return "Not set";
+    if (draftDeed.frequency.type === "daily") return "Daily";
+    if (draftDeed.frequency.type === "weekly") {
+      const dayCount = draftDeed.frequency.days?.length || 0;
+      return `Weekly (${dayCount} ${dayCount === 1 ? "day" : "days"})`;
+    }
+    return "Not set";
+  };
+
+  const getGoalLabel = () => {
+    if (!draftDeed?.goal) return "Not set";
+    return `${draftDeed.goal.value} ${draftDeed.goal.unit}`;
+  };
+
+  const getParentLabel = () => {
+    if (!draftDeed?.parentId) return "None";
+    const parent = allDeeds.find((d) => d.id === draftDeed.parentId);
+    return parent?.name || "None";
+  };
+
+  if (!draftDeed) return null; // Render nothing until the draft is initialized
 
   return (
     <>
@@ -73,25 +100,37 @@ const CreateDeedScreen = () => {
               onPress={() => setIconModalVisible(true)}
             >
               <MaterialCommunityIcons
-                name={selectedIcon}
+                name={draftDeed.icon}
                 size={32}
                 color={theme.colors.text}
               />
             </TouchableOpacity>
             <ThemedTextInput
               placeholder="Deed name (e.g. Read a book)"
-              value={deedName}
-              onChangeText={setDeedName}
+              value={draftDeed.name}
+              onChangeText={(name) => updateDraftDeed({ name })}
               style={styles.textInput}
             />
           </Box>
-          <ThemedText style={styles.sectionHeader}>
-            Configuration (coming soon)
-          </ThemedText>
-          {/* These are placeholders as per the spec */}
-          <ConfigRow icon="calendar-sync" label="Frequency" value="Daily" />
-          <ConfigRow icon="bullseye-arrow" label="Goal" value="Not set" />
-          <ConfigRow icon="file-tree" label="Parent Deed" value="None" />
+          <ThemedText style={styles.sectionHeader}>Configuration</ThemedText>
+          <ConfigRow
+            icon="calendar-sync"
+            label="Frequency"
+            value={getFrequencyLabel()}
+            onPress={() => router.push("/configure-frequency")}
+          />
+          <ConfigRow
+            icon="bullseye-arrow"
+            label="Goal"
+            value={getGoalLabel()}
+            onPress={() => router.push("/configure-goal")}
+          />
+          <ConfigRow
+            icon="file-tree"
+            label="Parent Deed"
+            value={getParentLabel()}
+            onPress={() => router.push("/configure-parent")}
+          />
         </View>
       </Screen>
       <IconSelectorModal
@@ -103,35 +142,35 @@ const CreateDeedScreen = () => {
   );
 };
 
-// Helper component for placeholder rows
+// Helper component
 const ConfigRow = ({
   icon,
   label,
   value,
+  onPress,
 }: {
   icon: React.ComponentProps<typeof MaterialCommunityIcons>["name"];
   label: string;
   value: string;
+  onPress?: () => void;
 }) => {
   const { theme } = useTheme();
   const styles = getStyles(theme);
   return (
-    <TouchableWithoutFeedback disabled>
-      <View style={styles.configRow}>
-        <MaterialCommunityIcons
-          name={icon}
-          size={24}
-          color={theme.colors.textSecondary}
-        />
-        <ThemedText style={styles.configLabel}>{label}</ThemedText>
-        <ThemedText style={styles.configValue}>{value}</ThemedText>
-        <MaterialCommunityIcons
-          name="chevron-right"
-          size={24}
-          color={theme.colors.textSecondary}
-        />
-      </View>
-    </TouchableWithoutFeedback>
+    <TouchableOpacity style={styles.configRow} onPress={onPress}>
+      <MaterialCommunityIcons
+        name={icon}
+        size={24}
+        color={theme.colors.textSecondary}
+      />
+      <ThemedText style={styles.configLabel}>{label}</ThemedText>
+      <ThemedText style={styles.configValue}>{value}</ThemedText>
+      <MaterialCommunityIcons
+        name="chevron-right"
+        size={24}
+        color={theme.colors.textSecondary}
+      />
+    </TouchableOpacity>
   );
 };
 
@@ -151,6 +190,8 @@ const getStyles = (theme: AppTheme) =>
       backgroundColor: theme.colors.foreground,
       borderRadius: 8,
       padding: theme.spacing.s,
+      borderWidth: 1,
+      borderColor: theme.colors.background,
     },
     iconPicker: {
       padding: theme.spacing.s,
@@ -158,8 +199,9 @@ const getStyles = (theme: AppTheme) =>
     },
     textInput: {
       flex: 1,
-      backgroundColor: theme.colors.foreground, // Override default background
+      backgroundColor: "transparent",
       borderWidth: 0,
+      padding: 0,
     },
     sectionHeader: {
       marginTop: theme.spacing.xl,
@@ -176,7 +218,6 @@ const getStyles = (theme: AppTheme) =>
       backgroundColor: theme.colors.foreground,
       borderRadius: 8,
       marginBottom: theme.spacing.s,
-      opacity: 0.5, // To indicate they are disabled
     },
     configLabel: {
       flex: 1,

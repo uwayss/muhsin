@@ -9,7 +9,6 @@ import {
 } from "../data/mock";
 import { loadDataFromFile, saveDataToFile } from "../storage/storageService";
 import { formatISO } from "date-fns";
-import { MaterialCommunityIcons } from "@expo/vector-icons";
 
 // The shape of our entire persisted state
 export type AppData = {
@@ -17,16 +16,14 @@ export type AppData = {
   logs: DeedLog[];
 };
 
+export type CustomDeedPayload = Pick<Deed, "name" | "icon"> &
+  Partial<Pick<Deed, "frequency" | "goal" | "parentId">>;
+
 // The full store state including transient (non-persisted) properties
 type AppState = AppData & {
   isInitialized: boolean;
-  suggestedDeeds: Deed[]; // Non-persisted list of available deeds
-};
-
-// Define arguments for custom deed creation
-type CustomDeedPayload = {
-  name: string;
-  icon: React.ComponentProps<typeof MaterialCommunityIcons>["name"];
+  suggestedDeeds: Deed[];
+  draftDeed: CustomDeedPayload | null; // For multi-screen creation flow
 };
 
 // Actions that can be performed on the store
@@ -34,7 +31,11 @@ type AppActions = {
   initialize: () => Promise<void>;
   addOrUpdateLog: (deed: Deed, date: Date, status: DeedStatus) => void;
   addDeed: (deed: Deed) => void;
-  createCustomDeed: (payload: CustomDeedPayload) => void;
+  // --- DRAFT DEED ACTIONS ---
+  startCreatingDeed: () => void;
+  updateDraftDeed: (payload: Partial<CustomDeedPayload>) => void;
+  clearDraftDeed: () => void;
+  saveDraftDeed: () => void;
 };
 
 const useAppStore = create<AppState & AppActions>((set, get) => ({
@@ -43,6 +44,7 @@ const useAppStore = create<AppState & AppActions>((set, get) => ({
   logs: [],
   suggestedDeeds: SUGGESTED_DEEDS,
   isInitialized: false,
+  draftDeed: null,
 
   // --- ACTIONS ---
   initialize: async () => {
@@ -50,13 +52,11 @@ const useAppStore = create<AppState & AppActions>((set, get) => ({
     if (loadedData) {
       set(loadedData);
     } else {
-      // First launch: use mock data as the initial state
       const initialState: AppData = {
         deeds: MOCK_DEEDS,
         logs: MOCK_LOGS,
       };
       set(initialState);
-      // And save it so it persists for the next session
       await saveDataToFile(initialState);
     }
     set({ isInitialized: true });
@@ -65,19 +65,14 @@ const useAppStore = create<AppState & AppActions>((set, get) => ({
   addOrUpdateLog: (deed, date, status) => {
     const dateString = formatISO(date, { representation: "date" });
     const currentLogs = get().logs;
-
     const existingLogIndex = currentLogs.findIndex(
       (log) => log.deedId === deed.id && log.date === dateString,
     );
-
     let newLogs: DeedLog[];
-
     if (existingLogIndex > -1) {
-      // Update existing log
       newLogs = [...currentLogs];
       newLogs[existingLogIndex].statusId = status.id;
     } else {
-      // Create new log
       const newLog: DeedLog = {
         id: `log-${Date.now()}`,
         deedId: deed.id,
@@ -86,32 +81,55 @@ const useAppStore = create<AppState & AppActions>((set, get) => ({
       };
       newLogs = [...currentLogs, newLog];
     }
-
     set({ logs: newLogs });
-    // Persist changes to disk asynchronously
     saveDataToFile({ deeds: get().deeds, logs: newLogs });
   },
 
   addDeed: (deedToAdd) => {
     const currentDeeds = get().deeds;
-    // Prevent duplicates
     if (currentDeeds.some((d) => d.id === deedToAdd.id)) return;
-
     const newDeeds = [...currentDeeds, deedToAdd];
     set({ deeds: newDeeds });
     saveDataToFile({ deeds: newDeeds, logs: get().logs });
   },
 
-  createCustomDeed: ({ name, icon }) => {
+  // --- DRAFT DEED ACTIONS IMPLEMENTATION ---
+  startCreatingDeed: () => {
+    set({
+      draftDeed: {
+        name: "",
+        icon: "star-outline",
+        frequency: { type: "daily" },
+      },
+    });
+  },
+
+  updateDraftDeed: (payload) => {
+    set((state) => ({
+      draftDeed: state.draftDeed ? { ...state.draftDeed, ...payload } : null,
+    }));
+  },
+
+  clearDraftDeed: () => {
+    set({ draftDeed: null });
+  },
+
+  saveDraftDeed: () => {
+    const draft = get().draftDeed;
+    if (!draft || !draft.name || !draft.icon) return;
+
     const newDeed: Deed = {
       id: `custom-${Date.now()}`,
-      name,
-      icon,
+      name: draft.name,
+      icon: draft.icon,
       category: "CUSTOM",
       statuses: GENERIC_STATUSES,
+      frequency: draft.frequency,
+      goal: draft.goal,
+      parentId: draft.parentId,
     };
     const newDeeds = [...get().deeds, newDeed];
-    set({ deeds: newDeeds });
+    set({ deeds: newDeeds, draftDeed: null }); // Clear draft after saving
     saveDataToFile({ deeds: newDeeds, logs: get().logs });
   },
 }));

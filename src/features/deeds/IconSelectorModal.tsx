@@ -10,7 +10,9 @@ import {
   Modal,
   StyleSheet,
   TouchableOpacity,
+  TouchableWithoutFeedback,
   useWindowDimensions,
+  View,
 } from "react-native";
 
 type IconSelectorModalProps = {
@@ -42,33 +44,34 @@ export const IconSelectorModal = ({
       visible={isVisible}
       onRequestClose={onClose}
     >
-      <TouchableOpacity
-        style={styles.overlay}
-        activeOpacity={1}
-        onPress={onClose}
-      >
-        <TouchableOpacity activeOpacity={1} style={styles.container}>
-          <ThemedText style={styles.title}>Choose an Icon</ThemedText>
-          <FlatList
-            data={customDeedIcons}
-            keyExtractor={(item) => item}
-            numColumns={numColumns}
-            renderItem={({ item }) => (
-              <TouchableOpacity
-                style={styles.iconButton}
-                onPress={() => onSelectIcon(item)}
-              >
-                <MaterialCommunityIcons
-                  name={item}
-                  size={ICON_SIZE}
-                  color={theme.colors.text}
-                />
-              </TouchableOpacity>
-            )}
-            contentContainerStyle={styles.grid}
-          />
-        </TouchableOpacity>
-      </TouchableOpacity>
+      <TouchableWithoutFeedback onPress={onClose}>
+        <View style={styles.overlay}>
+          {/* This View prevents the close event from firing when tapping the container */}
+          <TouchableWithoutFeedback>
+            <View style={styles.container}>
+              <ThemedText style={styles.title}>Choose an Icon</ThemedText>
+              <FlatList
+                data={customDeedIcons}
+                keyExtractor={(item) => item}
+                numColumns={numColumns}
+                renderItem={({ item }) => (
+                  <TouchableOpacity
+                    style={styles.iconButton}
+                    onPress={() => onSelectIcon(item)}
+                  >
+                    <MaterialCommunityIcons
+                      name={item}
+                      size={ICON_SIZE}
+                      color={theme.colors.text}
+                    />
+                  </TouchableOpacity>
+                )}
+                contentContainerStyle={styles.grid}
+              />
+            </View>
+          </TouchableWithoutFeedback>
+        </View>
+      </TouchableWithoutFeedback>
     </Modal>
   );
 };
@@ -84,7 +87,7 @@ const getStyles = (theme: AppTheme) =>
     },
     container: {
       width: "100%",
-      maxHeight: "80%",
+      height: "80%", // Use height instead of maxHeight
       backgroundColor: theme.colors.foreground,
       borderRadius: 16,
       padding: PADDING,
