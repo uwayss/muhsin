@@ -1,7 +1,8 @@
 // src/core/theme/ThemeContext.tsx
 import React, { createContext, useContext } from "react";
 import { useColorScheme } from "react-native";
-import { AppTheme, ColorTheme, theme } from "@/constants/theme";
+import { AppTheme, ColorTheme, theme as defaultTheme } from "@/constants/theme";
+import useAppStore from "../store/appStore";
 
 interface ThemeContextType {
   theme: AppTheme;
@@ -11,17 +12,20 @@ interface ThemeContextType {
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
-  const colorScheme = useColorScheme();
-  const isDark = colorScheme === "dark";
+  const systemColorScheme = useColorScheme();
+  const userThemePreference = useAppStore((state) => state.settings.theme);
 
-  // Select the correct color palette based on the system theme
+  const activeColorScheme =
+    userThemePreference === "system" ? systemColorScheme : userThemePreference;
+
+  const isDark = activeColorScheme === "dark";
+
   const activeColors: ColorTheme = isDark
-    ? theme.colors.dark
-    : theme.colors.light;
+    ? defaultTheme.colors.dark
+    : defaultTheme.colors.light;
 
-  // Combine the active colors with the static tokens (spacing, typography)
   const activeTheme: AppTheme = {
-    ...theme,
+    ...defaultTheme,
     colors: activeColors,
   };
 

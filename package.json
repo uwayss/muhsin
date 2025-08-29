@@ -10,7 +10,8 @@
     "checks:lint": "expo lint --fix",
     "checks:tsc": "tsc --noEmit",
     "checks": "npm run checks:lint ; npm run checks:tsc",
-    "lint": "expo lint"
+    "lint": "expo lint",
+    "commit": "npm run checks && ups diff"
   },
   "dependencies": {
     "@expo/vector-icons": "^14.1.0",

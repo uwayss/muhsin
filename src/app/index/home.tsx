@@ -11,7 +11,7 @@ import { formatHijriDate } from "@/core/utils/dateFormatter";
 import { DeedListItem } from "@/features/deeds/DeedListItem";
 import { LogDeedModal } from "@/features/deeds/LogDeedModal";
 import { DateScroller } from "@/features/home/DateScroller";
-import { format, formatISO } from "date-fns";
+import { format, formatISO, getDay } from "date-fns";
 import { useRouter } from "expo-router";
 import React, { useMemo, useState } from "react";
 import { ActivityIndicator, SectionList, StyleSheet } from "react-native";
@@ -46,8 +46,23 @@ const HomeScreen = () => {
   }, [selectedDate, logs]);
 
   const deedsBySection = useMemo(() => {
+    const dayOfWeek = getDay(selectedDate); // 0 = Sunday, 1 = Monday, etc.
+
+    const visibleDeeds = deeds.filter((deed) => {
+      // If frequency is not set, or is daily, always show it.
+      if (!deed.frequency || deed.frequency.type === "daily") {
+        return true;
+      }
+      // If weekly, check if today is one of the selected days.
+      if (deed.frequency.type === "weekly") {
+        return deed.frequency.days?.includes(dayOfWeek) ?? false;
+      }
+      return false;
+    });
+
     const sections: { title: string; data: Deed[] }[] = [];
-    const deedsByCategory = deeds.reduce(
+    // Use the filtered 'visibleDeeds' array instead of the raw 'deeds'
+    const deedsByCategory = visibleDeeds.reduce(
       (acc, deed) => {
         (acc[deed.category] = acc[deed.category] || []).push(deed);
         return acc;
@@ -59,7 +74,7 @@ const HomeScreen = () => {
       sections.push({ title: category, data: deedsInSection });
     }
     return sections;
-  }, [deeds]);
+  }, [deeds, selectedDate]);
 
   // --- Handlers ---
   const handleOpenLogModal = (deed: Deed) => {
