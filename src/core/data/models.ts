@@ -1,4 +1,4 @@
-// src/core/data/models.ts
+// FILE: src/core/data/models.ts
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { ColorTheme } from "@/constants/theme";
 
@@ -21,11 +21,15 @@ export type DeedStatus = {
  * Defines the frequency of a deed.
  * - 'daily': The deed is available every day.
  * - 'weekly': The deed is available on specific days of the week.
+ * - 'monthly': The deed has a target count per month.
+ * - 'yearly': The deed has a target count per year.
  */
 export type DeedFrequency = {
   type: "daily" | "weekly" | "monthly" | "yearly";
   // For 'weekly', an array of numbers representing days (0=Sun, 1=Mon, ..., 6=Sat)
   days?: number[];
+  // For 'monthly' or 'yearly', the target number of times
+  count?: number;
 };
 
 /**

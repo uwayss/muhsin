@@ -1,4 +1,4 @@
-// src/app/index/configure-frequency.tsx
+// FILE: src/app/index/configure-frequency.tsx
 import { Screen } from "@/components/Screen";
 import { ThemedText } from "@/components/base/ThemedText";
 import { AppTheme } from "@/constants/theme";
@@ -8,7 +8,7 @@ import { useTheme } from "@/core/theme/ThemeContext";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import React from "react";
-import { StyleSheet, TouchableOpacity, View, Alert } from "react-native";
+import { StyleSheet, TouchableOpacity, View, TextInput } from "react-native";
 
 const DAYS = [
   { label: "S", value: 0 },
@@ -29,13 +29,11 @@ const ConfigureFrequencyScreen = () => {
   const frequency = draftDeed?.frequency || { type: "daily" };
 
   const setType = (type: DeedFrequency["type"]) => {
-    if (type === "monthly" || type === "yearly") {
-      Alert.alert("Coming Soon", "This feature is not yet implemented.");
-      return;
-    }
     const newFrequency: DeedFrequency = { type };
     if (type === "weekly") {
       newFrequency.days = frequency.days || [];
+    } else if (type === "monthly" || type === "yearly") {
+      newFrequency.count = frequency.count || 1;
     }
     updateDraftDeed({ frequency: newFrequency });
   };
@@ -47,6 +45,13 @@ const ConfigureFrequencyScreen = () => {
       ? currentDays.filter((d) => d !== dayValue)
       : [...currentDays, dayValue];
     updateDraftDeed({ frequency: { ...frequency, days: newDays.sort() } });
+  };
+
+  const handleCountChange = (text: string) => {
+    const count = parseInt(text, 10);
+    if (!isNaN(count) && count > 0) {
+      updateDraftDeed({ frequency: { ...frequency, count } });
+    }
   };
 
   return (
@@ -102,21 +107,30 @@ const ConfigureFrequencyScreen = () => {
             </View>
           </>
         )}
+
+        {(frequency.type === "monthly" || frequency.type === "yearly") && (
+          <>
+            <ThemedText style={styles.sectionHeader}>
+              How many times per {frequency.type.replace("ly", "")}?
+            </ThemedText>
+            <View style={styles.countContainer}>
+              <TextInput
+                style={styles.countInput}
+                keyboardType="number-pad"
+                value={frequency.count?.toString() || "1"}
+                onChangeText={handleCountChange}
+                placeholderTextColor={theme.colors.textSecondary}
+              />
+            </View>
+          </>
+        )}
       </View>
     </Screen>
   );
 };
 
 // Helper Components
-const OptionButton = ({
-  label,
-  selected,
-  onPress,
-}: {
-  label: string;
-  selected: boolean;
-  onPress: () => void;
-}) => {
+const OptionButton = ({ label, selected, onPress }) => {
   const { theme } = useTheme();
   const styles = getStyles(theme);
   return (
@@ -131,15 +145,7 @@ const OptionButton = ({
   );
 };
 
-const DayButton = ({
-  label,
-  selected,
-  onPress,
-}: {
-  label: string;
-  selected: boolean;
-  onPress: () => void;
-}) => {
+const DayButton = ({ label, selected, onPress }) => {
   const { theme } = useTheme();
   const styles = getStyles(theme);
   return (
@@ -199,5 +205,15 @@ const getStyles = (theme: AppTheme) =>
     dayText: {
       fontWeight: theme.typography.fontWeight.semibold,
       color: theme.colors.text,
+    },
+    countContainer: {
+      backgroundColor: theme.colors.foreground,
+      borderRadius: 8,
+      padding: theme.spacing.m,
+    },
+    countInput: {
+      color: theme.colors.text,
+      fontSize: theme.typography.fontSize.m,
+      textAlign: "center",
     },
   });

@@ -1,4 +1,4 @@
-// src/app/index/home.tsx
+// FILE: src/app/index/home.tsx
 import { Box } from "@/components/base/Box";
 import { Screen } from "@/components/Screen";
 import { ThemedText } from "@/components/base/ThemedText";
@@ -49,11 +49,18 @@ const HomeScreen = () => {
     const dayOfWeek = getDay(selectedDate); // 0 = Sunday, 1 = Monday, etc.
 
     const visibleDeeds = deeds.filter((deed) => {
-      // If frequency is not set, or is daily, always show it.
-      if (!deed.frequency || deed.frequency.type === "daily") {
+      if (!deed.frequency) {
         return true;
       }
-      // If weekly, check if today is one of the selected days.
+      // Show daily, monthly, and yearly deeds every day.
+      if (
+        deed.frequency.type === "daily" ||
+        deed.frequency.type === "monthly" ||
+        deed.frequency.type === "yearly"
+      ) {
+        return true;
+      }
+      // For weekly deeds, only show them on their selected days.
       if (deed.frequency.type === "weekly") {
         return deed.frequency.days?.includes(dayOfWeek) ?? false;
       }
@@ -61,7 +68,6 @@ const HomeScreen = () => {
     });
 
     const sections: { title: string; data: Deed[] }[] = [];
-    // Use the filtered 'visibleDeeds' array instead of the raw 'deeds'
     const deedsByCategory = visibleDeeds.reduce(
       (acc, deed) => {
         (acc[deed.category] = acc[deed.category] || []).push(deed);

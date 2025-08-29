@@ -1,4 +1,4 @@
-// src/core/store/appStore.ts
+// FILE: src/core/store/appStore.ts
 import { create } from "zustand";
 import { Deed, DeedLog, DeedStatus } from "../data/models";
 import {
@@ -18,6 +18,8 @@ export type AppSettings = {
   isDevMode: boolean;
   isDemoMode: boolean;
   language: "en"; // For now, only English is supported
+  isReminderEnabled: boolean;
+  reminderTime: string;
 };
 
 export type AppData = {
@@ -55,6 +57,8 @@ type AppActions = {
   setDevMode: (isDev: boolean) => void;
   toggleDemoMode: () => void;
   resetData: () => Promise<void>;
+  toggleReminder: () => void;
+  setReminderTime: (time: string) => void;
 };
 
 const defaultSettings: AppSettings = {
@@ -63,6 +67,8 @@ const defaultSettings: AppSettings = {
   isDevMode: false,
   isDemoMode: false,
   language: "en",
+  isReminderEnabled: false,
+  reminderTime: "20:00",
 };
 
 const persistState = (state: AppState) => {
@@ -286,6 +292,23 @@ const useAppStore = create<AppState & AppActions>((set, get) => ({
       Appearance.setColorScheme(theme);
     }
     await saveDataToFile(initialState);
+  },
+
+  toggleReminder: () => {
+    set((state) => ({
+      settings: {
+        ...state.settings,
+        isReminderEnabled: !state.settings.isReminderEnabled,
+      },
+    }));
+    persistState(get());
+  },
+
+  setReminderTime: (time: string) => {
+    set((state) => ({
+      settings: { ...state.settings, reminderTime: time },
+    }));
+    persistState(get());
   },
 }));
 
