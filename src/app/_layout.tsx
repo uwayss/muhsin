@@ -20,11 +20,11 @@ const tabData = [
 ];
 
 function RootTabBar() {
-  const { theme, isDark } = useTheme();
+  const { theme } = useTheme();
 
   return (
     <>
-      <StatusBar style={isDark ? "light" : "dark"} />
+      <StatusBar style={"auto"} />
       <Tabs
         initialRouteName="index"
         screenOptions={{
