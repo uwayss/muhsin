@@ -10,6 +10,7 @@ import {
 import { loadDataFromFile, saveDataToFile } from "../storage/storageService";
 import { formatISO } from "date-fns";
 import { Alert, Appearance } from "react-native";
+import { generateDemoLogs } from "../data/demoData";
 
 export type AppSettings = {
   theme: "system" | "light" | "dark";
@@ -243,11 +244,12 @@ const useAppStore = create<AppState & AppActions>((set, get) => ({
 
     if (!isDemoMode) {
       // --- Entering Demo Mode ---
+      const demoLogs = generateDemoLogs();
       set({
         originalDeeds: deeds, // Save current user data
         originalLogs: logs,
-        deeds: MOCK_DEEDS, // Load mock data
-        logs: MOCK_LOGS,
+        deeds: MOCK_DEEDS, // Load mock deeds
+        logs: demoLogs, // Load generated demo logs
         settings: { ...get().settings, isDemoMode: true },
       });
       Alert.alert(

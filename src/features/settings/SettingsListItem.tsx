@@ -54,6 +54,7 @@ export const SettingsListItem = ({
       style={containerStyle}
       onPress={handlePress}
       disabled={item.type === "toggle"}
+      activeOpacity={0.7}
     >
       <MaterialCommunityIcons
         name={item.icon}
@@ -82,7 +83,8 @@ export const SettingsListItem = ({
             false: theme.colors.background,
             true: theme.colors.primary,
           }}
-          thumbColor={theme.colors.foreground}
+          thumbColor={theme.colors.text}
+          style={{ height: 24 }}
         />
       )}
       {(item.type === "navigation" ||
@@ -106,7 +108,7 @@ const getStyles = (theme: AppTheme) =>
       flexDirection: "row",
       alignItems: "center",
       paddingHorizontal: theme.spacing.m,
-      paddingVertical: theme.spacing.m + 2,
+      paddingVertical: theme.spacing.s + 4,
       backgroundColor: theme.colors.foreground,
     },
     isFirst: { borderTopLeftRadius: 16, borderTopRightRadius: 16 },

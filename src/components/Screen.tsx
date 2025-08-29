@@ -16,18 +16,9 @@ export const Screen = ({ children, title, ...headerProps }: ScreenProps) => {
   const { theme } = useTheme();
   const insets = useSafeAreaInsets();
   const styles = getStyles(theme);
-  // TODO: Remove the paddings they make it look horrible! - Done
+
   return (
-    <Box
-      style={[
-        styles.container,
-        {
-          backgroundColor: theme.colors.background,
-          paddingLeft: insets.left,
-          paddingRight: insets.right,
-        },
-      ]}
-    >
+    <Box style={[styles.container]}>
       {title && <Header title={title} {...headerProps} insets={insets} />}
 
       <Box style={styles.content}>{children}</Box>
@@ -39,6 +30,7 @@ const getStyles = (theme: AppTheme) =>
   StyleSheet.create({
     container: {
       flex: 1,
+      backgroundColor: theme.colors.background,
     },
     content: {
       flex: 1,

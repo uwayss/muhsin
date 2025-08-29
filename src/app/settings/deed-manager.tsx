@@ -22,7 +22,7 @@ const DeedManagerScreen = () => {
 
   const renderItem = ({ item, drag, isActive }: RenderItemParams<Deed>) => {
     return (
-      <DeedManagerListItem deed={item} onDrag={drag} isDragging={isActive} />
+      <DeedManagerListItem deed={item} drag={drag} isDragging={isActive} />
     );
   };
 
@@ -56,5 +56,6 @@ const getStyles = (theme: AppTheme) =>
   StyleSheet.create({
     listContent: {
       paddingTop: theme.spacing.m,
+      paddingHorizontal: theme.spacing.m,
     },
   });

@@ -9,23 +9,18 @@ import { triggerHaptic } from "@/core/utils/haptics";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import React from "react";
-import {
-  Alert,
-  StyleSheet,
-  TouchableOpacity,
-  TouchableWithoutFeedback,
-} from "react-native";
+import { Alert, StyleSheet, TouchableOpacity } from "react-native";
 import { ScaleDecorator } from "react-native-draggable-flatlist";
 
 type DeedManagerListItemProps = {
   deed: Deed;
-  onDrag: () => void;
+  drag: () => void;
   isDragging: boolean;
 };
 
 export const DeedManagerListItem = ({
   deed,
-  onDrag,
+  drag,
   isDragging,
 }: DeedManagerListItemProps) => {
   const { theme } = useTheme();
@@ -61,16 +56,19 @@ export const DeedManagerListItem = ({
 
   return (
     <ScaleDecorator>
-      <Box style={[styles.container, isDragging && styles.dragging]}>
-        <TouchableWithoutFeedback onLongPress={onDrag} delayLongPress={200}>
-          <Box style={styles.dragHandle}>
-            <MaterialCommunityIcons
-              name="drag-horizontal-variant"
-              size={28}
-              color={theme.colors.textSecondary}
-            />
-          </Box>
-        </TouchableWithoutFeedback>
+      <TouchableOpacity
+        onLongPress={drag}
+        delayLongPress={150}
+        activeOpacity={0.8}
+        style={[styles.container, isDragging && styles.dragging]}
+      >
+        <TouchableOpacity onPressIn={drag} style={styles.dragHandle}>
+          <MaterialCommunityIcons
+            name="drag-horizontal-variant"
+            size={28}
+            color={theme.colors.textSecondary}
+          />
+        </TouchableOpacity>
 
         <MaterialCommunityIcons
           name={deed.icon}
@@ -101,7 +99,7 @@ export const DeedManagerListItem = ({
             </TouchableOpacity>
           </Box>
         )}
-      </Box>
+      </TouchableOpacity>
     </ScaleDecorator>
   );
 };
@@ -113,7 +111,7 @@ const getStyles = (theme: AppTheme) =>
       alignItems: "center",
       paddingRight: theme.spacing.s,
       backgroundColor: theme.colors.foreground,
-      borderRadius: 8,
+      borderRadius: 12, // Slightly increased for better aesthetics
       marginBottom: theme.spacing.s,
     },
     dragging: {

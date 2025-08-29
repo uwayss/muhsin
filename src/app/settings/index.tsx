@@ -140,19 +140,19 @@ const SettingsScreen = () => {
           }
           ItemSeparatorComponent={() => <View style={styles.separator} />}
           ListFooterComponent={
-            <View style={styles.footer}>
-              <Pressable
-                onPress={handleVersionTap}
-                onLongPress={handleVersionLongPress}
-              >
+            <Pressable
+              onPress={handleVersionTap}
+              onLongPress={handleVersionLongPress}
+            >
+              <View style={styles.footer}>
                 <ThemedText style={styles.footerText}>
                   App version {appVersion} {isDevMode && "(Dev)"}
                 </ThemedText>
-              </Pressable>
-              <ThemedText style={styles.footerText}>
-                Made with 🤍 in Istanbul
-              </ThemedText>
-            </View>
+                <ThemedText style={styles.footerText}>
+                  Made with 🤍 in Istanbul
+                </ThemedText>
+              </View>
+            </Pressable>
           }
           contentContainerStyle={styles.listContent}
           showsVerticalScrollIndicator={false}
@@ -180,8 +180,9 @@ const getStyles = (theme: AppTheme) =>
       fontSize: theme.typography.fontSize.s,
       color: theme.colors.textSecondary,
       textTransform: "uppercase",
-      marginTop: theme.spacing.l,
+      marginTop: theme.spacing.m + 4,
       marginBottom: theme.spacing.s,
+      paddingHorizontal: theme.spacing.m,
     },
     listContent: {
       paddingBottom: theme.spacing.l,
@@ -189,12 +190,11 @@ const getStyles = (theme: AppTheme) =>
     separator: {
       height: 1,
       backgroundColor: theme.colors.background,
-      marginHorizontal: theme.spacing.m,
+      marginLeft: theme.spacing.m,
     },
     footer: {
       alignItems: "center",
-      marginTop: theme.spacing.xl,
-      paddingBottom: theme.spacing.l,
+      marginTop: theme.spacing.l,
     },
     footerText: {
       color: theme.colors.textSecondary,
