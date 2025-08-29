@@ -1,0 +1,44 @@
+# FILE: .github/workflows/development-build-local.yml
+name: Build Android Locally (Development)
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20.x
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run lint and type checks
+        run: npm run checks
+
+      - name: Generate android folder
+        run: npx expo prebuild --platform android --no-install
+
+      - name: Set up Java and Gradle
+        uses: actions/setup-java@v4
+        with:
+          distribution: "temurin"
+          java-version: "17"
+
+      - name: Build development APK
+        run: ./android/gradlew -p ./android assembleDebug
+
+      - name: Upload APK artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: muhsin-development-apk
+          path: android/app/build/outputs/apk/debug/app-debug.apk
