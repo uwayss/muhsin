@@ -1,14 +1,14 @@
 // src/components/Screen.tsx
+import { AppTheme } from "@/constants/theme";
+import { useTheme } from "@/core/theme/ThemeContext";
 import React from "react";
 import { StyleSheet } from "react-native";
-import { useTheme } from "@/core/theme/ThemeContext";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Box } from "./base/Box";
 import { Header, HeaderProps } from "./Header";
-import { AppTheme } from "@/constants/theme";
 
-// The Screen can now accept all HeaderProps, plus its own children
-type ScreenProps = Partial<HeaderProps> & {
+// Omit 'insets' from HeaderProps as Screen will provide it automatically
+type ScreenProps = Partial<Omit<HeaderProps, "insets">> & {
   children: React.ReactNode;
 };
 
@@ -23,17 +23,14 @@ export const Screen = ({ children, title, ...headerProps }: ScreenProps) => {
         styles.container,
         {
           backgroundColor: theme.colors.background,
-          paddingTop: insets.top,
           paddingBottom: insets.bottom,
           paddingLeft: insets.left,
           paddingRight: insets.right,
         },
       ]}
     >
-      {/* Conditionally render the header ONLY if a title is provided */}
-      {title && <Header title={title} {...headerProps} />}
+      {title && <Header title={title} {...headerProps} insets={insets} />}
 
-      {/* The main content of the screen */}
       <Box style={styles.content}>{children}</Box>
     </Box>
   );
@@ -47,6 +44,5 @@ const getStyles = (theme: AppTheme) =>
     content: {
       flex: 1,
       paddingHorizontal: theme.spacing.m,
-      paddingVertical: theme.spacing.l,
     },
   });

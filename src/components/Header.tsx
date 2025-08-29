@@ -3,6 +3,7 @@ import { AppTheme } from "@/constants/theme";
 import { useTheme } from "@/core/theme/ThemeContext";
 import React from "react";
 import { StyleSheet } from "react-native";
+import { EdgeInsets } from "react-native-safe-area-context";
 import { Box } from "./base/Box";
 import { ThemedText } from "./base/ThemedText";
 
@@ -11,6 +12,7 @@ export type HeaderProps = {
   subtitle?: string;
   renderLeftAction?: () => React.ReactNode;
   renderRightAction?: () => React.ReactNode;
+  insets: EdgeInsets;
 };
 
 export const Header = ({
@@ -18,18 +20,17 @@ export const Header = ({
   subtitle,
   renderLeftAction,
   renderRightAction,
+  insets,
 }: HeaderProps) => {
   const { theme } = useTheme();
-  const styles = getStyles(theme);
+  const styles = getStyles(theme, insets);
 
   return (
     <Box style={styles.container}>
-      {/* Left Slot */}
       <Box style={styles.actionSlot}>
         {renderLeftAction && renderLeftAction()}
       </Box>
 
-      {/* Center Slot */}
       <Box style={styles.titleContainer}>
         <ThemedText style={styles.title} numberOfLines={1}>
           {title}
@@ -41,7 +42,6 @@ export const Header = ({
         )}
       </Box>
 
-      {/* Right Slot */}
       <Box style={styles.actionSlot}>
         {renderRightAction && renderRightAction()}
       </Box>
@@ -49,23 +49,24 @@ export const Header = ({
   );
 };
 
-const getStyles = (theme: AppTheme) =>
+const getStyles = (theme: AppTheme, insets: EdgeInsets) =>
   StyleSheet.create({
     container: {
       flexDirection: "row",
       alignItems: "center",
       justifyContent: "space-between",
       paddingHorizontal: theme.spacing.m,
-      height: 60, // A standard header height
+      height: 60 + insets.top,
+      paddingTop: insets.top,
       backgroundColor: theme.colors.foreground,
     },
     actionSlot: {
-      width: 40, // Fixed width to ensure the title is perfectly centered
+      width: 40,
       justifyContent: "center",
       alignItems: "center",
     },
     titleContainer: {
-      flex: 1, // Takes up the remaining space
+      flex: 1,
       justifyContent: "center",
       alignItems: "center",
     },

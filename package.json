@@ -9,20 +9,22 @@
     "web": "expo start --web",
     "checks:lint": "expo lint --fix",
     "checks:tsc": "tsc --noEmit",
-    "checks": "npm run checks:lint && npm run checks:tsc",
+    "checks": "npm run checks:lint ; npm run checks:tsc",
     "lint": "expo lint"
   },
   "dependencies": {
+    "@expo/vector-icons": "^14.1.0",
+    "date-fns": "^4.1.0",
     "expo": "~53.0.22",
+    "expo-constants": "~17.1.7",
+    "expo-linking": "~7.1.7",
+    "expo-router": "~5.1.5",
     "expo-status-bar": "~2.2.3",
+    "hijri-date": "^0.2.2",
     "react": "19.0.0",
     "react-native": "0.79.5",
-    "expo-router": "~5.1.5",
     "react-native-safe-area-context": "5.4.0",
-    "react-native-screens": "~4.11.1",
-    "expo-linking": "~7.1.7",
-    "expo-constants": "~17.1.7",
-    "@expo/vector-icons": "^14.1.0"
+    "react-native-screens": "~4.11.1"
   },
   "devDependencies": {
     "@babel/core": "^7.25.2",
