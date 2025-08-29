@@ -16,15 +16,14 @@ type DateScrollerProps = {
   onDateSelect: (date: Date) => void;
 };
 
-export const DateScroller = ({
+const DateScrollerComponent = ({
   selectedDate,
   onDateSelect,
 }: DateScrollerProps) => {
   const flatListRef = useRef<FlatList>(null);
   const { width: screenWidth } = useWindowDimensions();
 
-  // --- Calculations for weekly layout ---
-  const containerPadding = 32; // Corresponds to Screen's horizontal padding (m * 2)
+  const containerPadding = 32;
   const itemWidth = (screenWidth - containerPadding - ITEM_MARGIN * 7) / 7;
   const fullItemWidth = itemWidth + ITEM_MARGIN;
   const weekWidth = fullItemWidth * 7;
@@ -59,7 +58,6 @@ export const DateScroller = ({
     [fullItemWidth],
   );
 
-  // --- Performance Fix: memoize renderItem ---
   const renderItem = useCallback(
     ({ item }: { item: Date }) => (
       <DateItem
@@ -81,7 +79,7 @@ export const DateScroller = ({
       renderItem={renderItem}
       horizontal
       showsHorizontalScrollIndicator={false}
-      snapToInterval={weekWidth} // Snap to the width of a full week
+      snapToInterval={weekWidth} // Snap to a full week
       decelerationRate="fast"
       initialScrollIndex={todayIndex}
       getItemLayout={getItemLayout}
@@ -89,3 +87,6 @@ export const DateScroller = ({
     />
   );
 };
+
+// Export the memoized version, which now has a display name
+export const DateScroller = React.memo(DateScrollerComponent);
