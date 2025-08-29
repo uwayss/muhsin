@@ -1,9 +1,15 @@
 // src/core/store/appStore.ts
 import { create } from "zustand";
 import { Deed, DeedLog, DeedStatus } from "../data/models";
-import { MOCK_DEEDS, MOCK_LOGS, SUGGESTED_DEEDS } from "../data/mock";
+import {
+  GENERIC_STATUSES,
+  MOCK_DEEDS,
+  MOCK_LOGS,
+  SUGGESTED_DEEDS,
+} from "../data/mock";
 import { loadDataFromFile, saveDataToFile } from "../storage/storageService";
 import { formatISO } from "date-fns";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 
 // The shape of our entire persisted state
 export type AppData = {
@@ -17,11 +23,18 @@ type AppState = AppData & {
   suggestedDeeds: Deed[]; // Non-persisted list of available deeds
 };
 
+// Define arguments for custom deed creation
+type CustomDeedPayload = {
+  name: string;
+  icon: React.ComponentProps<typeof MaterialCommunityIcons>["name"];
+};
+
 // Actions that can be performed on the store
 type AppActions = {
   initialize: () => Promise<void>;
   addOrUpdateLog: (deed: Deed, date: Date, status: DeedStatus) => void;
   addDeed: (deed: Deed) => void;
+  createCustomDeed: (payload: CustomDeedPayload) => void;
 };
 
 const useAppStore = create<AppState & AppActions>((set, get) => ({
@@ -85,6 +98,19 @@ const useAppStore = create<AppState & AppActions>((set, get) => ({
     if (currentDeeds.some((d) => d.id === deedToAdd.id)) return;
 
     const newDeeds = [...currentDeeds, deedToAdd];
+    set({ deeds: newDeeds });
+    saveDataToFile({ deeds: newDeeds, logs: get().logs });
+  },
+
+  createCustomDeed: ({ name, icon }) => {
+    const newDeed: Deed = {
+      id: `custom-${Date.now()}`,
+      name,
+      icon,
+      category: "CUSTOM",
+      statuses: GENERIC_STATUSES,
+    };
+    const newDeeds = [...get().deeds, newDeed];
     set({ deeds: newDeeds });
     saveDataToFile({ deeds: newDeeds, logs: get().logs });
   },

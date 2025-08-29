@@ -23,7 +23,7 @@ export const Screen = ({ children, title, ...headerProps }: ScreenProps) => {
         styles.container,
         {
           backgroundColor: theme.colors.background,
-          paddingBottom: insets.bottom,
+          // paddingBottom: insets.bottom,
           paddingLeft: insets.left,
           paddingRight: insets.right,
         },

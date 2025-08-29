@@ -7,7 +7,7 @@ import useAppStore from "@/core/store/appStore";
 import { useTheme } from "@/core/theme/ThemeContext";
 import { SuggestedDeedListItem } from "@/features/deeds/SuggestedDeedListItem";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-import { useRouter } from "expo-router";
+import { Link, useRouter } from "expo-router";
 import React, { useMemo } from "react";
 import { SectionList, StyleSheet, TouchableOpacity } from "react-native";
 
@@ -69,16 +69,18 @@ const AddDeedScreen = () => {
           />
         )}
         ListHeaderComponent={
-          <TouchableOpacity style={styles.createDeedButton}>
-            <MaterialCommunityIcons
-              name="plus-circle"
-              size={24}
-              color={theme.colors.primary}
-            />
-            <ThemedText style={styles.createDeedText}>
-              Create new deed
-            </ThemedText>
-          </TouchableOpacity>
+          <Link href="/create-deed" asChild>
+            <TouchableOpacity style={styles.createDeedButton}>
+              <MaterialCommunityIcons
+                name="plus-circle"
+                size={24}
+                color={theme.colors.primary}
+              />
+              <ThemedText style={styles.createDeedText}>
+                Create new deed
+              </ThemedText>
+            </TouchableOpacity>
+          </Link>
         }
         contentContainerStyle={styles.listContent}
       />
@@ -100,6 +102,7 @@ const getStyles = (theme: AppTheme) =>
     },
     listContent: {
       paddingBottom: theme.spacing.l,
+      paddingTop: theme.spacing.s,
     },
     createDeedButton: {
       flexDirection: "row",

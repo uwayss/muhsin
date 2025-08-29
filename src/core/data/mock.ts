@@ -8,7 +8,7 @@ const PRAYER_STATUSES: DeedStatus[] = [
   { id: "jamaah", label: "In Jama'ah", icon: "check-all", color: "jamaah" },
 ];
 
-const GENERIC_STATUSES: DeedStatus[] = [
+export const GENERIC_STATUSES: DeedStatus[] = [
   { id: "missed", label: "Missed", icon: "close", color: "late" },
   { id: "completed", label: "Completed", icon: "check", color: "primary" },
 ];
