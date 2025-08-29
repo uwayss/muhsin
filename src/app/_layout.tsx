@@ -1,8 +1,10 @@
+// src/app/_layout.tsx
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { ThemeProvider, useTheme } from "@/core/theme/ThemeContext";
 import { Tabs } from "expo-router";
-import React from "react";
+import React, { useEffect } from "react";
 import { StatusBar } from "expo-status-bar";
+import useAppStore from "@/core/store/appStore";
 
 function TabBarIcon(props: {
   name: React.ComponentProps<typeof MaterialCommunityIcons>["name"];
@@ -21,6 +23,10 @@ const tabData = [
 
 function RootTabBar() {
   const { theme } = useTheme();
+
+  useEffect(() => {
+    useAppStore.getState().initialize();
+  }, []);
 
   return (
     <>

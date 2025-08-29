@@ -8,6 +8,11 @@ const PRAYER_STATUSES: DeedStatus[] = [
   { id: "jamaah", label: "In Jama'ah", icon: "check-all", color: "jamaah" },
 ];
 
+const GENERIC_STATUSES: DeedStatus[] = [
+  { id: "missed", label: "Missed", icon: "close", color: "late" },
+  { id: "completed", label: "Completed", icon: "check", color: "primary" },
+];
+
 export const MOCK_DEEDS: Deed[] = [
   {
     id: "prayer-fajr",
@@ -43,6 +48,62 @@ export const MOCK_DEEDS: Deed[] = [
     icon: "weather-night",
     category: "PRAYERS",
     statuses: PRAYER_STATUSES,
+  },
+];
+
+export const SUGGESTED_DEEDS: Deed[] = [
+  // PRAYERS
+  {
+    id: "prayer-witr",
+    name: "Witr",
+    icon: "moon-waning-crescent",
+    category: "PRAYERS",
+    statuses: GENERIC_STATUSES,
+  },
+  {
+    id: "prayer-tahajjud",
+    name: "Tahajjud",
+    icon: "meditation",
+    category: "PRAYERS",
+    statuses: GENERIC_STATUSES,
+  },
+  // QURAN
+  {
+    id: "quran-reading",
+    name: "Read Quran",
+    icon: "book-open-page-variant",
+    category: "QURAN",
+    statuses: GENERIC_STATUSES,
+  },
+  {
+    id: "quran-memorizing",
+    name: "Memorize Quran",
+    icon: "brain",
+    category: "QURAN",
+    statuses: GENERIC_STATUSES,
+  },
+  // LEARNING
+  {
+    id: "learning-book",
+    name: "Read a book",
+    icon: "book-education",
+    category: "LEARNING",
+    statuses: GENERIC_STATUSES,
+  },
+  // SOCIAL
+  {
+    id: "social-charity",
+    name: "Give Charity",
+    icon: "charity",
+    category: "SOCIAL",
+    statuses: GENERIC_STATUSES,
+  },
+  {
+    id: "social-family",
+    name: "Call family",
+    icon: "phone-in-talk",
+    category: "SOCIAL",
+    statuses: GENERIC_STATUSES,
   },
 ];
 

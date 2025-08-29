@@ -24,7 +24,7 @@ export type Deed = {
   id: string; // e.g., 'prayer-fajr'
   name: string; // e.g., "Fajr"
   icon: React.ComponentProps<typeof MaterialCommunityIcons>["name"];
-  category: "PRAYERS" | "QURAN" | "SOCIAL" | "CUSTOM";
+  category: "PRAYERS" | "QURAN" | "LEARNING" | "SOCIAL" | "CUSTOM";
   // Each deed defines its own set of possible completion statuses
   statuses: DeedStatus[];
 };

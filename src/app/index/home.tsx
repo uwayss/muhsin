@@ -4,8 +4,8 @@ import { Screen } from "@/components/Screen";
 import { ThemedText } from "@/components/base/ThemedText";
 import { FAB } from "@/components/FAB";
 import { AppTheme } from "@/constants/theme";
-import { MOCK_DEEDS, MOCK_LOGS } from "@/core/data/mock";
-import { Deed, DeedLog, DeedStatus } from "@/core/data/models";
+import { Deed, DeedStatus } from "@/core/data/models";
+import useAppStore from "@/core/store/appStore";
 import { useTheme } from "@/core/theme/ThemeContext";
 import { formatHijriDate } from "@/core/utils/dateFormatter";
 import { DeedListItem } from "@/features/deeds/DeedListItem";
@@ -14,18 +14,25 @@ import { DateScroller } from "@/features/home/DateScroller";
 import { format, formatISO } from "date-fns";
 import { useRouter } from "expo-router";
 import React, { useMemo, useState } from "react";
-import { FlatList, StyleSheet } from "react-native";
+import { ActivityIndicator, SectionList, StyleSheet } from "react-native";
 
 const HomeScreen = () => {
   const { theme } = useTheme();
   const styles = getStyles(theme);
   const router = useRouter();
-  const [selectedDate, setSelectedDate] = useState(new Date());
 
-  const [logs, setLogs] = useState<DeedLog[]>(MOCK_LOGS);
+  // --- Global State ---
+  const isInitialized = useAppStore((state) => state.isInitialized);
+  const deeds = useAppStore((state) => state.deeds);
+  const logs = useAppStore((state) => state.logs);
+  const addOrUpdateLog = useAppStore((state) => state.addOrUpdateLog);
+
+  // --- Local State ---
+  const [selectedDate, setSelectedDate] = useState(new Date());
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [selectedDeed, setSelectedDeed] = useState<Deed | null>(null);
 
+  // --- Memos ---
   const { gregorianDate, hijriDate } = useMemo(() => {
     return {
       gregorianDate: format(selectedDate, "MMMM d"),
@@ -38,6 +45,23 @@ const HomeScreen = () => {
     return logs.filter((log) => log.date === dateString);
   }, [selectedDate, logs]);
 
+  const deedsBySection = useMemo(() => {
+    const sections: { title: string; data: Deed[] }[] = [];
+    const deedsByCategory = deeds.reduce(
+      (acc, deed) => {
+        (acc[deed.category] = acc[deed.category] || []).push(deed);
+        return acc;
+      },
+      {} as Record<string, Deed[]>,
+    );
+
+    for (const [category, deedsInSection] of Object.entries(deedsByCategory)) {
+      sections.push({ title: category, data: deedsInSection });
+    }
+    return sections;
+  }, [deeds]);
+
+  // --- Handlers ---
   const handleOpenLogModal = (deed: Deed) => {
     setSelectedDeed(deed);
     setIsModalVisible(true);
@@ -45,26 +69,20 @@ const HomeScreen = () => {
 
   const handleLogStatus = (status: DeedStatus) => {
     if (!selectedDeed) return;
-    const dateString = formatISO(selectedDate, { representation: "date" });
-    const existingLogIndex = logs.findIndex(
-      (log) => log.deedId === selectedDeed.id && log.date === dateString,
-    );
-    if (existingLogIndex > -1) {
-      const updatedLogs = [...logs];
-      updatedLogs[existingLogIndex].statusId = status.id;
-      setLogs(updatedLogs);
-    } else {
-      const newLog: DeedLog = {
-        id: `log-${Date.now()}`,
-        deedId: selectedDeed.id,
-        date: dateString,
-        statusId: status.id,
-      };
-      setLogs([...logs, newLog]);
-    }
+    addOrUpdateLog(selectedDeed, selectedDate, status);
     setIsModalVisible(false);
     setSelectedDeed(null);
   };
+
+  if (!isInitialized) {
+    return (
+      <Screen title="Loading...">
+        <Box style={styles.centered}>
+          <ActivityIndicator />
+        </Box>
+      </Screen>
+    );
+  }
 
   return (
     <Screen title={gregorianDate} subtitle={hijriDate}>
@@ -73,11 +91,11 @@ const HomeScreen = () => {
         onDateSelect={setSelectedDate}
       />
       <Box style={{ flex: 1 }}>
-        <FlatList
-          data={MOCK_DEEDS}
+        <SectionList
+          sections={deedsBySection}
           keyExtractor={(item) => item.id}
-          ListHeaderComponent={() => (
-            <ThemedText style={styles.categoryTitle}>PRAYERS</ThemedText>
+          renderSectionHeader={({ section: { title } }) => (
+            <ThemedText style={styles.categoryTitle}>{title}</ThemedText>
           )}
           renderItem={({ item: deed }) => {
             const log = logsForSelectedDate.find((l) => l.deedId === deed.id);
@@ -112,8 +130,14 @@ const getStyles = (theme: AppTheme) =>
       color: theme.colors.textSecondary,
       textTransform: "uppercase",
       marginBottom: theme.spacing.s,
+      marginTop: theme.spacing.m, // Add margin top for spacing between sections
     },
     listContent: {
-      paddingTop: theme.spacing.m,
+      paddingTop: theme.spacing.s, // Adjust padding
+    },
+    centered: {
+      flex: 1,
+      justifyContent: "center",
+      alignItems: "center",
     },
   });
