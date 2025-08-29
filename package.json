@@ -7,7 +7,10 @@
     "android": "expo start --android",
     "ios": "expo start --ios",
     "web": "expo start --web",
-    "lint": "expo lint --fix"
+    "checks:lint": "expo lint --fix",
+    "checks:tsc": "tsc --noEmit",
+    "checks": "npm run checks:lint && npm run checks:tsc",
+    "lint": "expo lint"
   },
   "dependencies": {
     "expo": "~53.0.22",

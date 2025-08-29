@@ -1,42 +1,64 @@
 import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { ThemeProvider, useTheme } from "@/core/theme/ThemeContext";
 import { Tabs } from "expo-router";
 import React from "react";
+import { StatusBar } from "expo-status-bar";
 
 function TabBarIcon(props: {
   name: React.ComponentProps<typeof MaterialCommunityIcons>["name"];
+  color: string;
 }) {
   return (
     <MaterialCommunityIcons size={28} style={{ marginBottom: -3 }} {...props} />
   );
 }
 
-const tabData: {
-  name: string;
-  title: string;
-  icon: React.ComponentProps<typeof MaterialCommunityIcons>["name"];
-}[] = [
-  { name: "stats", title: "Stats", icon: "trending-up" },
-  { name: "index", title: "Home", icon: "home" },
-  { name: "settings", title: "Settings", icon: "cog" },
+const tabData = [
+  { name: "stats", title: "Stats", icon: "trending-up" as const },
+  { name: "index", title: "Home", icon: "home" as const },
+  { name: "settings", title: "Settings", icon: "cog" as const },
 ];
 
-export default function RootTabBar() {
+function RootTabBar() {
+  const { theme, isDark } = useTheme();
+
   return (
-    <Tabs initialRouteName="index">
-      {tabData.map((tab) => (
-        <Tabs.Screen
-          key={tab.name}
-          name={tab.name}
-          options={{
-            headerShown: false,
-            title: tab.title,
-            tabBarLabel: tab.title,
-            tabBarIcon: () => {
-              return <TabBarIcon name={tab.icon} />;
-            },
-          }}
-        />
-      ))}
-    </Tabs>
+    <>
+      <StatusBar style={isDark ? "light" : "dark"} />
+      <Tabs
+        initialRouteName="index"
+        screenOptions={{
+          tabBarActiveTintColor: theme.colors.primary,
+          tabBarInactiveTintColor: theme.colors.textSecondary,
+          tabBarStyle: {
+            backgroundColor: theme.colors.foreground,
+            borderTopColor: theme.colors.background,
+          },
+        }}
+      >
+        {tabData.map((tab) => (
+          <Tabs.Screen
+            key={tab.name}
+            name={tab.name}
+            options={{
+              headerShown: false,
+              title: tab.title,
+              tabBarLabel: tab.title,
+              tabBarIcon: ({ color }) => (
+                <TabBarIcon name={tab.icon} color={color} />
+              ),
+            }}
+          />
+        ))}
+      </Tabs>
+    </>
+  );
+}
+
+export default function RootLayout() {
+  return (
+    <ThemeProvider>
+      <RootTabBar />
+    </ThemeProvider>
   );
 }
