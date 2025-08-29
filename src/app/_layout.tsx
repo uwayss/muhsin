@@ -5,6 +5,7 @@ import { Tabs } from "expo-router";
 import React, { useEffect } from "react";
 import { StatusBar } from "expo-status-bar";
 import useAppStore from "@/core/store/appStore";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 
 function TabBarIcon(props: {
   name: React.ComponentProps<typeof MaterialCommunityIcons>["name"];
@@ -64,7 +65,9 @@ function RootTabBar() {
 export default function RootLayout() {
   return (
     <ThemeProvider>
-      <RootTabBar />
+      <GestureHandlerRootView style={{ flex: 1 }}>
+        <RootTabBar />
+      </GestureHandlerRootView>
     </ThemeProvider>
   );
 }

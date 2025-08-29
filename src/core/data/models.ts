@@ -44,9 +44,8 @@ export type Deed = {
   name: string; // e.g., "Fajr"
   icon: React.ComponentProps<typeof MaterialCommunityIcons>["name"];
   category: "PRAYERS" | "QURAN" | "LEARNING" | "SOCIAL" | "CUSTOM";
-  // Each deed defines its own set of possible completion statuses
   statuses: DeedStatus[];
-  // --- NEW CONFIGURATION FIELDS ---
+  isCore?: boolean; // True for fundamental deeds that cannot be edited/deleted
   frequency?: DeedFrequency;
   goal?: DeedGoal;
   parentId?: string | null;

@@ -8,18 +8,27 @@ import useAppStore from "@/core/store/appStore";
 import { useTheme } from "@/core/theme/ThemeContext";
 import { IconSelectorModal } from "@/features/deeds/IconSelectorModal";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-import { useRouter } from "expo-router";
+import { useLocalSearchParams, useRouter } from "expo-router";
 import React, { useEffect, useState } from "react";
-import { Alert, StyleSheet, TouchableOpacity, View } from "react-native";
+import {
+  Alert,
+  StyleSheet,
+  TouchableOpacity,
+  View,
+  ActivityIndicator,
+} from "react-native";
 
 const CreateDeedScreen = () => {
   const router = useRouter();
   const { theme } = useTheme();
   const styles = getStyles(theme);
+  const params = useLocalSearchParams();
+  const deedId = typeof params.deedId === "string" ? params.deedId : undefined;
+  const isEditMode = !!deedId;
 
   const {
     draftDeed,
-    startCreatingDeed,
+    initializeDraftDeed,
     updateDraftDeed,
     clearDraftDeed,
     saveDraftDeed,
@@ -29,11 +38,11 @@ const CreateDeedScreen = () => {
   const [isIconModalVisible, setIconModalVisible] = useState(false);
 
   useEffect(() => {
-    startCreatingDeed();
+    initializeDraftDeed(deedId);
     return () => {
       clearDraftDeed();
     };
-  }, [startCreatingDeed, clearDraftDeed]);
+  }, [initializeDraftDeed, deedId, clearDraftDeed]);
 
   const handleSave = () => {
     if (!draftDeed?.name?.trim()) {
@@ -72,12 +81,18 @@ const CreateDeedScreen = () => {
     return parent?.name || "None";
   };
 
-  if (!draftDeed) return null; // Render nothing until the draft is initialized
+  if (!draftDeed) {
+    return (
+      <Screen title={isEditMode ? "Edit Deed" : "Create a Deed"}>
+        <ActivityIndicator style={{ marginTop: 20 }} />
+      </Screen>
+    );
+  }
 
   return (
     <>
       <Screen
-        title="Create a Deed"
+        title={isEditMode ? "Edit Deed" : "Create a Deed"}
         renderLeftAction={() => (
           <TouchableOpacity onPress={() => router.back()}>
             <MaterialCommunityIcons

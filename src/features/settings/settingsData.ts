@@ -1,6 +1,6 @@
 // src/features/settings/settingsData.ts
-import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { AppSettings } from "@/core/store/appStore";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 
 // --- Type Definitions ---
 type BaseSettingsItem = {
@@ -52,6 +52,12 @@ export const getSettingsData = (actions: {
     data: [
       {
         type: "navigation",
+        label: "Deed Manager",
+        icon: "format-list-bulleted-square",
+        path: "/settings/deed-manager",
+      },
+      {
+        type: "navigation",
         label: "Notifications",
         icon: "bell-outline",
         path: "/settings/notifications",
@@ -97,7 +103,6 @@ export const getSettingsData = (actions: {
         icon: "email-outline",
         action: actions.feedback,
       },
-      // --- THIS IS THE CHANGE ---
       {
         type: "action",
         label: "Privacy Policy",

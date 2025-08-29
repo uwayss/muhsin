@@ -1,4 +1,4 @@
-// src/app/settings.tsx
+// src/app/settings/index.tsx
 import { Screen } from "@/components/Screen";
 import { ThemedText } from "@/components/base/ThemedText";
 import { AppTheme } from "@/constants/theme";
@@ -15,7 +15,7 @@ import Constants from "expo-constants";
 import * as Linking from "expo-linking";
 import { useRouter } from "expo-router";
 import React, { useMemo, useState } from "react";
-import { SectionList, StyleSheet, View, Share, Alert } from "react-native";
+import { Alert, SectionList, Share, StyleSheet, View } from "react-native";
 
 const SettingsScreen = () => {
   const { theme } = useTheme();
@@ -25,7 +25,7 @@ const SettingsScreen = () => {
     null,
   );
   const resetData = useAppStore((state) => state.resetData);
-  //TODO: modularize and abstract the actions
+
   const actions = useMemo(
     () => ({
       invite: async () => {
@@ -46,7 +46,7 @@ const SettingsScreen = () => {
       },
       feedback: () => {
         Linking.openURL(
-          "mailto:antar.muhammed1@gmail.com?subject=Muhsin Feedback",
+          "mailto:support@uwayss.com?subject=Muhsin Feedback",
         ).catch((err) => console.error("Couldn't open mail client", err));
       },
       reset: () => {
@@ -78,7 +78,7 @@ const SettingsScreen = () => {
   const appVersion = Constants.expoConfig?.version ?? "N/A";
 
   const handleItemPress = (item: SettingsItem) => {
-    if (item.type === "navigation") router.push(item.path);
+    if (item.type === "navigation") router.push(item.path as any);
     if (item.type === "modal") setModalData(item as ModalSettingsItem<"theme">);
     if (item.type === "action") item.action();
   };
@@ -132,10 +132,9 @@ const getStyles = (theme: AppTheme) =>
       textTransform: "uppercase",
       marginTop: theme.spacing.l,
       marginBottom: theme.spacing.s,
-      marginLeft: theme.spacing.m,
     },
     listContent: {
-      paddingHorizontal: theme.spacing.m,
+      // Removed horizontal padding
       paddingBottom: theme.spacing.l,
     },
     separator: {

@@ -20,6 +20,7 @@ export const MOCK_DEEDS: Deed[] = [
     icon: "weather-sunset-up",
     category: "PRAYERS",
     statuses: PRAYER_STATUSES,
+    isCore: true,
   },
   {
     id: "prayer-dhuhr",
@@ -27,6 +28,7 @@ export const MOCK_DEEDS: Deed[] = [
     icon: "weather-sunny",
     category: "PRAYERS",
     statuses: PRAYER_STATUSES,
+    isCore: true,
   },
   {
     id: "prayer-asr",
@@ -34,6 +36,7 @@ export const MOCK_DEEDS: Deed[] = [
     icon: "weather-partly-cloudy",
     category: "PRAYERS",
     statuses: PRAYER_STATUSES,
+    isCore: true,
   },
   {
     id: "prayer-maghrib",
@@ -41,6 +44,7 @@ export const MOCK_DEEDS: Deed[] = [
     icon: "weather-sunset-down",
     category: "PRAYERS",
     statuses: PRAYER_STATUSES,
+    isCore: true,
   },
   {
     id: "prayer-isha",
@@ -48,6 +52,7 @@ export const MOCK_DEEDS: Deed[] = [
     icon: "weather-night",
     category: "PRAYERS",
     statuses: PRAYER_STATUSES,
+    isCore: true,
   },
 ];
 
@@ -59,6 +64,7 @@ export const SUGGESTED_DEEDS: Deed[] = [
     icon: "moon-waning-crescent",
     category: "PRAYERS",
     statuses: GENERIC_STATUSES,
+    isCore: false,
   },
   {
     id: "prayer-tahajjud",
@@ -66,6 +72,7 @@ export const SUGGESTED_DEEDS: Deed[] = [
     icon: "meditation",
     category: "PRAYERS",
     statuses: GENERIC_STATUSES,
+    isCore: false,
   },
   // QURAN
   {
@@ -74,6 +81,7 @@ export const SUGGESTED_DEEDS: Deed[] = [
     icon: "book-open-page-variant",
     category: "QURAN",
     statuses: GENERIC_STATUSES,
+    isCore: false,
   },
   {
     id: "quran-memorizing",
@@ -81,6 +89,7 @@ export const SUGGESTED_DEEDS: Deed[] = [
     icon: "brain",
     category: "QURAN",
     statuses: GENERIC_STATUSES,
+    isCore: false,
   },
   // LEARNING
   {
@@ -89,6 +98,7 @@ export const SUGGESTED_DEEDS: Deed[] = [
     icon: "book-education",
     category: "LEARNING",
     statuses: GENERIC_STATUSES,
+    isCore: false,
   },
   // SOCIAL
   {
@@ -97,6 +107,7 @@ export const SUGGESTED_DEEDS: Deed[] = [
     icon: "charity",
     category: "SOCIAL",
     statuses: GENERIC_STATUSES,
+    isCore: false,
   },
   {
     id: "social-family",
@@ -104,6 +115,7 @@ export const SUGGESTED_DEEDS: Deed[] = [
     icon: "phone-in-talk",
     category: "SOCIAL",
     statuses: GENERIC_STATUSES,
+    isCore: false,
   },
 ];
 

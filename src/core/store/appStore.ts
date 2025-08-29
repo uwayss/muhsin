@@ -16,33 +16,33 @@ export type AppSettings = {
   isHapticsEnabled: boolean;
 };
 
-// The shape of our entire persisted state
 export type AppData = {
   deeds: Deed[];
   logs: DeedLog[];
   settings: AppSettings;
 };
 
-export type CustomDeedPayload = Pick<Deed, "name" | "icon"> &
-  Partial<Pick<Deed, "frequency" | "goal" | "parentId">>;
+// Add `id` to the payload to handle editing
+export type CustomDeedPayload = Partial<Deed>;
 
-// The full store state including transient (non-persisted) properties
 type AppState = AppData & {
   isInitialized: boolean;
   suggestedDeeds: Deed[];
   draftDeed: CustomDeedPayload | null;
 };
 
-// Actions that can be performed on the store
 type AppActions = {
   initialize: () => Promise<void>;
   addOrUpdateLog: (deed: Deed, date: Date, status: DeedStatus) => void;
   addDeed: (deed: Deed) => void;
-  // DRAFT DEED ACTIONS
-  startCreatingDeed: () => void;
+  // DEED MANAGEMENT
+  initializeDraftDeed: (deedId?: string) => void;
   updateDraftDeed: (payload: Partial<CustomDeedPayload>) => void;
   clearDraftDeed: () => void;
   saveDraftDeed: () => void;
+  deleteDeed: (deedId: string) => void;
+  setDeeds: (deeds: Deed[]) => void;
+  // SETTINGS
   setTheme: (theme: AppSettings["theme"]) => void;
   toggleHaptics: () => void;
   resetData: () => Promise<void>;
@@ -53,7 +53,6 @@ const defaultSettings: AppSettings = {
   isHapticsEnabled: true,
 };
 
-// Helper function to persist the current state
 const persistState = (state: AppState) => {
   const dataToSave: AppData = {
     deeds: state.deeds,
@@ -67,7 +66,7 @@ const useAppStore = create<AppState & AppActions>((set, get) => ({
   // --- STATE ---
   deeds: [],
   logs: [],
-  settings: defaultSettings, // Initialize with defaults
+  settings: defaultSettings,
   suggestedDeeds: SUGGESTED_DEEDS,
   isInitialized: false,
   draftDeed: null,
@@ -78,7 +77,7 @@ const useAppStore = create<AppState & AppActions>((set, get) => ({
     if (loadedData) {
       set({
         ...loadedData,
-        settings: { ...defaultSettings, ...loadedData.settings }, // Merge settings
+        settings: { ...defaultSettings, ...loadedData.settings },
       });
     } else {
       const initialState: AppData = {
@@ -89,7 +88,6 @@ const useAppStore = create<AppState & AppActions>((set, get) => ({
       set(initialState);
       await saveDataToFile(initialState);
     }
-    // Set the initial color scheme based on settings
     const currentTheme = get().settings.theme;
     if (currentTheme !== "system") {
       Appearance.setColorScheme(currentTheme);
@@ -128,41 +126,75 @@ const useAppStore = create<AppState & AppActions>((set, get) => ({
     persistState(get());
   },
 
-  // DRAFT DEED ACTIONS
-  startCreatingDeed: () =>
-    set({
-      draftDeed: {
-        name: "",
-        icon: "star-outline",
-        frequency: { type: "daily" },
-      },
-    }),
+  // --- DEED MANAGEMENT ACTIONS ---
+  initializeDraftDeed: (deedId) => {
+    if (deedId) {
+      const deedToEdit = get().deeds.find((d) => d.id === deedId);
+      set({ draftDeed: deedToEdit ? { ...deedToEdit } : null });
+    } else {
+      set({
+        draftDeed: {
+          name: "",
+          icon: "star-outline",
+          frequency: { type: "daily" },
+          category: "CUSTOM",
+          statuses: GENERIC_STATUSES,
+        },
+      });
+    }
+  },
+
   updateDraftDeed: (payload) =>
     set((state) => ({
       draftDeed: state.draftDeed ? { ...state.draftDeed, ...payload } : null,
     })),
+
   clearDraftDeed: () => set({ draftDeed: null }),
+
   saveDraftDeed: () => {
     const draft = get().draftDeed;
     if (!draft || !draft.name || !draft.icon) return;
-    const newDeed: Deed = {
-      id: `custom-${Date.now()}`,
-      name: draft.name,
-      icon: draft.icon,
-      category: "CUSTOM",
-      statuses: GENERIC_STATUSES,
-      frequency: draft.frequency,
-      goal: draft.goal,
-      parentId: draft.parentId,
-    };
-    set((state) => ({ deeds: [...state.deeds, newDeed], draftDeed: null }));
+
+    if (draft.id) {
+      // It's an update
+      const updatedDeed = draft as Deed;
+      set((state) => ({
+        deeds: state.deeds.map((d) => (d.id === draft.id ? updatedDeed : d)),
+        draftDeed: null,
+      }));
+    } else {
+      // It's a new deed
+      const newDeed: Deed = {
+        id: `custom-${Date.now()}`,
+        name: draft.name,
+        icon: draft.icon,
+        category: "CUSTOM",
+        statuses: GENERIC_STATUSES,
+        frequency: draft.frequency,
+        goal: draft.goal,
+        parentId: draft.parentId,
+      };
+      set((state) => ({ deeds: [...state.deeds, newDeed], draftDeed: null }));
+    }
     persistState(get());
   },
 
-  // --- SETTINGS ACTIONS IMPLEMENTATION ---
+  deleteDeed: (deedId) => {
+    set((state) => ({
+      deeds: state.deeds.filter((d) => d.id !== deedId),
+      logs: state.logs.filter((l) => l.deedId !== deedId), // Also remove logs
+    }));
+    persistState(get());
+  },
+
+  setDeeds: (deeds) => {
+    set({ deeds });
+    persistState(get());
+  },
+
+  // --- SETTINGS ACTIONS ---
   setTheme: (theme) => {
     set((state) => ({ settings: { ...state.settings, theme } }));
-    // Immediately update the app's appearance
     if (theme === "system") {
       Appearance.setColorScheme(null);
     } else {
@@ -183,8 +215,8 @@ const useAppStore = create<AppState & AppActions>((set, get) => ({
 
   resetData: async () => {
     const initialState: AppData = {
-      deeds: MOCK_DEEDS, // Keep default deeds
-      logs: [], // Clear all logs
+      deeds: MOCK_DEEDS,
+      logs: [],
       settings: defaultSettings,
     };
     set(initialState);
@@ -195,7 +227,6 @@ const useAppStore = create<AppState & AppActions>((set, get) => ({
       Appearance.setColorScheme(theme);
     }
     await saveDataToFile(initialState);
-    console.log("App data has been reset.");
   },
 }));
 
