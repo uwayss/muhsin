@@ -22,7 +22,7 @@ export const DeedListItem = ({ deed, log, onPress }: DeedListItemProps) => {
   const status = log ? deed.statuses.find((s) => s.id === log.statusId) : null;
 
   return (
-    <TouchableOpacity onPress={onPress}>
+    <TouchableOpacity onPress={onPress} activeOpacity={0.8}>
       <Box style={styles.container}>
         <MaterialCommunityIcons
           name={deed.icon}

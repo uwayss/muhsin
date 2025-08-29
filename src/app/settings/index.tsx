@@ -4,6 +4,7 @@ import { ThemedText } from "@/components/base/ThemedText";
 import { AppTheme } from "@/constants/theme";
 import useAppStore from "@/core/store/appStore";
 import { useTheme } from "@/core/theme/ThemeContext";
+import { DevMenuModal } from "@/features/settings/DevMenuModal";
 import {
   getSettingsData,
   ModalSettingsItem,
@@ -15,16 +16,47 @@ import Constants from "expo-constants";
 import * as Linking from "expo-linking";
 import { useRouter } from "expo-router";
 import React, { useMemo, useState } from "react";
-import { Alert, SectionList, Share, StyleSheet, View } from "react-native";
+import {
+  Alert,
+  Pressable,
+  SectionList,
+  Share,
+  StyleSheet,
+  View,
+} from "react-native";
 
 const SettingsScreen = () => {
   const { theme } = useTheme();
   const styles = getStyles(theme);
   const router = useRouter();
-  const [modalData, setModalData] = useState<ModalSettingsItem<"theme"> | null>(
+  const [modalData, setModalData] = useState<ModalSettingsItem<any> | null>(
     null,
   );
-  const resetData = useAppStore((state) => state.resetData);
+  const { resetData, setDevMode } = useAppStore();
+  const isDevMode = useAppStore((state) => state.settings.isDevMode);
+
+  // --- Dev Mode State ---
+  const [versionTapCount, setVersionTapCount] = useState(0);
+  const [isDevMenuVisible, setDevMenuVisible] = useState(false);
+
+  const handleVersionTap = () => {
+    if (isDevMode) return;
+    const newCount = versionTapCount + 1;
+    setVersionTapCount(newCount);
+    if (newCount >= 7) {
+      setDevMode(true);
+      Alert.alert(
+        "Developer Mode Unlocked",
+        "You can now long-press the version number to access developer options.",
+      );
+    }
+  };
+
+  const handleVersionLongPress = () => {
+    if (isDevMode) {
+      setDevMenuVisible(true);
+    }
+  };
 
   const actions = useMemo(
     () => ({
@@ -78,46 +110,64 @@ const SettingsScreen = () => {
   const appVersion = Constants.expoConfig?.version ?? "N/A";
 
   const handleItemPress = (item: SettingsItem) => {
-    if (item.type === "navigation") router.push(item.path as any);
-    if (item.type === "modal") setModalData(item as ModalSettingsItem<"theme">);
-    if (item.type === "action") item.action();
+    if (item.type === "navigation") {
+      router.push(item.path as any);
+    } else if (item.type === "modal") {
+      setModalData(item as ModalSettingsItem<any>);
+    } else if (item.type === "action") {
+      item.action();
+    }
   };
 
   return (
-    <Screen title="Settings">
-      <SectionList
-        sections={settingsData}
-        keyExtractor={(item) => item.label}
-        renderItem={({ item, section, index }) => (
-          <SettingsListItem
-            item={item}
-            isFirst={index === 0}
-            isLast={index === section.data.length - 1}
-            onPress={handleItemPress}
-          />
-        )}
-        renderSectionHeader={({ section: { title } }) => (
-          <ThemedText style={styles.sectionTitle}>{title}</ThemedText>
-        )}
-        ItemSeparatorComponent={() => <View style={styles.separator} />}
-        ListFooterComponent={
-          <View style={styles.footer}>
-            <ThemedText style={styles.footerText}>
-              App version {appVersion}
-            </ThemedText>
-            <ThemedText style={styles.footerText}>
-              Made with 🤍 in Istanbul
-            </ThemedText>
-          </View>
-        }
-        contentContainerStyle={styles.listContent}
-        showsVerticalScrollIndicator={false}
-      />
+    <>
+      <Screen title="Settings">
+        <SectionList
+          sections={settingsData}
+          keyExtractor={(item) => item.label}
+          renderItem={({ item, section, index }) => (
+            <SettingsListItem
+              item={item}
+              isFirst={index === 0}
+              isLast={index === section.data.length - 1}
+              onPress={handleItemPress}
+            />
+          )}
+          renderSectionHeader={({ section: { title } }) =>
+            title ? (
+              <ThemedText style={styles.sectionTitle}>{title}</ThemedText>
+            ) : null
+          }
+          ItemSeparatorComponent={() => <View style={styles.separator} />}
+          ListFooterComponent={
+            <View style={styles.footer}>
+              <Pressable
+                onPress={handleVersionTap}
+                onLongPress={handleVersionLongPress}
+              >
+                <ThemedText style={styles.footerText}>
+                  App version {appVersion} {isDevMode && "(Dev)"}
+                </ThemedText>
+              </Pressable>
+              <ThemedText style={styles.footerText}>
+                Made with 🤍 in Istanbul
+              </ThemedText>
+            </View>
+          }
+          contentContainerStyle={styles.listContent}
+          showsVerticalScrollIndicator={false}
+        />
+      </Screen>
+
       <SettingsOptionModal
         modalData={modalData}
         onClose={() => setModalData(null)}
       />
-    </Screen>
+      <DevMenuModal
+        isVisible={isDevMenuVisible}
+        onClose={() => setDevMenuVisible(false)}
+      />
+    </>
   );
 };
 
@@ -134,7 +184,6 @@ const getStyles = (theme: AppTheme) =>
       marginBottom: theme.spacing.s,
     },
     listContent: {
-      // Removed horizontal padding
       paddingBottom: theme.spacing.l,
     },
     separator: {

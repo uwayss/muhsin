@@ -77,7 +77,7 @@ export const SettingsListItem = ({
       {item.type === "toggle" && (
         <Switch
           value={value}
-          onValueChange={handleToggle} // Corrected prop name
+          onValueChange={handleToggle}
           trackColor={{
             false: theme.colors.background,
             true: theme.colors.primary,

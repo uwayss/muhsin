@@ -9,11 +9,14 @@ import {
 } from "../data/mock";
 import { loadDataFromFile, saveDataToFile } from "../storage/storageService";
 import { formatISO } from "date-fns";
-import { Appearance } from "react-native";
+import { Alert, Appearance } from "react-native";
 
 export type AppSettings = {
   theme: "system" | "light" | "dark";
   isHapticsEnabled: boolean;
+  isDevMode: boolean;
+  isDemoMode: boolean;
+  language: "en"; // For now, only English is supported
 };
 
 export type AppData = {
@@ -29,6 +32,9 @@ type AppState = AppData & {
   isInitialized: boolean;
   suggestedDeeds: Deed[];
   draftDeed: CustomDeedPayload | null;
+  // For demo mode
+  originalDeeds: Deed[] | null;
+  originalLogs: DeedLog[] | null;
 };
 
 type AppActions = {
@@ -45,15 +51,24 @@ type AppActions = {
   // SETTINGS
   setTheme: (theme: AppSettings["theme"]) => void;
   toggleHaptics: () => void;
+  setDevMode: (isDev: boolean) => void;
+  toggleDemoMode: () => void;
   resetData: () => Promise<void>;
 };
 
 const defaultSettings: AppSettings = {
   theme: "system",
   isHapticsEnabled: true,
+  isDevMode: false,
+  isDemoMode: false,
+  language: "en",
 };
 
 const persistState = (state: AppState) => {
+  if (state.settings.isDemoMode) {
+    console.log("Demo mode is active. Skipping data persistence.");
+    return;
+  }
   const dataToSave: AppData = {
     deeds: state.deeds,
     logs: state.logs,
@@ -70,6 +85,8 @@ const useAppStore = create<AppState & AppActions>((set, get) => ({
   suggestedDeeds: SUGGESTED_DEEDS,
   isInitialized: false,
   draftDeed: null,
+  originalDeeds: null,
+  originalLogs: null,
 
   // --- ACTIONS ---
   initialize: async () => {
@@ -213,11 +230,51 @@ const useAppStore = create<AppState & AppActions>((set, get) => ({
     persistState(get());
   },
 
+  setDevMode: (isDev: boolean) => {
+    set((state) => ({
+      settings: { ...state.settings, isDevMode: isDev },
+    }));
+    persistState(get());
+  },
+
+  toggleDemoMode: () => {
+    const { settings, originalDeeds, originalLogs, deeds, logs } = get();
+    const { isDemoMode } = settings;
+
+    if (!isDemoMode) {
+      // --- Entering Demo Mode ---
+      set({
+        originalDeeds: deeds, // Save current user data
+        originalLogs: logs,
+        deeds: MOCK_DEEDS, // Load mock data
+        logs: MOCK_LOGS,
+        settings: { ...get().settings, isDemoMode: true },
+      });
+      Alert.alert(
+        "Demo Mode Enabled",
+        "App data has been replaced with sample data. Your original data is safe and will be restored when you disable demo mode.",
+      );
+    } else {
+      // --- Exiting Demo Mode ---
+      set({
+        deeds: originalDeeds || MOCK_DEEDS, // Restore user data
+        logs: originalLogs || [],
+        originalDeeds: null, // Clear saved data
+        originalLogs: null,
+        settings: { ...get().settings, isDemoMode: false },
+      });
+      Alert.alert(
+        "Demo Mode Disabled",
+        "Your original data has been restored.",
+      );
+    }
+  },
+
   resetData: async () => {
     const initialState: AppData = {
       deeds: MOCK_DEEDS,
       logs: [],
-      settings: defaultSettings,
+      settings: { ...defaultSettings, isDevMode: get().settings.isDevMode },
     };
     set(initialState);
     const theme = initialState.settings.theme;

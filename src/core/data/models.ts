@@ -23,7 +23,7 @@ export type DeedStatus = {
  * - 'weekly': The deed is available on specific days of the week.
  */
 export type DeedFrequency = {
-  type: "daily" | "weekly";
+  type: "daily" | "weekly" | "monthly" | "yearly";
   // For 'weekly', an array of numbers representing days (0=Sun, 1=Mon, ..., 6=Sat)
   days?: number[];
 };

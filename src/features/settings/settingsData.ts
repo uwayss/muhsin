@@ -32,10 +32,13 @@ export type ActionSettingsItem = BaseSettingsItem & {
   color?: string;
 };
 
+// --- CORRECTED LINE ---
+// ActionSettingsItem was missing from this union, causing all the errors.
 export type SettingsItem =
   | NavigationSettingsItem
   | ToggleSettingsItem
   | ModalSettingsItem<"theme">
+  | ModalSettingsItem<"language">
   | ActionSettingsItem;
 
 export type SettingsSection = {
@@ -79,6 +82,14 @@ export const getSettingsData = (actions: {
         label: "Haptics",
         icon: "vibrate",
         stateKey: "isHapticsEnabled",
+      },
+      {
+        type: "modal",
+        label: "App Language",
+        icon: "translate",
+        title: "Language",
+        stateKey: "language",
+        options: [{ label: "English", value: "en" }],
       },
     ],
   },

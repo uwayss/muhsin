@@ -1,7 +1,7 @@
 // src/features/settings/SettingsOptionModal.tsx
 import { ThemedText } from "@/components/base/ThemedText";
 import { AppTheme } from "@/constants/theme";
-import useAppStore from "@/core/store/appStore";
+import useAppStore, { AppSettings } from "@/core/store/appStore";
 import { useTheme } from "@/core/theme/ThemeContext";
 import { triggerHaptic } from "@/core/utils/haptics";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
@@ -16,7 +16,7 @@ import {
 import { ModalSettingsItem } from "./settingsData";
 
 type SettingsOptionModalProps = {
-  modalData: ModalSettingsItem<"theme"> | null;
+  modalData: ModalSettingsItem<keyof AppSettings> | null;
   onClose: () => void;
 };
 
@@ -32,15 +32,15 @@ export const SettingsOptionModal = ({
 
   const currentValue = settings[modalData.stateKey];
 
-  const handleSelect = (value: "system" | "light" | "dark") => {
+  const handleSelect = (value: any) => {
     triggerHaptic();
-    onClose(); // Close the modal immediately
-    // Delay the theme change to allow the modal to animate out
+    onClose();
     setTimeout(() => {
       if (modalData.stateKey === "theme") {
         setTheme(value);
       }
-    }, 250); // 250ms is enough for the fade animation
+      // Can add other settings here in the future
+    }, 250);
   };
 
   return (
@@ -57,9 +57,9 @@ export const SettingsOptionModal = ({
               <ThemedText style={styles.title}>{modalData.title}</ThemedText>
               {modalData.options.map((option) => (
                 <TouchableOpacity
-                  key={option.value}
+                  key={option.value.toString()}
                   style={styles.optionRow}
-                  onPress={() => handleSelect(option.value as any)}
+                  onPress={() => handleSelect(option.value)}
                 >
                   <ThemedText style={styles.optionLabel}>
                     {option.label}

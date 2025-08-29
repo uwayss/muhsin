@@ -8,7 +8,7 @@ import { useTheme } from "@/core/theme/ThemeContext";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import React from "react";
-import { StyleSheet, TouchableOpacity, View } from "react-native";
+import { StyleSheet, TouchableOpacity, View, Alert } from "react-native";
 
 const DAYS = [
   { label: "S", value: 0 },
@@ -28,12 +28,14 @@ const ConfigureFrequencyScreen = () => {
   const { draftDeed, updateDraftDeed } = useAppStore();
   const frequency = draftDeed?.frequency || { type: "daily" };
 
-  const setType = (type: "daily" | "weekly") => {
+  const setType = (type: DeedFrequency["type"]) => {
+    if (type === "monthly" || type === "yearly") {
+      Alert.alert("Coming Soon", "This feature is not yet implemented.");
+      return;
+    }
     const newFrequency: DeedFrequency = { type };
-    if (type === "weekly" && !frequency.days?.length) {
-      newFrequency.days = [];
-    } else if (type === "weekly") {
-      newFrequency.days = frequency.days;
+    if (type === "weekly") {
+      newFrequency.days = frequency.days || [];
     }
     updateDraftDeed({ frequency: newFrequency });
   };
@@ -72,6 +74,16 @@ const ConfigureFrequencyScreen = () => {
             label="Weekly"
             selected={frequency.type === "weekly"}
             onPress={() => setType("weekly")}
+          />
+          <OptionButton
+            label="Monthly"
+            selected={frequency.type === "monthly"}
+            onPress={() => setType("monthly")}
+          />
+          <OptionButton
+            label="Yearly"
+            selected={frequency.type === "yearly"}
+            onPress={() => setType("yearly")}
           />
         </View>
 
@@ -165,6 +177,7 @@ const getStyles = (theme: AppTheme) =>
     optionText: {
       fontWeight: theme.typography.fontWeight.semibold,
       color: theme.colors.text,
+      fontSize: theme.typography.fontSize.s,
     },
     selectedText: { color: theme.colors.primaryContrast },
     daySelector: {

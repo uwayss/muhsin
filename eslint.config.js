@@ -5,8 +5,10 @@ const eslintPluginPrettierRecommended = require("eslint-plugin-prettier/recommen
 module.exports = defineConfig([
   expoConfig,
   eslintPluginPrettierRecommended,
-  //TODO: Make prettier only give warnings not errors
   {
+    rules: {
+      "prettier/prettier": "warn",
+    },
     ignores: ["dist/*", "node_modules/*", "/.expo"],
   },
 ]);
