@@ -16,14 +16,13 @@ export const Screen = ({ children, title, ...headerProps }: ScreenProps) => {
   const { theme } = useTheme();
   const insets = useSafeAreaInsets();
   const styles = getStyles(theme);
-
+  // TODO: Remove the paddings they make it look horrible!
   return (
     <Box
       style={[
         styles.container,
         {
           backgroundColor: theme.colors.background,
-          // paddingBottom: insets.bottom,
           paddingLeft: insets.left,
           paddingRight: insets.right,
         },

@@ -45,6 +45,7 @@ type AppActions = {
   saveDraftDeed: () => void;
   setTheme: (theme: AppSettings["theme"]) => void;
   toggleHaptics: () => void;
+  resetData: () => Promise<void>;
 };
 
 const defaultSettings: AppSettings = {
@@ -178,6 +179,23 @@ const useAppStore = create<AppState & AppActions>((set, get) => ({
       },
     }));
     persistState(get());
+  },
+
+  resetData: async () => {
+    const initialState: AppData = {
+      deeds: MOCK_DEEDS, // Keep default deeds
+      logs: [], // Clear all logs
+      settings: defaultSettings,
+    };
+    set(initialState);
+    const theme = initialState.settings.theme;
+    if (theme === "system") {
+      Appearance.setColorScheme(null);
+    } else {
+      Appearance.setColorScheme(theme);
+    }
+    await saveDataToFile(initialState);
+    console.log("App data has been reset.");
   },
 }));
 

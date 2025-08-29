@@ -2,6 +2,7 @@
 import { Screen } from "@/components/Screen";
 import { ThemedText } from "@/components/base/ThemedText";
 import { AppTheme } from "@/constants/theme";
+import useAppStore from "@/core/store/appStore";
 import { useTheme } from "@/core/theme/ThemeContext";
 import {
   getSettingsData,
@@ -14,7 +15,8 @@ import Constants from "expo-constants";
 import * as Linking from "expo-linking";
 import { useRouter } from "expo-router";
 import React, { useMemo, useState } from "react";
-import { SectionList, StyleSheet, View } from "react-native";
+import { SectionList, StyleSheet, View, Share, Alert } from "react-native";
+
 const SettingsScreen = () => {
   const { theme } = useTheme();
   const styles = getStyles(theme);
@@ -22,26 +24,65 @@ const SettingsScreen = () => {
   const [modalData, setModalData] = useState<ModalSettingsItem<"theme"> | null>(
     null,
   );
+  const resetData = useAppStore((state) => state.resetData);
+  //TODO: modularize and abstract the actions
   const actions = useMemo(
     () => ({
-      invite: () => console.log("Invite action"),
-      rate: () => console.log("Rate action"),
-      feedback: () => console.log("Feedback action"),
-      reset: () => console.log("Reset action"),
+      invite: async () => {
+        try {
+          await Share.share({
+            message:
+              "Check out Muhsin, a simple and private app for tracking your spiritual deeds. https://github.com/uwayss/muhsin",
+          });
+        } catch (error) {
+          console.error("Failed to share:", error);
+        }
+      },
+      rate: () => {
+        const storeUrl = "market://details?id=com.uwayss.muhsin";
+        Linking.openURL(storeUrl).catch((err) =>
+          console.error("Couldn't load page", err),
+        );
+      },
+      feedback: () => {
+        Linking.openURL(
+          "mailto:antar.muhammed1@gmail.com?subject=Muhsin Feedback",
+        ).catch((err) => console.error("Couldn't open mail client", err));
+      },
+      reset: () => {
+        Alert.alert(
+          "Reset Everything?",
+          "This will delete all your logged data and custom deeds. This action cannot be undone.",
+          [
+            {
+              text: "Cancel",
+              style: "cancel",
+            },
+            {
+              text: "Reset",
+              style: "destructive",
+              onPress: () => resetData(),
+            },
+          ],
+        );
+      },
       privacy: () =>
         Linking.openURL(
           "https://github.com/uwayss/muhsin/blob/main/PRIVACY.md",
         ),
     }),
-    [],
+    [resetData],
   );
+
   const settingsData = useMemo(() => getSettingsData(actions), [actions]);
   const appVersion = Constants.expoConfig?.version ?? "N/A";
+
   const handleItemPress = (item: SettingsItem) => {
     if (item.type === "navigation") router.push(item.path);
     if (item.type === "modal") setModalData(item as ModalSettingsItem<"theme">);
     if (item.type === "action") item.action();
   };
+
   return (
     <Screen title="Settings">
       <SectionList
@@ -79,7 +120,9 @@ const SettingsScreen = () => {
     </Screen>
   );
 };
+
 export default SettingsScreen;
+
 const getStyles = (theme: AppTheme) =>
   StyleSheet.create({
     sectionTitle: {

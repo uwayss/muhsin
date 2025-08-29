@@ -3,6 +3,7 @@ import { ThemedText } from "@/components/base/ThemedText";
 import { AppTheme } from "@/constants/theme";
 import useAppStore from "@/core/store/appStore";
 import { useTheme } from "@/core/theme/ThemeContext";
+import { triggerHaptic } from "@/core/utils/haptics";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import React from "react";
 import { StyleSheet, Switch, TouchableOpacity } from "react-native";
@@ -28,10 +29,19 @@ export const SettingsListItem = ({
   const toggleHaptics = useAppStore((state) => state.toggleHaptics);
 
   const value = item.type === "toggle" ? settings[item.stateKey] : false;
-  const onToggle =
-    item.type === "toggle" && item.stateKey === "isHapticsEnabled"
-      ? toggleHaptics
-      : () => {};
+
+  const handleToggle = () => {
+    if (item.type === "toggle" && item.stateKey === "isHapticsEnabled") {
+      toggleHaptics();
+      // Provide feedback for the toggle action itself
+      triggerHaptic();
+    }
+  };
+
+  const handlePress = () => {
+    triggerHaptic();
+    onPress(item);
+  };
 
   const containerStyle = [
     styles.container,
@@ -42,7 +52,7 @@ export const SettingsListItem = ({
   return (
     <TouchableOpacity
       style={containerStyle}
-      onPress={() => onPress(item)}
+      onPress={handlePress}
       disabled={item.type === "toggle"}
     >
       <MaterialCommunityIcons
@@ -67,7 +77,7 @@ export const SettingsListItem = ({
       {item.type === "toggle" && (
         <Switch
           value={value}
-          onValue-change={onToggle}
+          onValueChange={handleToggle} // Corrected prop name
           trackColor={{
             false: theme.colors.background,
             true: theme.colors.primary,
