@@ -58,7 +58,7 @@ const getStyles = (theme: AppTheme) =>
       width: 8,
       height: 8,
       borderRadius: 4,
-      marginRight: theme.spacing.s,
+      marginEnd: theme.spacing.s,
     },
     summaryTitle: {
       fontSize: theme.typography.fontSize.s,

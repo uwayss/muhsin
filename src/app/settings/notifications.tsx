@@ -9,12 +9,20 @@ import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { format } from "date-fns";
 import { useRouter } from "expo-router";
 import React, { useState } from "react";
-import { StyleSheet, Switch, TouchableOpacity, View } from "react-native";
-import DateTimePickerModal from "react-native-modal-datetime-picker";
+import {
+  StyleSheet,
+  Switch,
+  TouchableOpacity,
+  View,
+  Platform,
+} from "react-native";
+import DateTimePicker, {
+  DateTimePickerEvent,
+} from "@react-native-community/datetimepicker";
 
 const NotificationsScreen = () => {
   const router = useRouter();
-  const { theme, isDark } = useTheme();
+  const { theme } = useTheme();
   const styles = getStyles(theme);
 
   const { settings, setReminderTime, toggleReminder } = useAppStore();
@@ -22,23 +30,19 @@ const NotificationsScreen = () => {
 
   const [isPickerVisible, setPickerVisible] = useState(false);
 
-  const showDatePicker = () => {
-    setPickerVisible(true);
-  };
-
-  const hideDatePicker = () => {
-    setPickerVisible(false);
-  };
-
-  const handleConfirm = (date: Date) => {
-    setReminderTime(format(date, "HH:mm"));
-    hideDatePicker();
-  };
-
   const reminderDate = new Date();
   const [hours, minutes] = (reminderTime || "20:00").split(":").map(Number);
   reminderDate.setHours(hours);
   reminderDate.setMinutes(minutes);
+  const onChange = (event: DateTimePickerEvent, selectedDate?: Date) => {
+    setPickerVisible(false);
+    if (event.type === "set" && selectedDate) {
+      setReminderTime(format(selectedDate, "HH:mm"));
+    }
+  };
+  const showPicker = () => {
+    setPickerVisible(true);
+  };
 
   return (
     <>
@@ -71,7 +75,7 @@ const NotificationsScreen = () => {
           </View>
 
           {isReminderEnabled && (
-            <TouchableOpacity style={styles.row} onPress={showDatePicker}>
+            <TouchableOpacity style={styles.row} onPress={showPicker}>
               <ThemedText style={styles.label}>
                 {i18n.t("settings.time")}
               </ThemedText>
@@ -87,15 +91,15 @@ const NotificationsScreen = () => {
           )}
         </View>
       </Screen>
-      <DateTimePickerModal
-        isVisible={isPickerVisible}
-        mode="time"
-        onConfirm={handleConfirm}
-        onCancel={hideDatePicker}
-        date={reminderDate}
-        is24Hour
-        themeVariant={isDark ? "dark" : "light"}
-      />
+      {isPickerVisible && (
+        <DateTimePicker
+          value={reminderDate}
+          mode="time"
+          is24Hour={true}
+          display={Platform.OS === "ios" ? "spinner" : "default"}
+          onChange={onChange}
+        />
+      )}
     </>
   );
 };
@@ -127,6 +131,6 @@ const getStyles = (theme: AppTheme) =>
     },
     valueText: {
       color: theme.colors.textSecondary,
-      marginRight: theme.spacing.xs,
+      marginEnd: theme.spacing.xs,
     },
   });

@@ -91,6 +91,6 @@ const getStyles = (theme: AppTheme) =>
     optionLabel: {
       flex: 1,
       fontSize: theme.typography.fontSize.m,
-      marginRight: theme.spacing.m,
+      marginEnd: theme.spacing.m,
     },
   });

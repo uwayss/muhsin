@@ -19,6 +19,7 @@ import { useRouter } from "expo-router";
 import React, { useMemo, useState } from "react";
 import {
   Alert,
+  I18nManager,
   Pressable,
   SectionList,
   Share,
@@ -35,6 +36,7 @@ const SettingsScreen = () => {
   );
   const { resetData, setDevMode } = useAppStore();
   const isDevMode = useAppStore((state) => state.settings.isDevMode);
+  const language = useAppStore((state) => state.settings.language);
 
   // --- Dev Mode State ---
   const [versionTapCount, setVersionTapCount] = useState(0);
@@ -64,8 +66,7 @@ const SettingsScreen = () => {
       invite: async () => {
         try {
           await Share.share({
-            message:
-              "Check out Muhsin, a simple and private app for tracking your spiritual deeds. https://github.com/uwayss/muhsin",
+            message: i18n.t("settings.shareMessage"),
           });
         } catch (error) {
           console.error("Failed to share:", error);
@@ -78,9 +79,13 @@ const SettingsScreen = () => {
         );
       },
       feedback: () => {
-        Linking.openURL(
-          "mailto:support@uwayss.com?subject=Muhsin Feedback",
-        ).catch((err) => console.error("Couldn't open mail client", err));
+        const subject = i18n.t("settings.feedbackSubject");
+        const mailtoUrl = `mailto:support@uwayss.com?subject=${encodeURIComponent(
+          subject,
+        )}`;
+        Linking.openURL(mailtoUrl).catch((err) =>
+          console.error("Couldn't open mail client", err),
+        );
       },
       reset: () => {
         Alert.alert(
@@ -107,7 +112,15 @@ const SettingsScreen = () => {
     [resetData],
   );
 
-  const settingsData = useMemo(() => getSettingsData(actions), [actions]);
+  const settingsData = useMemo(
+    () => getSettingsData(actions),
+    // --- FIX: Address the linter warning ---
+    // The linter is correct that `language` isn't used directly, but `getSettingsData`
+    // has an IMPLICIT dependency on it because it calls i18n.t().
+    // We disable the rule to acknowledge this is intentional.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [actions, language],
+  );
   const appVersion = Constants.expoConfig?.version ?? "N/A";
 
   const handleItemPress = (item: SettingsItem) => {
@@ -185,6 +198,7 @@ const getStyles = (theme: AppTheme) =>
       marginTop: theme.spacing.m + 4,
       marginBottom: theme.spacing.s,
       paddingHorizontal: theme.spacing.m,
+      textAlign: I18nManager.isRTL ? "right" : "left",
     },
     listContent: {
       paddingBottom: theme.spacing.l,
@@ -192,7 +206,7 @@ const getStyles = (theme: AppTheme) =>
     separator: {
       height: 1,
       backgroundColor: theme.colors.background,
-      marginLeft: theme.spacing.m,
+      marginStart: theme.spacing.m,
     },
     footer: {
       alignItems: "center",

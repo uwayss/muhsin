@@ -6,8 +6,14 @@ import { useTheme } from "@/core/theme/ThemeContext";
 import { triggerHaptic } from "@/core/utils/haptics";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import React from "react";
-import { StyleSheet, Switch, TouchableOpacity } from "react-native";
+import {
+  StyleSheet,
+  Switch,
+  TouchableOpacity,
+  I18nManager,
+} from "react-native";
 import { SettingsItem } from "./settingsData";
+import i18n from "@/core/i18n";
 
 type SettingsListItemProps = {
   item: SettingsItem;
@@ -33,7 +39,6 @@ export const SettingsListItem = ({
   const handleToggle = () => {
     if (item.type === "toggle" && item.stateKey === "isHapticsEnabled") {
       toggleHaptics();
-      // Provide feedback for the toggle action itself
       triggerHaptic();
     }
   };
@@ -90,10 +95,10 @@ export const SettingsListItem = ({
       {(item.type === "navigation" ||
         item.type === "modal" ||
         (item.type === "action" &&
-          item.label !== "Privacy Policy" &&
+          item.label !== i18n.t("settings.privacy") &&
           !item.color)) && (
         <MaterialCommunityIcons
-          name="chevron-right"
+          name={I18nManager.isRTL ? "chevron-left" : "chevron-right"}
           size={24}
           color={theme.colors.textSecondary}
         />
@@ -117,6 +122,6 @@ const getStyles = (theme: AppTheme) =>
     label: {
       flex: 1,
       fontSize: theme.typography.fontSize.m,
-      textAlign: "left",
+      textAlign: I18nManager.isRTL ? "right" : "left",
     },
   });

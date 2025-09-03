@@ -1,21 +1,20 @@
-// FILE: src/features/stats/DeedStatsRow.tsx
+// src/features/stats/DeedStatsRow.tsx
 import { ThemedText } from "@/components/base/ThemedText";
 import { AppTheme, ColorTheme } from "@/constants/theme";
 import { Deed, DeedLog } from "@/core/data/models";
 import { useTheme } from "@/core/theme/ThemeContext";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import React, { useMemo } from "react";
-import { StyleSheet, View } from "react-native";
+import { StyleSheet, View, I18nManager } from "react-native";
 import { colors } from "@/constants/colors";
+import i18n from "@/core/i18n";
 
 const PRAYER_STATUS_BREAKDOWN_ORDER = ["jamaah", "on-time", "late", "missed"];
 
-// Function to determine if a background color is "light"
 const isColorLight = (hexColor: string) => {
   const r = parseInt(hexColor.slice(1, 3), 16);
   const g = parseInt(hexColor.slice(3, 5), 16);
   const b = parseInt(hexColor.slice(5, 7), 16);
-  // Using the WCAG formula for luminance
   return r * 0.299 + g * 0.587 + b * 0.114 > 186;
 };
 
@@ -43,7 +42,6 @@ export const DeedStatsRow = ({
       const count = counts[statusId] || 0;
       const status = deed.statuses.find((s) => s.id === statusId);
       const colorKey = status.color as keyof ColorTheme;
-      // Get the hex value from the base light theme palette to check for contrast
       const hexColor = colors.light[colorKey];
 
       return {
@@ -65,7 +63,9 @@ export const DeedStatsRow = ({
         color={theme.colors.textSecondary}
         style={styles.deedStatIcon}
       />
-      <ThemedText style={styles.deedStatName}>{deed.name}</ThemedText>
+      <ThemedText style={styles.deedStatName}>
+        {i18n.t(`deeds_names.${deed.id}`, { defaultValue: deed.name })}
+      </ThemedText>
       <View style={styles.deedStatBar}>
         {deedStats.map((stat) => (
           <View
@@ -92,25 +92,25 @@ export const DeedStatsRow = ({
 const getStyles = (theme: AppTheme) =>
   StyleSheet.create({
     deedStatRow: {
-      flexDirection: "row",
+      flexDirection: I18nManager.isRTL ? "row-reverse" : "row",
       alignItems: "center",
       marginBottom: theme.spacing.m,
     },
     deedStatIcon: {
-      marginRight: theme.spacing.m,
+      marginHorizontal: theme.spacing.m,
     },
     deedStatName: {
-      width: "20%",
+      width: "25%",
       fontWeight: theme.typography.fontWeight.semibold,
+      textAlign: I18nManager.isRTL ? "right" : "left",
     },
     deedStatBar: {
       flex: 1,
-      height: 24, // Increased height to fit text
+      height: 24,
       borderRadius: 12,
       backgroundColor: theme.colors.background,
       flexDirection: "row",
       overflow: "hidden",
-      marginLeft: theme.spacing.m,
     },
     barSegment: {
       height: "100%",

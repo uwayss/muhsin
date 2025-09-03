@@ -117,7 +117,7 @@ const getStyles = (theme: AppTheme) =>
       marginBottom: theme.spacing.s,
     },
     createDeedText: {
-      marginLeft: theme.spacing.m,
+      marginStart: theme.spacing.m,
       color: theme.colors.primary,
       fontWeight: theme.typography.fontWeight.semibold,
     },

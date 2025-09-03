@@ -6,15 +6,15 @@ import { format, Locale } from "date-fns";
 import React from "react";
 import { StyleSheet, TouchableOpacity } from "react-native";
 
-export const ITEM_MARGIN = 8;
+export const ITEM_MARGIN = 4;
 
 type DateItemProps = {
   date: Date;
   isSelected: boolean;
   isToday: boolean;
   onPress: () => void;
-  itemWidth: number;
   locale: Locale;
+  itemWidth: number;
 };
 
 const DateItemComponent = ({
@@ -22,8 +22,8 @@ const DateItemComponent = ({
   isSelected,
   isToday,
   onPress,
-  itemWidth,
   locale,
+  itemWidth,
 }: DateItemProps) => {
   const { theme } = useTheme();
   const styles = getStyles(theme, isSelected, isToday);
@@ -34,9 +34,11 @@ const DateItemComponent = ({
   return (
     <TouchableOpacity
       onPress={onPress}
-      style={[styles.container, { width: itemWidth, marginEnd: ITEM_MARGIN }]}
+      style={[styles.container, { width: itemWidth }]}
     >
-      <ThemedText style={styles.dayName}>{dayName}</ThemedText>
+      <ThemedText style={styles.dayName} numberOfLines={1} adjustsFontSizeToFit>
+        {dayName}
+      </ThemedText>
       <ThemedText style={styles.dayNumber}>{dayNumber}</ThemedText>
     </TouchableOpacity>
   );
@@ -47,15 +49,18 @@ export const DateItem = React.memo(DateItemComponent);
 const getStyles = (theme: AppTheme, isSelected: boolean, isToday: boolean) =>
   StyleSheet.create({
     container: {
+      height: "100%",
       justifyContent: "center",
       alignItems: "center",
       paddingVertical: theme.spacing.s,
+      paddingHorizontal: theme.spacing.xs,
       borderRadius: 8,
       borderWidth: 2,
       borderColor: isToday ? theme.colors.primary : "transparent",
       backgroundColor: isSelected
         ? theme.colors.primary
         : theme.colors.foreground,
+      marginHorizontal: ITEM_MARGIN,
     },
     dayName: {
       fontSize: theme.typography.fontSize.s,

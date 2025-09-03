@@ -1,38 +1,6 @@
 // src/core/utils/dateFormatter.ts
 import i18n from "../i18n";
 
-// Define the exact month abbreviations we want.
-const HIJRI_MONTHS_ABBR = [
-  "Muharram",
-  "Safar",
-  "Rab Awal",
-  "Rab Thani",
-  "Jum Ula",
-  "Jum Akhir",
-  "Rajab",
-  "Sha'ban",
-  "Ramadan",
-  "Shawwal",
-  "Dhu al-Q.",
-  "Dhu al-H.",
-];
-
-// Arabic month names
-const HIJRI_MONTHS_ABBR_AR = [
-  "محرم",
-  "صفر",
-  "ربيع الأول",
-  "ربيع الثاني",
-  "جمادى الأولى",
-  "جمادى الآخرة",
-  "رجب",
-  "شعبان",
-  "رمضان",
-  "شوال",
-  "ذو القعدة",
-  "ذو الحجة",
-];
-
 /**
  * Formats a JavaScript Date object into a custom Hijri date string.
  * @param date The Date object to format.
@@ -58,10 +26,8 @@ export const formatHijriDate = (date: Date): string => {
     parseInt(parts.find((p) => p.type === "month")?.value || "1", 10) - 1;
   const year = parts.find((p) => p.type === "year")?.value;
 
-  // Look up our custom month name
-  const hijriMonthName = isArabic
-    ? HIJRI_MONTHS_ABBR_AR[monthIndex]
-    : HIJRI_MONTHS_ABBR[monthIndex];
+  // Look up our custom month name from the i18n files
+  const hijriMonthName = (i18n.t("hijri_months") as string[])[monthIndex];
 
   // Construct the final string exactly as desired
   if (isArabic) {

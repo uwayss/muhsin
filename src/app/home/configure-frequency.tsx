@@ -11,13 +11,13 @@ import { useRouter } from "expo-router";
 import React from "react";
 import { StyleSheet, TouchableOpacity, View, TextInput } from "react-native";
 const DAYS = [
-  { label: "S", value: 0 },
-  { label: "M", value: 1 },
-  { label: "T", value: 2 },
-  { label: "W", value: 3 },
-  { label: "T", value: 4 },
-  { label: "F", value: 5 },
-  { label: "S", value: 6 },
+  { label: i18n.t("frequency.days_abbr.sun"), value: 0 },
+  { label: i18n.t("frequency.days_abbr.mon"), value: 1 },
+  { label: i18n.t("frequency.days_abbr.tue"), value: 2 },
+  { label: i18n.t("frequency.days_abbr.wed"), value: 3 },
+  { label: i18n.t("frequency.days_abbr.thu"), value: 4 },
+  { label: i18n.t("frequency.days_abbr.fri"), value: 5 },
+  { label: i18n.t("frequency.days_abbr.sat"), value: 6 },
 ];
 const ConfigureFrequencyScreen = () => {
   const router = useRouter();

@@ -2,15 +2,15 @@
 import { Deed, DeedLog, DeedStatus } from "./models";
 
 const PRAYER_STATUSES: DeedStatus[] = [
-  { id: "missed", label: "Not Prayed", icon: "close-circle", color: "missed" },
-  { id: "late", label: "Late", icon: "clock-alert", color: "late" },
-  { id: "on-time", label: "On Time", icon: "clock-check", color: "onTime" },
-  { id: "jamaah", label: "In Jama'ah", icon: "check-all", color: "jamaah" },
+  { id: "missed", icon: "close-circle", color: "missed" },
+  { id: "late", icon: "clock-alert", color: "late" },
+  { id: "on-time", icon: "clock-check", color: "onTime" },
+  { id: "jamaah", icon: "check-all", color: "jamaah" },
 ];
 
 export const GENERIC_STATUSES: DeedStatus[] = [
-  { id: "missed", label: "Missed", icon: "close", color: "late" },
-  { id: "completed", label: "Completed", icon: "check", color: "primary" },
+  { id: "missed", icon: "close", color: "late" },
+  { id: "completed", icon: "check", color: "primary" },
 ];
 
 export const MOCK_DEEDS: Deed[] = [

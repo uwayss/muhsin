@@ -1,4 +1,4 @@
-// FILE: src/core/data/models.ts
+// src/core/data/models.ts
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { ColorTheme } from "@/constants/theme";
 
@@ -8,7 +8,6 @@ import { ColorTheme } from "@/constants/theme";
  */
 export type DeedStatus = {
   id: string; // e.g., 'on-time', 'completed'
-  label: string; // e.g., "On time"
   icon: React.ComponentProps<typeof MaterialCommunityIcons>["name"];
   // Use keys of our theme colors for type safety
   color: keyof Pick<

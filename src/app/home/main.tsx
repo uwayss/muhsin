@@ -15,7 +15,12 @@ import { DateScroller } from "@/features/home/DateScroller";
 import { format, formatISO, getDay } from "date-fns";
 import { useRouter } from "expo-router";
 import React, { useMemo, useState } from "react";
-import { ActivityIndicator, SectionList, StyleSheet } from "react-native";
+import {
+  ActivityIndicator,
+  I18nManager,
+  SectionList,
+  StyleSheet,
+} from "react-native";
 
 const HomeScreen = () => {
   const { theme } = useTheme();
@@ -42,19 +47,20 @@ const HomeScreen = () => {
     };
   }, [selectedDate, activeLocale]);
 
+  // ... (rest of the component is unchanged)
+
   const logsForSelectedDate = useMemo(() => {
     const dateString = formatISO(selectedDate, { representation: "date" });
     return logs.filter((log) => log.date === dateString);
   }, [selectedDate, logs]);
 
   const deedsBySection = useMemo(() => {
-    const dayOfWeek = getDay(selectedDate); // 0 = Sunday, 1 = Monday, etc.
+    const dayOfWeek = getDay(selectedDate);
 
     const visibleDeeds = deeds.filter((deed) => {
       if (!deed.frequency) {
         return true;
       }
-      // Show daily, monthly, and yearly deeds every day.
       if (
         deed.frequency.type === "daily" ||
         deed.frequency.type === "monthly" ||
@@ -62,7 +68,6 @@ const HomeScreen = () => {
       ) {
         return true;
       }
-      // For weekly deeds, only show them on their selected days.
       if (deed.frequency.type === "weekly") {
         return deed.frequency.days?.includes(dayOfWeek) ?? false;
       }
@@ -87,7 +92,6 @@ const HomeScreen = () => {
     return sections;
   }, [deeds, selectedDate]);
 
-  // --- Handlers ---
   const handleOpenLogModal = (deed: Deed) => {
     setSelectedDeed(deed);
     setIsModalVisible(true);
@@ -158,7 +162,7 @@ const getStyles = (theme: AppTheme) =>
       textTransform: "uppercase",
       marginBottom: theme.spacing.s,
       marginTop: theme.spacing.m,
-      textAlign: "left", // Explicitly set for LTR/RTL consistency
+      textAlign: I18nManager.isRTL ? "right" : "left",
     },
     listContent: {
       paddingTop: theme.spacing.s,

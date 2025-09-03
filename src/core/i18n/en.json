@@ -38,7 +38,9 @@
     "english": "English",
     "arabic": "Arabic",
     "dailyReminder": "Daily reminder",
-    "time": "Time"
+    "time": "Time",
+    "shareMessage": "Check out Muhsin, a simple and private app for tracking your spiritual deeds. https://github.com/uwayss/muhsin",
+    "feedbackSubject": "Muhsin Feedback"
   },
   "deeds": {
     "createDeedButton": "Create new deed",
@@ -61,7 +63,16 @@
     "monthly": "Monthly",
     "yearly": "Yearly",
     "selectDays": "Select Days",
-    "howManyTimes": "How many times per {{interval}}?"
+    "howManyTimes": "How many times per {{interval}}?",
+    "days_abbr": {
+      "sun": "S",
+      "mon": "M",
+      "tue": "T",
+      "wed": "W",
+      "thu": "T",
+      "fri": "F",
+      "sat": "S"
+    }
   },
   "goal": {
     "target": "Target",
@@ -89,6 +100,9 @@
     "missingNameMessage": "Please enter a name for your deed.",
     "resetTitle": "Reset Everything?",
     "resetMessage": "This will delete all your logged data and custom deeds. This action cannot be undone.",
+    "restartTitle": "Restart Required",
+    "restartMessage": "To apply the new language and layout changes, the app needs to restart.",
+    "restartNow": "Restart Now",
     "deleteDeedTitle": "Delete Deed?",
     "deleteDeedMessage": "Are you sure you want to delete \"{{deedName}}\"? All associated logs will also be removed.",
     "cancel": "Cancel",
@@ -141,5 +155,19 @@
     "jamaah": "In Jama'ah",
     "generic-missed": "Missed",
     "completed": "Completed"
-  }
+  },
+  "hijri_months": [
+    "Muharram",
+    "Safar",
+    "Rab Awal",
+    "Rab Thani",
+    "Jum Ula",
+    "Jum Akhir",
+    "Rajab",
+    "Sha'ban",
+    "Ramadan",
+    "Shawwal",
+    "Dhu al-Q.",
+    "Dhu al-H."
+  ]
 }

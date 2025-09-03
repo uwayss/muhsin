@@ -73,7 +73,9 @@ export const LogDeedModal = ({
                     color={theme.colors[status.color]}
                   />
                   <ThemedText style={styles.optionLabel}>
-                    {i18n.t(statusLabelKey, { defaultValue: status.label })}
+                    {i18n.t(statusLabelKey, {
+                      defaultValue: status.id.replace("-", " "),
+                    })}
                   </ThemedText>
                 </TouchableOpacity>
               );
@@ -116,7 +118,7 @@ const getStyles = (theme: AppTheme) =>
       paddingVertical: theme.spacing.m,
     },
     optionLabel: {
-      marginLeft: theme.spacing.m,
+      marginStart: theme.spacing.m,
       fontSize: theme.typography.fontSize.m,
     },
   });

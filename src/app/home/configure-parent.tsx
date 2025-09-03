@@ -110,6 +110,6 @@ const getStyles = (theme: AppTheme) =>
     },
     deedName: {
       flex: 1,
-      marginLeft: theme.spacing.m,
+      marginStart: theme.spacing.m,
     },
   });

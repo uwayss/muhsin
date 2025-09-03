@@ -9,7 +9,7 @@ import {
   Locale,
 } from "date-fns";
 import React, { useCallback, useMemo, useRef } from "react";
-import { FlatList, useWindowDimensions } from "react-native";
+import { FlatList, useWindowDimensions, I18nManager } from "react-native";
 import { DateItem, ITEM_MARGIN } from "./DateItem";
 
 type DateScrollerProps = {
@@ -26,10 +26,12 @@ const DateScrollerComponent = ({
   const flatListRef = useRef<FlatList>(null);
   const { width: screenWidth } = useWindowDimensions();
 
+  const numberOfVisibleDays = I18nManager.isRTL ? 5 : 7;
   const containerPadding = 32;
-  const itemWidth = (screenWidth - containerPadding - ITEM_MARGIN * 7) / 7;
-  const fullItemWidth = itemWidth + ITEM_MARGIN;
-  const weekWidth = fullItemWidth * 7;
+
+  const itemWidth =
+    (screenWidth - containerPadding - numberOfVisibleDays * ITEM_MARGIN * 2) /
+    numberOfVisibleDays;
 
   const dateRange = useMemo(() => {
     const today = new Date();
@@ -40,7 +42,6 @@ const DateScrollerComponent = ({
   }, []);
 
   const todayIndex = useMemo(() => {
-    // Find the start of the week for today
     const startOfCurrentWeek = startOfWeek(new Date(), {
       weekStartsOn: locale.options?.weekStartsOn,
     });
@@ -54,15 +55,6 @@ const DateScrollerComponent = ({
     [onDateSelect],
   );
 
-  const getItemLayout = useCallback(
-    (_: any, index: number) => ({
-      length: fullItemWidth,
-      offset: fullItemWidth * index,
-      index,
-    }),
-    [fullItemWidth],
-  );
-
   const renderItem = useCallback(
     ({ item }: { item: Date }) => (
       <DateItem
@@ -70,11 +62,11 @@ const DateScrollerComponent = ({
         isSelected={isSameDay(item, selectedDate)}
         isToday={isToday(item)}
         onPress={() => handleDatePress(item)}
-        itemWidth={itemWidth}
         locale={locale}
+        itemWidth={itemWidth}
       />
     ),
-    [selectedDate, handleDatePress, itemWidth, locale],
+    [selectedDate, handleDatePress, locale, itemWidth],
   );
 
   return (
@@ -85,14 +77,16 @@ const DateScrollerComponent = ({
       renderItem={renderItem}
       horizontal
       showsHorizontalScrollIndicator={false}
-      snapToInterval={weekWidth} // Snap to a full week
-      decelerationRate="fast"
       initialScrollIndex={todayIndex}
-      getItemLayout={getItemLayout}
+      getItemLayout={(_, index) => ({
+        length: itemWidth + ITEM_MARGIN * 2,
+        offset: (itemWidth + ITEM_MARGIN * 2) * index,
+        index,
+      })}
       style={{ flexGrow: 0, paddingVertical: 8 }}
+      contentContainerStyle={{ height: 70 }} // Apply height here to ensure items can fill it
     />
   );
 };
 
-// Export the memoized version, which now has a display name
 export const DateScroller = React.memo(DateScrollerComponent);

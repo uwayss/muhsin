@@ -39,7 +39,7 @@ function RootTabBar() {
       title: i18n.t("tabs.stats"),
       icon: "trending-up" as const,
     },
-    { name: "index", title: i18n.t("tabs.home"), icon: "home" as const },
+    { name: "home", title: i18n.t("tabs.home"), icon: "home" as const },
     { name: "settings", title: i18n.t("tabs.settings"), icon: "cog" as const },
   ];
 
@@ -47,7 +47,7 @@ function RootTabBar() {
     <>
       <StatusBar style={"auto"} />
       <Tabs
-        initialRouteName="index"
+        initialRouteName="home"
         screenOptions={{
           tabBarActiveTintColor: theme.colors.primary,
           tabBarInactiveTintColor: theme.colors.textSecondary,
@@ -55,6 +55,7 @@ function RootTabBar() {
             backgroundColor: theme.colors.foreground,
             borderTopColor: theme.colors.background,
           },
+          headerShown: false,
         }}
       >
         {tabData.map((tab) => (

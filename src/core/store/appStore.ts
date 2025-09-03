@@ -55,7 +55,7 @@ type AppActions = {
   setDeeds: (deeds: Deed[]) => void;
   // SETTINGS
   setTheme: (theme: AppSettings["theme"]) => void;
-  setLanguage: (language: AppSettings["language"]) => void; // New action
+  setLanguage: (language: AppSettings["language"]) => void;
   toggleHaptics: () => void;
   setDevMode: (isDev: boolean) => void;
   toggleDemoMode: () => void;
@@ -122,8 +122,52 @@ const useAppStore = create<AppState & AppActions>((set, get) => ({
       Appearance.setColorScheme(settings.theme);
     }
     i18n.locale = settings.language;
+    // This initial call sets the layout direction on first launch
     I18nManager.forceRTL(settings.language === "ar");
     set({ isInitialized: true });
+  },
+
+  setLanguage: (language) => {
+    const currentLanguage = get().settings.language;
+    if (currentLanguage === language) return;
+
+    i18n.locale = language;
+    const isRTL = language === "ar";
+    const needsRestart = isRTL !== I18nManager.isRTL;
+
+    // Update the state immediately so the UI (like the alert) uses the new language
+    set((state) => ({ settings: { ...state.settings, language } }));
+    persistState(get());
+
+    if (needsRestart) {
+      Alert.alert(
+        i18n.t("alerts.restartTitle"),
+        i18n.t("alerts.restartMessage"),
+        [
+          {
+            text: i18n.t("alerts.cancel"),
+            style: "cancel",
+            onPress: () => {
+              // If the user cancels, we must revert the change to avoid a broken state
+              i18n.locale = currentLanguage;
+              set((state) => ({
+                settings: { ...state.settings, language: currentLanguage },
+              }));
+              persistState(get());
+            },
+          },
+          {
+            text: i18n.t("alerts.restartNow"),
+            style: "default",
+            onPress: async () => {
+              await I18nManager.forceRTL(isRTL);
+              await Updates.reloadAsync();
+            },
+          },
+        ],
+        { cancelable: false }, // User must make a choice
+      );
+    }
   },
 
   addOrUpdateLog: (deed, date, status) => {
@@ -157,7 +201,6 @@ const useAppStore = create<AppState & AppActions>((set, get) => ({
     persistState(get());
   },
 
-  // --- DEED MANAGEMENT ACTIONS ---
   initializeDraftDeed: (deedId) => {
     if (deedId) {
       const deedToEdit = get().deeds.find((d) => d.id === deedId);
@@ -187,14 +230,12 @@ const useAppStore = create<AppState & AppActions>((set, get) => ({
     if (!draft || !draft.name || !draft.icon) return;
 
     if (draft.id) {
-      // It's an update
       const updatedDeed = draft as Deed;
       set((state) => ({
         deeds: state.deeds.map((d) => (d.id === draft.id ? updatedDeed : d)),
         draftDeed: null,
       }));
     } else {
-      // It's a new deed
       const newDeed: Deed = {
         id: `custom-${Date.now()}`,
         name: draft.name,
@@ -213,7 +254,7 @@ const useAppStore = create<AppState & AppActions>((set, get) => ({
   deleteDeed: (deedId) => {
     set((state) => ({
       deeds: state.deeds.filter((d) => d.id !== deedId),
-      logs: state.logs.filter((l) => l.deedId !== deedId), // Also remove logs
+      logs: state.logs.filter((l) => l.deedId !== deedId),
     }));
     persistState(get());
   },
@@ -223,7 +264,6 @@ const useAppStore = create<AppState & AppActions>((set, get) => ({
     persistState(get());
   },
 
-  // --- SETTINGS ACTIONS ---
   setTheme: (theme) => {
     set((state) => ({ settings: { ...state.settings, theme } }));
     if (theme === "system") {
@@ -232,32 +272,6 @@ const useAppStore = create<AppState & AppActions>((set, get) => ({
       Appearance.setColorScheme(theme);
     }
     persistState(get());
-  },
-
-  setLanguage: (language) => {
-    const currentLanguage = get().settings.language;
-    if (currentLanguage === language) return;
-
-    i18n.locale = language;
-    set((state) => ({ settings: { ...state.settings, language } }));
-    persistState(get());
-
-    const isRTL = language === "ar";
-    if (isRTL !== I18nManager.isRTL) {
-      Alert.alert(
-        "Restart Required",
-        "The app needs to restart to apply the new language direction.",
-        [
-          {
-            text: "Restart Now",
-            onPress: async () => {
-              I18nManager.forceRTL(isRTL);
-              await Updates.reloadAsync();
-            },
-          },
-        ],
-      );
-    }
   },
 
   toggleHaptics: () => {
@@ -282,13 +296,12 @@ const useAppStore = create<AppState & AppActions>((set, get) => ({
     const { isDemoMode } = settings;
 
     if (!isDemoMode) {
-      // --- Entering Demo Mode ---
       const demoLogs = generateDemoLogs();
       set({
-        originalDeeds: deeds, // Save current user data
+        originalDeeds: deeds,
         originalLogs: logs,
-        deeds: MOCK_DEEDS, // Load mock deeds
-        logs: demoLogs, // Load generated demo logs
+        deeds: MOCK_DEEDS,
+        logs: demoLogs,
         settings: { ...get().settings, isDemoMode: true },
       });
       Alert.alert(
@@ -296,11 +309,10 @@ const useAppStore = create<AppState & AppActions>((set, get) => ({
         i18n.t("alerts.demoModeEnabledMessage"),
       );
     } else {
-      // --- Exiting Demo Mode ---
       set({
-        deeds: originalDeeds || MOCK_DEEDS, // Restore user data
+        deeds: originalDeeds || MOCK_DEEDS,
         logs: originalLogs || [],
-        originalDeeds: null, // Clear saved data
+        originalDeeds: null,
         originalLogs: null,
         settings: { ...get().settings, isDemoMode: false },
       });

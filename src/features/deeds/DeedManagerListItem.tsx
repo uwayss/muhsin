@@ -115,7 +115,7 @@ const getStyles = (theme: AppTheme) =>
     container: {
       flexDirection: "row",
       alignItems: "center",
-      paddingRight: theme.spacing.s,
+      paddingEnd: theme.spacing.s,
       backgroundColor: theme.colors.foreground,
       borderRadius: 12,
       marginBottom: theme.spacing.s,
@@ -131,7 +131,7 @@ const getStyles = (theme: AppTheme) =>
       padding: theme.spacing.m,
     },
     icon: {
-      marginRight: theme.spacing.m,
+      marginEnd: theme.spacing.m,
     },
     deedName: {
       flex: 1,

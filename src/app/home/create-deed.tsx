@@ -226,7 +226,7 @@ const getStyles = (theme: AppTheme) =>
     },
     iconPicker: {
       padding: theme.spacing.s,
-      marginRight: theme.spacing.s,
+      marginEnd: theme.spacing.s,
     },
     textInput: {
       flex: 1,
@@ -252,11 +252,11 @@ const getStyles = (theme: AppTheme) =>
     },
     configLabel: {
       flex: 1,
-      marginLeft: theme.spacing.m,
+      marginStart: theme.spacing.m,
     },
     configValue: {
       color: theme.colors.textSecondary,
-      marginRight: theme.spacing.xs,
+      marginEnd: theme.spacing.xs,
     },
   });
 export default CreateDeedScreen;

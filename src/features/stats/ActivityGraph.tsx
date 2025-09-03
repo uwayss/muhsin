@@ -1,4 +1,4 @@
-// FILE: src/features/stats/ActivityGraph.tsx
+// src/features/stats/ActivityGraph.tsx
 import { ThemedText } from "@/components/base/ThemedText";
 import { AppTheme } from "@/constants/theme";
 import { Deed, DeedLog } from "@/core/data/models";
@@ -81,8 +81,8 @@ const getStyles = (theme: AppTheme) =>
     },
     graphYAxis: {
       justifyContent: "space-around",
-      marginRight: theme.spacing.s,
-      paddingBottom: theme.spacing.l, // Add padding to align with day labels
+      marginEnd: theme.spacing.s,
+      paddingBottom: theme.spacing.l,
     },
     graphIcon: {
       height: 20,
@@ -93,7 +93,7 @@ const getStyles = (theme: AppTheme) =>
     graphColumn: {
       justifyContent: "space-around",
       alignItems: "center",
-      marginRight: theme.spacing.xs,
+      marginEnd: theme.spacing.xs,
     },
     graphCell: {
       width: 20,
