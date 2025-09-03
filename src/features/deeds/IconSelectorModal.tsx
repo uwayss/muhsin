@@ -2,6 +2,7 @@
 import { ThemedText } from "@/components/base/ThemedText";
 import { customDeedIcons } from "@/constants/icons";
 import { AppTheme } from "@/constants/theme";
+import i18n from "@/core/i18n";
 import { useTheme } from "@/core/theme/ThemeContext";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import React from "react";
@@ -49,7 +50,9 @@ export const IconSelectorModal = ({
           {/* This View prevents the close event from firing when tapping the container */}
           <TouchableWithoutFeedback>
             <View style={styles.container}>
-              <ThemedText style={styles.title}>Choose an Icon</ThemedText>
+              <ThemedText style={styles.title}>
+                {i18n.t("iconSelector.title")}
+              </ThemedText>
               <FlatList
                 data={customDeedIcons}
                 keyExtractor={(item) => item}

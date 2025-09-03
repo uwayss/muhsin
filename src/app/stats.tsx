@@ -1,7 +1,8 @@
-// FILE: src/app/stats.tsx
+// src/app/stats.tsx
 import { Screen } from "@/components/Screen";
 import { ThemedText } from "@/components/base/ThemedText";
 import { AppTheme } from "@/constants/theme";
+import i18n from "@/core/i18n";
 import useAppStore from "@/core/store/appStore";
 import { useTheme } from "@/core/theme/ThemeContext";
 import { ActivityGraph } from "@/features/stats/ActivityGraph";
@@ -111,56 +112,62 @@ const StatsScreen = () => {
 
   if (!isInitialized) {
     return (
-      <Screen title="Stats">
+      <Screen title={i18n.t("screens.stats")}>
         <ActivityIndicator style={{ marginTop: 20 }} />
       </Screen>
     );
   }
 
   return (
-    <Screen title="Stats">
+    <Screen title={i18n.t("screens.stats")}>
       <ScrollView
         contentContainerStyle={styles.scrollContent}
         showsVerticalScrollIndicator={false}
       >
         <IntervalSwitcher selected={interval} onSelect={setInterval} />
 
-        <ThemedText style={styles.sectionTitle}>Prayer Performance</ThemedText>
+        <ThemedText style={styles.sectionTitle}>
+          {i18n.t("stats.prayerPerformance")}
+        </ThemedText>
         <View style={styles.summaryGrid}>
           <SummaryBox
-            title="In Jama'ah"
+            title={i18n.t("stats.inJamaah")}
             color={theme.colors.jamaah}
             percentage={stats.jamaah.percentage}
             count={stats.jamaah.count}
           />
           <SummaryBox
-            title="On Time"
+            title={i18n.t("stats.onTime")}
             color={theme.colors.onTime}
             percentage={stats["on-time"].percentage}
             count={stats["on-time"].count}
           />
           <SummaryBox
-            title="Late"
+            title={i18n.t("stats.late")}
             color={theme.colors.late}
             percentage={stats.late.percentage}
             count={stats.late.count}
           />
           <SummaryBox
-            title="Not Prayed"
+            title={i18n.t("stats.notPrayed")}
             color={theme.colors.missed}
             percentage={stats.missed.percentage}
             count={stats.missed.count}
           />
         </View>
 
-        <ThemedText style={styles.sectionTitle}>Activity</ThemedText>
+        <ThemedText style={styles.sectionTitle}>
+          {i18n.t("stats.activity")}
+        </ThemedText>
         <ActivityGraph
           deeds={prayerDeeds}
           logs={filteredLogs}
           dateRange={dateRange}
         />
 
-        <ThemedText style={styles.sectionTitle}>Stats by Deed</ThemedText>
+        <ThemedText style={styles.sectionTitle}>
+          {i18n.t("stats.statsByDeed")}
+        </ThemedText>
         <View style={styles.deedStatsContainer}>
           {prayerDeeds.map((deed) => (
             <DeedStatsRow key={deed.id} deed={deed} logs={filteredLogs} />

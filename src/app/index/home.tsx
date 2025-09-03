@@ -1,10 +1,11 @@
-// FILE: src/app/index/home.tsx
+// src/app/index/home.tsx
 import { Box } from "@/components/base/Box";
 import { Screen } from "@/components/Screen";
 import { ThemedText } from "@/components/base/ThemedText";
 import { FAB } from "@/components/FAB";
 import { AppTheme } from "@/constants/theme";
 import { Deed, DeedStatus } from "@/core/data/models";
+import i18n, { dateLocales } from "@/core/i18n";
 import useAppStore from "@/core/store/appStore";
 import { useTheme } from "@/core/theme/ThemeContext";
 import { formatHijriDate } from "@/core/utils/dateFormatter";
@@ -22,10 +23,9 @@ const HomeScreen = () => {
   const router = useRouter();
 
   // --- Global State ---
-  const isInitialized = useAppStore((state) => state.isInitialized);
-  const deeds = useAppStore((state) => state.deeds);
-  const logs = useAppStore((state) => state.logs);
-  const addOrUpdateLog = useAppStore((state) => state.addOrUpdateLog);
+  const { isInitialized, deeds, logs, addOrUpdateLog, settings } =
+    useAppStore();
+  const activeLocale = dateLocales[settings.language];
 
   // --- Local State ---
   const [selectedDate, setSelectedDate] = useState(new Date());
@@ -35,10 +35,12 @@ const HomeScreen = () => {
   // --- Memos ---
   const { gregorianDate, hijriDate } = useMemo(() => {
     return {
-      gregorianDate: format(selectedDate, "MMMM d"),
+      gregorianDate: format(selectedDate, "MMMM d", {
+        locale: activeLocale,
+      }),
       hijriDate: formatHijriDate(selectedDate),
     };
-  }, [selectedDate]);
+  }, [selectedDate, activeLocale]);
 
   const logsForSelectedDate = useMemo(() => {
     const dateString = formatISO(selectedDate, { representation: "date" });
@@ -77,7 +79,10 @@ const HomeScreen = () => {
     );
 
     for (const [category, deedsInSection] of Object.entries(deedsByCategory)) {
-      sections.push({ title: category, data: deedsInSection });
+      sections.push({
+        title: i18n.t(`categories.${category}`, { defaultValue: category }),
+        data: deedsInSection,
+      });
     }
     return sections;
   }, [deeds, selectedDate]);
@@ -97,7 +102,7 @@ const HomeScreen = () => {
 
   if (!isInitialized) {
     return (
-      <Screen title="Loading...">
+      <Screen title={i18n.t("screens.homeLoading")}>
         <Box style={styles.centered}>
           <ActivityIndicator />
         </Box>
@@ -110,6 +115,7 @@ const HomeScreen = () => {
       <DateScroller
         selectedDate={selectedDate}
         onDateSelect={setSelectedDate}
+        locale={activeLocale}
       />
       <Box style={{ flex: 1 }}>
         <SectionList
@@ -151,10 +157,11 @@ const getStyles = (theme: AppTheme) =>
       color: theme.colors.textSecondary,
       textTransform: "uppercase",
       marginBottom: theme.spacing.s,
-      marginTop: theme.spacing.m, // Add margin top for spacing between sections
+      marginTop: theme.spacing.m,
+      textAlign: "left", // Explicitly set for LTR/RTL consistency
     },
     listContent: {
-      paddingTop: theme.spacing.s, // Adjust padding
+      paddingTop: theme.spacing.s,
     },
     centered: {
       flex: 1,

@@ -2,7 +2,7 @@
 import { ThemedText } from "@/components/base/ThemedText";
 import { AppTheme } from "@/constants/theme";
 import { useTheme } from "@/core/theme/ThemeContext";
-import { format } from "date-fns";
+import { format, Locale } from "date-fns";
 import React from "react";
 import { StyleSheet, TouchableOpacity } from "react-native";
 
@@ -14,6 +14,7 @@ type DateItemProps = {
   isToday: boolean;
   onPress: () => void;
   itemWidth: number;
+  locale: Locale;
 };
 
 const DateItemComponent = ({
@@ -22,17 +23,18 @@ const DateItemComponent = ({
   isToday,
   onPress,
   itemWidth,
+  locale,
 }: DateItemProps) => {
   const { theme } = useTheme();
   const styles = getStyles(theme, isSelected, isToday);
 
-  const dayName = format(date, "E");
-  const dayNumber = format(date, "d");
+  const dayName = format(date, "E", { locale });
+  const dayNumber = format(date, "d", { locale });
 
   return (
     <TouchableOpacity
       onPress={onPress}
-      style={[styles.container, { width: itemWidth, marginRight: ITEM_MARGIN }]}
+      style={[styles.container, { width: itemWidth, marginEnd: ITEM_MARGIN }]}
     >
       <ThemedText style={styles.dayName}>{dayName}</ThemedText>
       <ThemedText style={styles.dayNumber}>{dayNumber}</ThemedText>

@@ -4,6 +4,7 @@ import { useTheme } from "@/core/theme/ThemeContext";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import React from "react";
 import {
+  I18nManager,
   StyleSheet,
   TouchableOpacity,
   TouchableOpacityProps,
@@ -29,7 +30,7 @@ const getStyles = (theme: AppTheme) =>
     container: {
       position: "absolute",
       bottom: theme.spacing.l,
-      right: theme.spacing.l,
+      [I18nManager.isRTL ? "left" : "right"]: theme.spacing.l,
       width: 60,
       height: 60,
       borderRadius: 16,

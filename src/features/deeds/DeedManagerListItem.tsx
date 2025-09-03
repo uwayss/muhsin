@@ -3,6 +3,7 @@ import { Box } from "@/components/base/Box";
 import { ThemedText } from "@/components/base/ThemedText";
 import { AppTheme } from "@/constants/theme";
 import { Deed } from "@/core/data/models";
+import i18n from "@/core/i18n";
 import useAppStore from "@/core/store/appStore";
 import { useTheme } from "@/core/theme/ThemeContext";
 import { triggerHaptic } from "@/core/utils/haptics";
@@ -40,13 +41,16 @@ export const DeedManagerListItem = ({
 
   const handleDelete = () => {
     triggerHaptic();
+    const deedName = i18n.t(`deeds_names.${deed.id}`, {
+      defaultValue: deed.name,
+    });
     Alert.alert(
-      "Delete Deed?",
-      `Are you sure you want to delete "${deed.name}"? All associated logs will also be removed.`,
+      i18n.t("alerts.deleteDeedTitle"),
+      i18n.t("alerts.deleteDeedMessage", { deedName }),
       [
-        { text: "Cancel", style: "cancel" },
+        { text: i18n.t("alerts.cancel"), style: "cancel" },
         {
-          text: "Delete",
+          text: i18n.t("alerts.delete"),
           style: "destructive",
           onPress: () => deleteDeed(deed.id),
         },
@@ -76,7 +80,9 @@ export const DeedManagerListItem = ({
           color={theme.colors.textSecondary}
           style={styles.icon}
         />
-        <ThemedText style={styles.deedName}>{deed.name}</ThemedText>
+        <ThemedText style={styles.deedName}>
+          {i18n.t(`deeds_names.${deed.id}`, { defaultValue: deed.name })}
+        </ThemedText>
 
         {isEditable && (
           <Box style={styles.actionsContainer}>
@@ -111,7 +117,7 @@ const getStyles = (theme: AppTheme) =>
       alignItems: "center",
       paddingRight: theme.spacing.s,
       backgroundColor: theme.colors.foreground,
-      borderRadius: 12, // Slightly increased for better aesthetics
+      borderRadius: 12,
       marginBottom: theme.spacing.s,
     },
     dragging: {

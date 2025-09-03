@@ -1,6 +1,7 @@
-// FILE: src/features/stats/SummaryBox.tsx
+// src/features/stats/SummaryBox.tsx
 import { ThemedText } from "@/components/base/ThemedText";
 import { AppTheme } from "@/constants/theme";
+import i18n from "@/core/i18n";
 import { useTheme } from "@/core/theme/ThemeContext";
 import React from "react";
 import { StyleSheet, View } from "react-native";
@@ -29,7 +30,9 @@ export const SummaryBox = ({
       <ThemedText style={styles.summaryPercentage}>
         {percentage.toFixed(0)}%
       </ThemedText>
-      <ThemedText style={styles.summaryCount}>{count} times</ThemedText>
+      <ThemedText style={styles.summaryCount}>
+        {i18n.t("stats.times", { count })}
+      </ThemedText>
       <View style={styles.summaryBar}>
         <View
           style={[

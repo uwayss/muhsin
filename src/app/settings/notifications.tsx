@@ -1,7 +1,8 @@
-// FILE: src/app/settings/notifications.tsx
+// src/app/settings/notifications.tsx
 import { Screen } from "@/components/Screen";
 import { ThemedText } from "@/components/base/ThemedText";
 import { AppTheme } from "@/constants/theme";
+import i18n from "@/core/i18n";
 import useAppStore from "@/core/store/appStore";
 import { useTheme } from "@/core/theme/ThemeContext";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
@@ -42,7 +43,7 @@ const NotificationsScreen = () => {
   return (
     <>
       <Screen
-        title="Notifications"
+        title={i18n.t("screens.notifications")}
         renderLeftAction={() => (
           <TouchableOpacity onPress={() => router.back()}>
             <MaterialCommunityIcons
@@ -55,7 +56,9 @@ const NotificationsScreen = () => {
       >
         <View style={styles.container}>
           <View style={styles.row}>
-            <ThemedText style={styles.label}>Daily reminder</ThemedText>
+            <ThemedText style={styles.label}>
+              {i18n.t("settings.dailyReminder")}
+            </ThemedText>
             <Switch
               value={isReminderEnabled}
               onValueChange={toggleReminder}
@@ -69,7 +72,9 @@ const NotificationsScreen = () => {
 
           {isReminderEnabled && (
             <TouchableOpacity style={styles.row} onPress={showDatePicker}>
-              <ThemedText style={styles.label}>Time</ThemedText>
+              <ThemedText style={styles.label}>
+                {i18n.t("settings.time")}
+              </ThemedText>
               <View style={styles.valueContainer}>
                 <ThemedText style={styles.valueText}>{reminderTime}</ThemedText>
                 <MaterialCommunityIcons

@@ -2,6 +2,7 @@
 import { Screen } from "@/components/Screen";
 import { ThemedText } from "@/components/base/ThemedText";
 import { AppTheme } from "@/constants/theme";
+import i18n from "@/core/i18n";
 import useAppStore from "@/core/store/appStore";
 import { useTheme } from "@/core/theme/ThemeContext";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
@@ -25,7 +26,7 @@ const ConfigureParentScreen = () => {
 
   return (
     <Screen
-      title="Select Parent Deed"
+      title={i18n.t("screens.configureParent")}
       renderLeftAction={() => (
         <TouchableOpacity onPress={() => router.back()}>
           <MaterialCommunityIcons
@@ -52,7 +53,9 @@ const ConfigureParentScreen = () => {
               size={24}
               color={theme.colors.textSecondary}
             />
-            <ThemedText style={styles.deedName}>{item.name}</ThemedText>
+            <ThemedText style={styles.deedName}>
+              {i18n.t(`deeds_names.${item.id}`, { defaultValue: item.name })}
+            </ThemedText>
             {draftDeed?.parentId === item.id && (
               <MaterialCommunityIcons
                 name="check"
@@ -72,7 +75,9 @@ const ConfigureParentScreen = () => {
               size={24}
               color={theme.colors.textSecondary}
             />
-            <ThemedText style={styles.deedName}>None</ThemedText>
+            <ThemedText style={styles.deedName}>
+              {i18n.t("deeds.none")}
+            </ThemedText>
             {!draftDeed?.parentId && (
               <MaterialCommunityIcons
                 name="check"

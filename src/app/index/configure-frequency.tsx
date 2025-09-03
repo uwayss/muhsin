@@ -1,15 +1,15 @@
-// FILE: src/app/index/configure-frequency.tsx
+// src/app/index/configure-frequency.tsx
 import { Screen } from "@/components/Screen";
 import { ThemedText } from "@/components/base/ThemedText";
 import { AppTheme } from "@/constants/theme";
 import { DeedFrequency } from "@/core/data/models";
+import i18n from "@/core/i18n";
 import useAppStore from "@/core/store/appStore";
 import { useTheme } from "@/core/theme/ThemeContext";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import React from "react";
 import { StyleSheet, TouchableOpacity, View, TextInput } from "react-native";
-
 const DAYS = [
   { label: "S", value: 0 },
   { label: "M", value: 1 },
@@ -19,15 +19,12 @@ const DAYS = [
   { label: "F", value: 5 },
   { label: "S", value: 6 },
 ];
-
 const ConfigureFrequencyScreen = () => {
   const router = useRouter();
   const { theme } = useTheme();
   const styles = getStyles(theme);
-
   const { draftDeed, updateDraftDeed } = useAppStore();
   const frequency = draftDeed?.frequency || { type: "daily" };
-
   const setType = (type: DeedFrequency["type"]) => {
     const newFrequency: DeedFrequency = { type };
     if (type === "weekly") {
@@ -37,7 +34,6 @@ const ConfigureFrequencyScreen = () => {
     }
     updateDraftDeed({ frequency: newFrequency });
   };
-
   const toggleDay = (dayValue: number) => {
     if (frequency.type !== "weekly") return;
     const currentDays = frequency.days || [];
@@ -46,17 +42,15 @@ const ConfigureFrequencyScreen = () => {
       : [...currentDays, dayValue];
     updateDraftDeed({ frequency: { ...frequency, days: newDays.sort() } });
   };
-
   const handleCountChange = (text: string) => {
     const count = parseInt(text, 10);
     if (!isNaN(count) && count > 0) {
       updateDraftDeed({ frequency: { ...frequency, count } });
     }
   };
-
   return (
     <Screen
-      title="Frequency"
+      title={i18n.t("screens.configureFrequency")}
       renderLeftAction={() => (
         <TouchableOpacity onPress={() => router.back()}>
           <MaterialCommunityIcons
@@ -68,33 +62,36 @@ const ConfigureFrequencyScreen = () => {
       )}
     >
       <View style={styles.container}>
-        <ThemedText style={styles.sectionHeader}>Type</ThemedText>
+        <ThemedText style={styles.sectionHeader}>
+          {i18n.t("frequency.type")}
+        </ThemedText>
         <View style={styles.optionGroup}>
           <OptionButton
-            label="Daily"
+            label={i18n.t("frequency.daily")}
             selected={frequency.type === "daily"}
             onPress={() => setType("daily")}
           />
           <OptionButton
-            label="Weekly"
+            label={i18n.t("frequency.weekly")}
             selected={frequency.type === "weekly"}
             onPress={() => setType("weekly")}
           />
           <OptionButton
-            label="Monthly"
+            label={i18n.t("frequency.monthly")}
             selected={frequency.type === "monthly"}
             onPress={() => setType("monthly")}
           />
           <OptionButton
-            label="Yearly"
+            label={i18n.t("frequency.yearly")}
             selected={frequency.type === "yearly"}
             onPress={() => setType("yearly")}
           />
-        </View>
-
+        </View>{" "}
         {frequency.type === "weekly" && (
           <>
-            <ThemedText style={styles.sectionHeader}>Select Days</ThemedText>
+            <ThemedText style={styles.sectionHeader}>
+              {i18n.t("frequency.selectDays")}
+            </ThemedText>
             <View style={styles.daySelector}>
               {DAYS.map((day) => (
                 <DayButton
@@ -107,11 +104,12 @@ const ConfigureFrequencyScreen = () => {
             </View>
           </>
         )}
-
         {(frequency.type === "monthly" || frequency.type === "yearly") && (
           <>
             <ThemedText style={styles.sectionHeader}>
-              How many times per {frequency.type.replace("ly", "")}?
+              {i18n.t("frequency.howManyTimes", {
+                interval: frequency.type.replace("ly", ""),
+              })}
             </ThemedText>
             <View style={styles.countContainer}>
               <TextInput
@@ -128,7 +126,6 @@ const ConfigureFrequencyScreen = () => {
     </Screen>
   );
 };
-
 // Helper Components
 const OptionButton = ({ label, selected, onPress }) => {
   const { theme } = useTheme();
@@ -144,7 +141,6 @@ const OptionButton = ({ label, selected, onPress }) => {
     </TouchableOpacity>
   );
 };
-
 const DayButton = ({ label, selected, onPress }) => {
   const { theme } = useTheme();
   const styles = getStyles(theme);
@@ -159,9 +155,7 @@ const DayButton = ({ label, selected, onPress }) => {
     </TouchableOpacity>
   );
 };
-
 export default ConfigureFrequencyScreen;
-
 const getStyles = (theme: AppTheme) =>
   StyleSheet.create({
     container: { paddingTop: theme.spacing.m },

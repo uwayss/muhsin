@@ -1,0 +1,145 @@
+{
+  "tabs": {
+    "stats": "Stats",
+    "home": "Home",
+    "settings": "Settings"
+  },
+  "screens": {
+    "addDeed": "Add a Deed",
+    "createDeed": "Create a Deed",
+    "editDeed": "Edit Deed",
+    "configureFrequency": "Frequency",
+    "configureGoal": "Set a Goal",
+    "configureParent": "Select Parent Deed",
+    "deedManager": "Deed Manager",
+    "notifications": "Notifications",
+    "stats": "Stats",
+    "homeLoading": "Loading..."
+  },
+  "settings": {
+    "mainSettingsTitle": "Main Settings",
+    "deedManager": "Deed Manager",
+    "notifications": "Notifications",
+    "appearance": "Appearance",
+    "haptics": "Haptics",
+    "appLanguage": "App Language",
+    "supportTitle": "Support & Feedback",
+    "invite": "Invite a friend",
+    "rate": "Rate the app",
+    "feedback": "Send feedback",
+    "privacy": "Privacy Policy",
+    "dangerZoneTitle": "Danger Zone",
+    "reset": "Reset Everything",
+    "appearanceTitle": "Appearance",
+    "languageTitle": "Language",
+    "system": "System",
+    "light": "Light",
+    "dark": "Dark",
+    "english": "English",
+    "arabic": "Arabic",
+    "dailyReminder": "Daily reminder",
+    "time": "Time"
+  },
+  "deeds": {
+    "createDeedButton": "Create new deed",
+    "deedNamePlaceholder": "Deed name (e.g. Read a book)",
+    "configuration": "Configuration",
+    "frequency": "Frequency",
+    "goal": "Goal",
+    "parentDeed": "Parent Deed",
+    "notSet": "Not set",
+    "none": "None",
+    "save": "Save",
+    "logDeedTitle": "How did you complete {{deedName}} today?",
+    "weeklyLabel": "Weekly ({{dayCount}} days)",
+    "weeklyLabel_singular": "Weekly ({{dayCount}} day)"
+  },
+  "frequency": {
+    "type": "Type",
+    "daily": "Daily",
+    "weekly": "Weekly",
+    "monthly": "Monthly",
+    "yearly": "Yearly",
+    "selectDays": "Select Days",
+    "howManyTimes": "How many times per {{interval}}?"
+  },
+  "goal": {
+    "target": "Target",
+    "placeholderValue": "e.g., 10",
+    "unit": "Unit",
+    "placeholderUnit": "e.g., Pages, Minutes"
+  },
+  "stats": {
+    "prayerPerformance": "Prayer Performance",
+    "inJamaah": "In Jama'ah",
+    "onTime": "On Time",
+    "late": "Late",
+    "notPrayed": "Not Prayed",
+    "times": "{{count}} times",
+    "activity": "Activity",
+    "statsByDeed": "Stats by Deed"
+  },
+  "intervals": {
+    "week": "Week",
+    "month": "Month",
+    "year": "Year"
+  },
+  "alerts": {
+    "missingNameTitle": "Missing Name",
+    "missingNameMessage": "Please enter a name for your deed.",
+    "resetTitle": "Reset Everything?",
+    "resetMessage": "This will delete all your logged data and custom deeds. This action cannot be undone.",
+    "deleteDeedTitle": "Delete Deed?",
+    "deleteDeedMessage": "Are you sure you want to delete \"{{deedName}}\"? All associated logs will also be removed.",
+    "cancel": "Cancel",
+    "reset": "Reset",
+    "delete": "Delete",
+    "devModeTitle": "Developer Mode Unlocked",
+    "devModeMessage": "You can now long-press the version number to access developer options.",
+    "demoModeEnabledTitle": "Demo Mode Enabled",
+    "demoModeEnabledMessage": "App data has been replaced with sample data. Your original data is safe and will be restored when you disable demo mode.",
+    "demoModeDisabledTitle": "Demo Mode Disabled",
+    "demoModeDisabledMessage": "Your original data has been restored."
+  },
+  "footer": {
+    "madeWith": "Made with 🤍 in Istanbul",
+    "appVersion": "App version {{version}}",
+    "devMode": " (Dev)"
+  },
+  "devMenu": {
+    "title": "Developer Menu",
+    "enableDemo": "Enable Demo Mode"
+  },
+  "iconSelector": {
+    "title": "Choose an Icon"
+  },
+  "categories": {
+    "PRAYERS": "Prayers",
+    "QURAN": "Quran",
+    "LEARNING": "Learning",
+    "SOCIAL": "Social",
+    "CUSTOM": "Custom"
+  },
+  "deeds_names": {
+    "prayer-fajr": "Fajr",
+    "prayer-dhuhr": "Dhuhr",
+    "prayer-asr": "Asr",
+    "prayer-maghrib": "Maghrib",
+    "prayer-isha": "Isha",
+    "prayer-witr": "Witr",
+    "prayer-tahajjud": "Tahajjud",
+    "quran-reading": "Read Quran",
+    "quran-memorizing": "Memorize Quran",
+    "learning-book": "Read a book",
+    "social-charity": "Give Charity",
+    "social-family": "Call family"
+  },
+  "deeds_statuses": {
+    "missed": "Not Prayed",
+    "late": "Late",
+    "on-time": "On Time",
+    "jamaah": "In Jama'ah",
+    "generic-missed": "Missed",
+    "completed": "Completed"
+  }
+}

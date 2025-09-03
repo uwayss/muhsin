@@ -6,6 +6,8 @@ import React, { useEffect } from "react";
 import { StatusBar } from "expo-status-bar";
 import useAppStore from "@/core/store/appStore";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
+import i18n from "@/core/i18n";
+import { useForceUpdate } from "@/core/hooks/useForceUpdate";
 
 function TabBarIcon(props: {
   name: React.ComponentProps<typeof MaterialCommunityIcons>["name"];
@@ -16,18 +18,30 @@ function TabBarIcon(props: {
   );
 }
 
-const tabData = [
-  { name: "stats", title: "Stats", icon: "trending-up" as const },
-  { name: "index", title: "Home", icon: "home" as const },
-  { name: "settings", title: "Settings", icon: "cog" as const },
-];
-
 function RootTabBar() {
   const { theme } = useTheme();
+  const language = useAppStore((state) => state.settings.language); // Listen for language changes
+  const forceUpdate = useForceUpdate(); // A custom hook to force re-render
 
   useEffect(() => {
     useAppStore.getState().initialize();
   }, []);
+
+  // When the language changes, we need to force the UI to re-render
+  // because i18n-js is not a stateful library.
+  useEffect(() => {
+    forceUpdate();
+  }, [language, forceUpdate]);
+
+  const tabData = [
+    {
+      name: "stats",
+      title: i18n.t("tabs.stats"),
+      icon: "trending-up" as const,
+    },
+    { name: "index", title: i18n.t("tabs.home"), icon: "home" as const },
+    { name: "settings", title: i18n.t("tabs.settings"), icon: "cog" as const },
+  ];
 
   return (
     <>

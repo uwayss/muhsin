@@ -26,7 +26,7 @@ export const SettingsOptionModal = ({
 }: SettingsOptionModalProps) => {
   const { theme } = useTheme();
   const styles = getStyles(theme);
-  const { settings, setTheme } = useAppStore();
+  const { settings, setTheme, setLanguage } = useAppStore();
 
   if (!modalData) return null;
 
@@ -38,8 +38,9 @@ export const SettingsOptionModal = ({
     setTimeout(() => {
       if (modalData.stateKey === "theme") {
         setTheme(value);
+      } else if (modalData.stateKey === "language") {
+        setLanguage(value);
       }
-      // Can add other settings here in the future
     }, 250);
   };
 

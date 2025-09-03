@@ -2,6 +2,7 @@
 import { Screen } from "@/components/Screen";
 import { AppTheme } from "@/constants/theme";
 import { Deed } from "@/core/data/models";
+import i18n from "@/core/i18n";
 import useAppStore from "@/core/store/appStore";
 import { useTheme } from "@/core/theme/ThemeContext";
 import { DeedManagerListItem } from "@/features/deeds/DeedManagerListItem";
@@ -28,7 +29,7 @@ const DeedManagerScreen = () => {
 
   return (
     <Screen
-      title="Deed Manager"
+      title={i18n.t("screens.deedManager")}
       renderLeftAction={() => (
         <TouchableOpacity onPress={() => router.back()}>
           <MaterialCommunityIcons

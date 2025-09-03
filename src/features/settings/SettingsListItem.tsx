@@ -113,6 +113,10 @@ const getStyles = (theme: AppTheme) =>
     },
     isFirst: { borderTopLeftRadius: 16, borderTopRightRadius: 16 },
     isLast: { borderBottomLeftRadius: 16, borderBottomRightRadius: 16 },
-    icon: { marginRight: theme.spacing.m },
-    label: { flex: 1, fontSize: theme.typography.fontSize.m },
+    icon: { marginEnd: theme.spacing.m },
+    label: {
+      flex: 1,
+      fontSize: theme.typography.fontSize.m,
+      textAlign: "left",
+    },
   });

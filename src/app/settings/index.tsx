@@ -2,6 +2,7 @@
 import { Screen } from "@/components/Screen";
 import { ThemedText } from "@/components/base/ThemedText";
 import { AppTheme } from "@/constants/theme";
+import i18n from "@/core/i18n";
 import useAppStore from "@/core/store/appStore";
 import { useTheme } from "@/core/theme/ThemeContext";
 import { DevMenuModal } from "@/features/settings/DevMenuModal";
@@ -46,8 +47,8 @@ const SettingsScreen = () => {
     if (newCount >= 7) {
       setDevMode(true);
       Alert.alert(
-        "Developer Mode Unlocked",
-        "You can now long-press the version number to access developer options.",
+        i18n.t("alerts.devModeTitle"),
+        i18n.t("alerts.devModeMessage"),
       );
     }
   };
@@ -83,15 +84,15 @@ const SettingsScreen = () => {
       },
       reset: () => {
         Alert.alert(
-          "Reset Everything?",
-          "This will delete all your logged data and custom deeds. This action cannot be undone.",
+          i18n.t("alerts.resetTitle"),
+          i18n.t("alerts.resetMessage"),
           [
             {
-              text: "Cancel",
+              text: i18n.t("alerts.cancel"),
               style: "cancel",
             },
             {
-              text: "Reset",
+              text: i18n.t("alerts.reset"),
               style: "destructive",
               onPress: () => resetData(),
             },
@@ -121,7 +122,7 @@ const SettingsScreen = () => {
 
   return (
     <>
-      <Screen title="Settings">
+      <Screen title={i18n.t("tabs.settings")}>
         <SectionList
           sections={settingsData}
           keyExtractor={(item) => item.label}
@@ -146,10 +147,11 @@ const SettingsScreen = () => {
             >
               <View style={styles.footer}>
                 <ThemedText style={styles.footerText}>
-                  App version {appVersion} {isDevMode && "(Dev)"}
+                  {i18n.t("footer.appVersion", { version: appVersion })}
+                  {isDevMode && i18n.t("footer.devMode")}
                 </ThemedText>
                 <ThemedText style={styles.footerText}>
-                  Made with 🤍 in Istanbul
+                  {i18n.t("footer.madeWith")}
                 </ThemedText>
               </View>
             </Pressable>

@@ -1,6 +1,7 @@
 // src/features/settings/DevMenuModal.tsx
 import { ThemedText } from "@/components/base/ThemedText";
 import { AppTheme } from "@/constants/theme";
+import i18n from "@/core/i18n";
 import useAppStore from "@/core/store/appStore";
 import { useTheme } from "@/core/theme/ThemeContext";
 import React from "react";
@@ -34,10 +35,12 @@ export const DevMenuModal = ({ isVisible, onClose }: DevMenuModalProps) => {
         <View style={styles.overlay}>
           <TouchableWithoutFeedback>
             <View style={styles.container}>
-              <ThemedText style={styles.title}>Developer Menu</ThemedText>
+              <ThemedText style={styles.title}>
+                {i18n.t("devMenu.title")}
+              </ThemedText>
               <View style={styles.optionRow}>
                 <ThemedText style={styles.optionLabel}>
-                  Enable Demo Mode
+                  {i18n.t("devMenu.enableDemo")}
                 </ThemedText>
                 <Switch
                   value={isDemoMode}

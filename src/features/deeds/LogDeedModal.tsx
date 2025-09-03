@@ -3,6 +3,7 @@ import { Box } from "@/components/base/Box";
 import { ThemedText } from "@/components/base/ThemedText";
 import { AppTheme } from "@/constants/theme";
 import { Deed, DeedStatus } from "@/core/data/models";
+import i18n from "@/core/i18n";
 import { useTheme } from "@/core/theme/ThemeContext";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import React from "react";
@@ -26,6 +27,10 @@ export const LogDeedModal = ({
 
   if (!deed) return null;
 
+  const deedName = i18n.t(`deeds_names.${deed.id}`, {
+    defaultValue: deed.name,
+  });
+
   return (
     <Modal
       transparent
@@ -46,26 +51,33 @@ export const LogDeedModal = ({
               color={theme.colors.text}
             />
             <ThemedText style={styles.title}>
-              How did you complete {deed.name} today?
+              {i18n.t("deeds.logDeedTitle", { deedName })}
             </ThemedText>
           </Box>
           <View>
-            {deed.statuses.map((status) => (
-              <TouchableOpacity
-                key={status.id}
-                style={styles.optionRow}
-                onPress={() => onLogStatus(status)}
-              >
-                <MaterialCommunityIcons
-                  name={status.icon}
-                  size={24}
-                  color={theme.colors[status.color]}
-                />
-                <ThemedText style={styles.optionLabel}>
-                  {status.label}
-                </ThemedText>
-              </TouchableOpacity>
-            ))}
+            {deed.statuses.map((status) => {
+              // Handle special case for generic "missed" vs prayer "missed"
+              const statusLabelKey =
+                deed.isCore || status.id !== "missed"
+                  ? `deeds_statuses.${status.id}`
+                  : `deeds_statuses.generic-missed`;
+              return (
+                <TouchableOpacity
+                  key={status.id}
+                  style={styles.optionRow}
+                  onPress={() => onLogStatus(status)}
+                >
+                  <MaterialCommunityIcons
+                    name={status.icon}
+                    size={24}
+                    color={theme.colors[status.color]}
+                  />
+                  <ThemedText style={styles.optionLabel}>
+                    {i18n.t(statusLabelKey, { defaultValue: status.label })}
+                  </ThemedText>
+                </TouchableOpacity>
+              );
+            })}
           </View>
         </TouchableOpacity>
       </TouchableOpacity>

@@ -3,6 +3,7 @@ import { Box } from "@/components/base/Box";
 import { ThemedText } from "@/components/base/ThemedText";
 import { AppTheme } from "@/constants/theme";
 import { Deed, DeedLog } from "@/core/data/models";
+import i18n from "@/core/i18n";
 import { useTheme } from "@/core/theme/ThemeContext";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import React from "react";
@@ -29,7 +30,9 @@ export const DeedListItem = ({ deed, log, onPress }: DeedListItemProps) => {
           size={28}
           color={theme.colors.textSecondary}
         />
-        <ThemedText style={styles.deedName}>{deed.name}</ThemedText>
+        <ThemedText style={styles.deedName}>
+          {i18n.t(`deeds_names.${deed.id}`, { defaultValue: deed.name })}
+        </ThemedText>
 
         {status && (
           <Box
@@ -62,8 +65,9 @@ const getStyles = (theme: AppTheme) =>
     },
     deedName: {
       flex: 1,
-      marginLeft: theme.spacing.m,
+      marginStart: theme.spacing.m,
       fontSize: theme.typography.fontSize.m,
+      textAlign: "left", // Keep text aligned to the start of the text container
     },
     statusBadge: {
       padding: theme.spacing.xs,

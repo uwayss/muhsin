@@ -1,4 +1,5 @@
 // src/core/utils/dateFormatter.ts
+import i18n from "../i18n";
 
 // Define the exact month abbreviations we want.
 const HIJRI_MONTHS_ABBR = [
@@ -16,15 +17,21 @@ const HIJRI_MONTHS_ABBR = [
   "Dhu al-H.",
 ];
 
-// This formatter's only job is to give us the numeric parts of the Hijri date.
-const hijriNumericParser = new Intl.DateTimeFormat(
-  "en-US-u-ca-islamic-nu-latn",
-  {
-    year: "numeric",
-    month: "numeric",
-    day: "numeric",
-  },
-);
+// Arabic month names
+const HIJRI_MONTHS_ABBR_AR = [
+  "محرم",
+  "صفر",
+  "ربيع الأول",
+  "ربيع الثاني",
+  "جمادى الأولى",
+  "جمادى الآخرة",
+  "رجب",
+  "شعبان",
+  "رمضان",
+  "شوال",
+  "ذو القعدة",
+  "ذو الحجة",
+];
 
 /**
  * Formats a JavaScript Date object into a custom Hijri date string.
@@ -32,6 +39,18 @@ const hijriNumericParser = new Intl.DateTimeFormat(
  * @returns A formatted string, e.g., "Rab Awal 6, 1447".
  */
 export const formatHijriDate = (date: Date): string => {
+  const isArabic = i18n.locale.startsWith("ar");
+
+  // This formatter's only job is to give us the numeric parts of the Hijri date.
+  const hijriNumericParser = new Intl.DateTimeFormat(
+    `${isArabic ? "ar" : "en"}-u-ca-islamic-nu-latn`,
+    {
+      year: "numeric",
+      month: "numeric",
+      day: "numeric",
+    },
+  );
+
   // Get the numeric parts of the date
   const parts = hijriNumericParser.formatToParts(date);
   const day = parts.find((p) => p.type === "day")?.value;
@@ -40,8 +59,13 @@ export const formatHijriDate = (date: Date): string => {
   const year = parts.find((p) => p.type === "year")?.value;
 
   // Look up our custom month name
-  const hijriMonthName = HIJRI_MONTHS_ABBR[monthIndex];
+  const hijriMonthName = isArabic
+    ? HIJRI_MONTHS_ABBR_AR[monthIndex]
+    : HIJRI_MONTHS_ABBR[monthIndex];
 
   // Construct the final string exactly as desired
+  if (isArabic) {
+    return `${hijriMonthName} ${day}، ${year}`;
+  }
   return `${hijriMonthName} ${day}, ${year}`;
 };

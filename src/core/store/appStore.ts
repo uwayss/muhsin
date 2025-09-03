@@ -1,4 +1,4 @@
-// FILE: src/core/store/appStore.ts
+// src/core/store/appStore.ts
 import { create } from "zustand";
 import { Deed, DeedLog, DeedStatus } from "../data/models";
 import {
@@ -9,15 +9,17 @@ import {
 } from "../data/mock";
 import { loadDataFromFile, saveDataToFile } from "../storage/storageService";
 import { formatISO } from "date-fns";
-import { Alert, Appearance } from "react-native";
+import { Alert, Appearance, I18nManager } from "react-native";
 import { generateDemoLogs } from "../data/demoData";
+import i18n from "../i18n";
+import * as Updates from "expo-updates";
 
 export type AppSettings = {
   theme: "system" | "light" | "dark";
   isHapticsEnabled: boolean;
   isDevMode: boolean;
   isDemoMode: boolean;
-  language: "en"; // For now, only English is supported
+  language: "en" | "ar"; // Updated language options
   isReminderEnabled: boolean;
   reminderTime: string;
 };
@@ -53,6 +55,7 @@ type AppActions = {
   setDeeds: (deeds: Deed[]) => void;
   // SETTINGS
   setTheme: (theme: AppSettings["theme"]) => void;
+  setLanguage: (language: AppSettings["language"]) => void; // New action
   toggleHaptics: () => void;
   setDevMode: (isDev: boolean) => void;
   toggleDemoMode: () => void;
@@ -98,10 +101,12 @@ const useAppStore = create<AppState & AppActions>((set, get) => ({
   // --- ACTIONS ---
   initialize: async () => {
     const loadedData = await loadDataFromFile();
+    let settings = defaultSettings;
     if (loadedData) {
+      settings = { ...defaultSettings, ...loadedData.settings };
       set({
         ...loadedData,
-        settings: { ...defaultSettings, ...loadedData.settings },
+        settings,
       });
     } else {
       const initialState: AppData = {
@@ -112,10 +117,12 @@ const useAppStore = create<AppState & AppActions>((set, get) => ({
       set(initialState);
       await saveDataToFile(initialState);
     }
-    const currentTheme = get().settings.theme;
-    if (currentTheme !== "system") {
-      Appearance.setColorScheme(currentTheme);
+    // Set theme and language on initial load
+    if (settings.theme !== "system") {
+      Appearance.setColorScheme(settings.theme);
     }
+    i18n.locale = settings.language;
+    I18nManager.forceRTL(settings.language === "ar");
     set({ isInitialized: true });
   },
 
@@ -227,6 +234,32 @@ const useAppStore = create<AppState & AppActions>((set, get) => ({
     persistState(get());
   },
 
+  setLanguage: (language) => {
+    const currentLanguage = get().settings.language;
+    if (currentLanguage === language) return;
+
+    i18n.locale = language;
+    set((state) => ({ settings: { ...state.settings, language } }));
+    persistState(get());
+
+    const isRTL = language === "ar";
+    if (isRTL !== I18nManager.isRTL) {
+      Alert.alert(
+        "Restart Required",
+        "The app needs to restart to apply the new language direction.",
+        [
+          {
+            text: "Restart Now",
+            onPress: async () => {
+              I18nManager.forceRTL(isRTL);
+              await Updates.reloadAsync();
+            },
+          },
+        ],
+      );
+    }
+  },
+
   toggleHaptics: () => {
     set((state) => ({
       settings: {
@@ -259,8 +292,8 @@ const useAppStore = create<AppState & AppActions>((set, get) => ({
         settings: { ...get().settings, isDemoMode: true },
       });
       Alert.alert(
-        "Demo Mode Enabled",
-        "App data has been replaced with sample data. Your original data is safe and will be restored when you disable demo mode.",
+        i18n.t("alerts.demoModeEnabledTitle"),
+        i18n.t("alerts.demoModeEnabledMessage"),
       );
     } else {
       // --- Exiting Demo Mode ---
@@ -272,8 +305,8 @@ const useAppStore = create<AppState & AppActions>((set, get) => ({
         settings: { ...get().settings, isDemoMode: false },
       });
       Alert.alert(
-        "Demo Mode Disabled",
-        "Your original data has been restored.",
+        i18n.t("alerts.demoModeDisabledTitle"),
+        i18n.t("alerts.demoModeDisabledMessage"),
       );
     }
   },

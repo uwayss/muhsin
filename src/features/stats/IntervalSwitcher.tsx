@@ -1,6 +1,7 @@
-// FILE: src/features/stats/IntervalSwitcher.tsx
+// src/features/stats/IntervalSwitcher.tsx
 import { ThemedText } from "@/components/base/ThemedText";
 import { AppTheme } from "@/constants/theme";
+import i18n from "@/core/i18n";
 import { useTheme } from "@/core/theme/ThemeContext";
 import React from "react";
 import { StyleSheet, TouchableOpacity, View } from "react-native";
@@ -19,9 +20,9 @@ export const IntervalSwitcher = ({
   const { theme } = useTheme();
   const styles = getStyles(theme);
   const options: { label: string; value: TimeInterval }[] = [
-    { label: "Week", value: "week" },
-    { label: "Month", value: "month" },
-    { label: "Year", value: "year" },
+    { label: i18n.t("intervals.week"), value: "week" },
+    { label: i18n.t("intervals.month"), value: "month" },
+    { label: i18n.t("intervals.year"), value: "year" },
   ];
   return (
     <View style={styles.switcherContainer}>
@@ -56,6 +57,7 @@ const getStyles = (theme: AppTheme) =>
       borderRadius: 8,
       overflow: "hidden",
       marginBottom: theme.spacing.m,
+      marginTop: theme.spacing.m, // Added top margin
     },
     switcherButton: {
       flex: 1,

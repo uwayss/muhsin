@@ -1,4 +1,5 @@
 // src/features/settings/settingsData.ts
+import i18n from "@/core/i18n";
 import { AppSettings } from "@/core/store/appStore";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 
@@ -51,83 +52,86 @@ export const getSettingsData = (actions: {
   [key: string]: () => void;
 }): SettingsSection[] => [
   {
-    title: "Main Settings",
+    title: i18n.t("settings.mainSettingsTitle"),
     data: [
       {
         type: "navigation",
-        label: "Deed Manager",
+        label: i18n.t("settings.deedManager"),
         icon: "format-list-bulleted-square",
         path: "/settings/deed-manager",
       },
       {
         type: "navigation",
-        label: "Notifications",
+        label: i18n.t("settings.notifications"),
         icon: "bell-outline",
         path: "/settings/notifications",
       },
       {
         type: "modal",
-        label: "Appearance",
+        label: i18n.t("settings.appearance"),
         icon: "palette-outline",
-        title: "Appearance",
+        title: i18n.t("settings.appearanceTitle"),
         stateKey: "theme",
         options: [
-          { label: "System", value: "system" },
-          { label: "Light", value: "light" },
-          { label: "Dark", value: "dark" },
+          { label: i18n.t("settings.system"), value: "system" },
+          { label: i18n.t("settings.light"), value: "light" },
+          { label: i18n.t("settings.dark"), value: "dark" },
         ],
       },
       {
         type: "toggle",
-        label: "Haptics",
+        label: i18n.t("settings.haptics"),
         icon: "vibrate",
         stateKey: "isHapticsEnabled",
       },
       {
         type: "modal",
-        label: "App Language",
+        label: i18n.t("settings.appLanguage"),
         icon: "translate",
-        title: "Language",
+        title: i18n.t("settings.languageTitle"),
         stateKey: "language",
-        options: [{ label: "English", value: "en" }],
+        options: [
+          { label: i18n.t("settings.english"), value: "en" },
+          { label: i18n.t("settings.arabic"), value: "ar" },
+        ],
       },
     ],
   },
   {
-    title: "Support & Feedback",
+    title: i18n.t("settings.supportTitle"),
     data: [
       {
         type: "action",
-        label: "Invite a friend",
+        label: i18n.t("settings.invite"),
         icon: "share-variant-outline",
         action: actions.invite,
       },
       {
         type: "action",
-        label: "Rate the app",
+        label: i18n.t("settings.rate"),
         icon: "star-outline",
         action: actions.rate,
       },
       {
         type: "action",
-        label: "Send feedback",
+        label: i18n.t("settings.feedback"),
         icon: "email-outline",
         action: actions.feedback,
       },
       {
         type: "action",
-        label: "Privacy Policy",
+        label: i18n.t("settings.privacy"),
         icon: "shield-lock-outline",
         action: actions.privacy,
       },
     ],
   },
   {
-    title: "Danger Zone",
+    title: i18n.t("settings.dangerZoneTitle"),
     data: [
       {
         type: "action",
-        label: "Reset Everything",
+        label: i18n.t("settings.reset"),
         icon: "alert-circle-outline",
         action: actions.reset,
         color: "red",

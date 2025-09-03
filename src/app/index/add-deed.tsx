@@ -3,6 +3,7 @@ import { Screen } from "@/components/Screen";
 import { ThemedText } from "@/components/base/ThemedText";
 import { AppTheme } from "@/constants/theme";
 import { Deed } from "@/core/data/models";
+import i18n from "@/core/i18n";
 import useAppStore from "@/core/store/appStore";
 import { useTheme } from "@/core/theme/ThemeContext";
 import { SuggestedDeedListItem } from "@/features/deeds/SuggestedDeedListItem";
@@ -37,14 +38,17 @@ const AddDeedScreen = () => {
     );
 
     for (const [category, deedsInSection] of Object.entries(deedsByCategory)) {
-      sections.push({ title: category, data: deedsInSection });
+      sections.push({
+        title: i18n.t(`categories.${category}`, { defaultValue: category }),
+        data: deedsInSection,
+      });
     }
     return sections;
   }, [suggestedDeeds]);
 
   return (
     <Screen
-      title="Add a Deed"
+      title={i18n.t("screens.addDeed")}
       renderLeftAction={() => (
         <TouchableOpacity onPress={() => router.back()}>
           <MaterialCommunityIcons
@@ -77,7 +81,7 @@ const AddDeedScreen = () => {
                 color={theme.colors.primary}
               />
               <ThemedText style={styles.createDeedText}>
-                Create new deed
+                {i18n.t("deeds.createDeedButton")}
               </ThemedText>
             </TouchableOpacity>
           </Link>

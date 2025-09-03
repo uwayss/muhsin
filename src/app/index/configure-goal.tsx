@@ -3,6 +3,7 @@ import { Screen } from "@/components/Screen";
 import { ThemedText } from "@/components/base/ThemedText";
 import { ThemedTextInput } from "@/components/base/ThemedTextInput";
 import { AppTheme } from "@/constants/theme";
+import i18n from "@/core/i18n";
 import useAppStore from "@/core/store/appStore";
 import { useTheme } from "@/core/theme/ThemeContext";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
@@ -41,7 +42,7 @@ const ConfigureGoalScreen = () => {
 
   return (
     <Screen
-      title="Set a Goal"
+      title={i18n.t("screens.configureGoal")}
       renderLeftAction={() => (
         <TouchableOpacity onPress={() => router.back()}>
           <MaterialCommunityIcons
@@ -53,16 +54,16 @@ const ConfigureGoalScreen = () => {
       )}
     >
       <View style={styles.container}>
-        <ThemedText style={styles.label}>Target</ThemedText>
+        <ThemedText style={styles.label}>{i18n.t("goal.target")}</ThemedText>
         <ThemedTextInput
-          placeholder="e.g., 10"
+          placeholder={i18n.t("goal.placeholderValue")}
           keyboardType="number-pad"
           value={value}
           onChangeText={handleValueChange}
         />
-        <ThemedText style={styles.label}>Unit</ThemedText>
+        <ThemedText style={styles.label}>{i18n.t("goal.unit")}</ThemedText>
         <ThemedTextInput
-          placeholder="e.g., Pages, Minutes"
+          placeholder={i18n.t("goal.placeholderUnit")}
           value={unit}
           onChangeText={handleUnitChange}
         />

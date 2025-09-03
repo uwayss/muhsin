@@ -6,6 +6,7 @@ import {
   isToday,
   startOfWeek,
   subYears,
+  Locale,
 } from "date-fns";
 import React, { useCallback, useMemo, useRef } from "react";
 import { FlatList, useWindowDimensions } from "react-native";
@@ -14,11 +15,13 @@ import { DateItem, ITEM_MARGIN } from "./DateItem";
 type DateScrollerProps = {
   selectedDate: Date;
   onDateSelect: (date: Date) => void;
+  locale: Locale;
 };
 
 const DateScrollerComponent = ({
   selectedDate,
   onDateSelect,
+  locale,
 }: DateScrollerProps) => {
   const flatListRef = useRef<FlatList>(null);
   const { width: screenWidth } = useWindowDimensions();
@@ -38,9 +41,11 @@ const DateScrollerComponent = ({
 
   const todayIndex = useMemo(() => {
     // Find the start of the week for today
-    const startOfCurrentWeek = startOfWeek(new Date(), { weekStartsOn: 1 }); // Monday start
+    const startOfCurrentWeek = startOfWeek(new Date(), {
+      weekStartsOn: locale.options?.weekStartsOn,
+    });
     return dateRange.findIndex((d) => isSameDay(d, startOfCurrentWeek));
-  }, [dateRange]);
+  }, [dateRange, locale]);
 
   const handleDatePress = useCallback(
     (date: Date) => {
@@ -66,9 +71,10 @@ const DateScrollerComponent = ({
         isToday={isToday(item)}
         onPress={() => handleDatePress(item)}
         itemWidth={itemWidth}
+        locale={locale}
       />
     ),
-    [selectedDate, handleDatePress, itemWidth],
+    [selectedDate, handleDatePress, itemWidth, locale],
   );
 
   return (

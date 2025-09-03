@@ -4,6 +4,7 @@ import { ThemedText } from "@/components/base/ThemedText";
 import { ThemedTextInput } from "@/components/base/ThemedTextInput";
 import { Screen } from "@/components/Screen";
 import { AppTheme } from "@/constants/theme";
+import i18n from "@/core/i18n";
 import useAppStore from "@/core/store/appStore";
 import { useTheme } from "@/core/theme/ThemeContext";
 import { IconSelectorModal } from "@/features/deeds/IconSelectorModal";
@@ -46,7 +47,10 @@ const CreateDeedScreen = () => {
 
   const handleSave = () => {
     if (!draftDeed?.name?.trim()) {
-      Alert.alert("Missing Name", "Please enter a name for your deed.");
+      Alert.alert(
+        i18n.t("alerts.missingNameTitle"),
+        i18n.t("alerts.missingNameMessage"),
+      );
       return;
     }
     saveDraftDeed();
@@ -61,29 +65,37 @@ const CreateDeedScreen = () => {
   };
 
   const getFrequencyLabel = () => {
-    if (!draftDeed?.frequency) return "Not set";
-    if (draftDeed.frequency.type === "daily") return "Daily";
+    if (!draftDeed?.frequency) return i18n.t("deeds.notSet");
+    if (draftDeed.frequency.type === "daily") return i18n.t("frequency.daily");
     if (draftDeed.frequency.type === "weekly") {
       const dayCount = draftDeed.frequency.days?.length || 0;
-      return `Weekly (${dayCount} ${dayCount === 1 ? "day" : "days"})`;
+      return dayCount === 1
+        ? i18n.t("deeds.weeklyLabel_singular", { dayCount })
+        : i18n.t("deeds.weeklyLabel", { dayCount });
     }
-    return "Not set";
+    return i18n.t("deeds.notSet");
   };
 
   const getGoalLabel = () => {
-    if (!draftDeed?.goal) return "Not set";
+    if (!draftDeed?.goal) return i18n.t("deeds.notSet");
     return `${draftDeed.goal.value} ${draftDeed.goal.unit}`;
   };
 
   const getParentLabel = () => {
-    if (!draftDeed?.parentId) return "None";
+    if (!draftDeed?.parentId) return i18n.t("deeds.none");
     const parent = allDeeds.find((d) => d.id === draftDeed.parentId);
-    return parent?.name || "None";
+    return parent
+      ? i18n.t(`deeds_names.${parent.id}`, { defaultValue: parent.name })
+      : i18n.t("deeds.none");
   };
+
+  const screenTitle = isEditMode
+    ? i18n.t("screens.editDeed")
+    : i18n.t("screens.createDeed");
 
   if (!draftDeed) {
     return (
-      <Screen title={isEditMode ? "Edit Deed" : "Create a Deed"}>
+      <Screen title={screenTitle}>
         <ActivityIndicator style={{ marginTop: 20 }} />
       </Screen>
     );
@@ -92,7 +104,7 @@ const CreateDeedScreen = () => {
   return (
     <>
       <Screen
-        title={isEditMode ? "Edit Deed" : "Create a Deed"}
+        title={screenTitle}
         renderLeftAction={() => (
           <TouchableOpacity onPress={() => router.back()}>
             <MaterialCommunityIcons
@@ -104,7 +116,9 @@ const CreateDeedScreen = () => {
         )}
         renderRightAction={() => (
           <TouchableOpacity onPress={handleSave}>
-            <ThemedText style={styles.saveText}>Save</ThemedText>
+            <ThemedText style={styles.saveText}>
+              {i18n.t("deeds.save")}
+            </ThemedText>
           </TouchableOpacity>
         )}
       >
@@ -121,28 +135,30 @@ const CreateDeedScreen = () => {
               />
             </TouchableOpacity>
             <ThemedTextInput
-              placeholder="Deed name (e.g. Read a book)"
+              placeholder={i18n.t("deeds.deedNamePlaceholder")}
               value={draftDeed.name}
               onChangeText={(name) => updateDraftDeed({ name })}
               style={styles.textInput}
             />
           </Box>
-          <ThemedText style={styles.sectionHeader}>Configuration</ThemedText>
+          <ThemedText style={styles.sectionHeader}>
+            {i18n.t("deeds.configuration")}
+          </ThemedText>
           <ConfigRow
             icon="calendar-sync"
-            label="Frequency"
+            label={i18n.t("deeds.frequency")}
             value={getFrequencyLabel()}
             onPress={() => router.push("/configure-frequency")}
           />
           <ConfigRow
             icon="bullseye-arrow"
-            label="Goal"
+            label={i18n.t("deeds.goal")}
             value={getGoalLabel()}
             onPress={() => router.push("/configure-goal")}
           />
           <ConfigRow
             icon="file-tree"
-            label="Parent Deed"
+            label={i18n.t("deeds.parentDeed")}
             value={getParentLabel()}
             onPress={() => router.push("/configure-parent")}
           />
