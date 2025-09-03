@@ -1,4 +1,4 @@
-// src/app/settings/index.tsx
+// FILE: src/screens/SettingsScreen.tsx
 import { Screen } from "@/components/Screen";
 import { ThemedText } from "@/components/base/ThemedText";
 import { AppTheme } from "@/constants/theme";
@@ -15,7 +15,7 @@ import { SettingsListItem } from "@/features/settings/SettingsListItem";
 import { SettingsOptionModal } from "@/features/settings/SettingsOptionModal";
 import Constants from "expo-constants";
 import * as Linking from "expo-linking";
-import { useRouter } from "expo-router";
+import { useNavigation } from "@react-navigation/native";
 import React, { useMemo, useState } from "react";
 import {
   Alert,
@@ -26,11 +26,18 @@ import {
   StyleSheet,
   View,
 } from "react-native";
+import { SettingsStackParamList } from "@/navigation/AppNavigator";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+
+type SettingsScreenNavigationProp = NativeStackNavigationProp<
+  SettingsStackParamList,
+  "SettingsMain"
+>;
 
 const SettingsScreen = () => {
   const { theme } = useTheme();
   const styles = getStyles(theme);
-  const router = useRouter();
+  const navigation = useNavigation<SettingsScreenNavigationProp>();
   const [modalData, setModalData] = useState<ModalSettingsItem<any> | null>(
     null,
   );
@@ -114,10 +121,6 @@ const SettingsScreen = () => {
 
   const settingsData = useMemo(
     () => getSettingsData(actions),
-    // --- FIX: Address the linter warning ---
-    // The linter is correct that `language` isn't used directly, but `getSettingsData`
-    // has an IMPLICIT dependency on it because it calls i18n.t().
-    // We disable the rule to acknowledge this is intentional.
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [actions, language],
   );
@@ -125,7 +128,7 @@ const SettingsScreen = () => {
 
   const handleItemPress = (item: SettingsItem) => {
     if (item.type === "navigation") {
-      router.push(item.path as any);
+      navigation.navigate(item.path as any);
     } else if (item.type === "modal") {
       setModalData(item as ModalSettingsItem<any>);
     } else if (item.type === "action") {

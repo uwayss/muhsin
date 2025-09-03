@@ -1,4 +1,4 @@
-// src/app/stats.tsx
+// FILE: src/screens/StatsScreen.tsx
 import { Screen } from "@/components/Screen";
 import { ThemedText } from "@/components/base/ThemedText";
 import { AppTheme } from "@/constants/theme";

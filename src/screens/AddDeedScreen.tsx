@@ -1,4 +1,4 @@
-// src/app/index/add-deed.tsx
+// FILE: src/screens/AddDeedScreen.tsx
 import { Screen } from "@/components/Screen";
 import { ThemedText } from "@/components/base/ThemedText";
 import { AppTheme } from "@/constants/theme";
@@ -8,12 +8,19 @@ import useAppStore from "@/core/store/appStore";
 import { useTheme } from "@/core/theme/ThemeContext";
 import { SuggestedDeedListItem } from "@/features/deeds/SuggestedDeedListItem";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-import { Link, useRouter } from "expo-router";
+import { useNavigation } from "@react-navigation/native";
 import React, { useMemo } from "react";
 import { SectionList, StyleSheet, TouchableOpacity } from "react-native";
+import { HomeStackParamList } from "@/navigation/AppNavigator";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+
+type AddDeedScreenNavigationProp = NativeStackNavigationProp<
+  HomeStackParamList,
+  "AddDeed"
+>;
 
 const AddDeedScreen = () => {
-  const router = useRouter();
+  const navigation = useNavigation<AddDeedScreenNavigationProp>();
   const { theme } = useTheme();
   const styles = getStyles(theme);
 
@@ -50,7 +57,7 @@ const AddDeedScreen = () => {
     <Screen
       title={i18n.t("screens.addDeed")}
       renderLeftAction={() => (
-        <TouchableOpacity onPress={() => router.back()}>
+        <TouchableOpacity onPress={() => navigation.goBack()}>
           <MaterialCommunityIcons
             name="chevron-left"
             size={32}
@@ -73,18 +80,19 @@ const AddDeedScreen = () => {
           />
         )}
         ListHeaderComponent={
-          <Link href="/create-deed" asChild>
-            <TouchableOpacity style={styles.createDeedButton}>
-              <MaterialCommunityIcons
-                name="plus-circle"
-                size={24}
-                color={theme.colors.primary}
-              />
-              <ThemedText style={styles.createDeedText}>
-                {i18n.t("deeds.createDeedButton")}
-              </ThemedText>
-            </TouchableOpacity>
-          </Link>
+          <TouchableOpacity
+            style={styles.createDeedButton}
+            onPress={() => navigation.navigate("CreateDeed", {})}
+          >
+            <MaterialCommunityIcons
+              name="plus-circle"
+              size={24}
+              color={theme.colors.primary}
+            />
+            <ThemedText style={styles.createDeedText}>
+              {i18n.t("deeds.createDeedButton")}
+            </ThemedText>
+          </TouchableOpacity>
         }
         contentContainerStyle={styles.listContent}
       />

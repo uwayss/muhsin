@@ -1,4 +1,4 @@
-// src/app/settings/deed-manager.tsx
+// FILE: src/screens/DeedManagerScreen.tsx
 import { Screen } from "@/components/Screen";
 import { AppTheme } from "@/constants/theme";
 import { Deed } from "@/core/data/models";
@@ -7,7 +7,7 @@ import useAppStore from "@/core/store/appStore";
 import { useTheme } from "@/core/theme/ThemeContext";
 import { DeedManagerListItem } from "@/features/deeds/DeedManagerListItem";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-import { useRouter } from "expo-router";
+import { useNavigation } from "@react-navigation/native";
 import React from "react";
 import { StyleSheet, TouchableOpacity } from "react-native";
 import DraggableFlatList, {
@@ -15,7 +15,7 @@ import DraggableFlatList, {
 } from "react-native-draggable-flatlist";
 
 const DeedManagerScreen = () => {
-  const router = useRouter();
+  const navigation = useNavigation();
   const { theme } = useTheme();
 
   const deeds = useAppStore((state) => state.deeds);
@@ -31,7 +31,7 @@ const DeedManagerScreen = () => {
     <Screen
       title={i18n.t("screens.deedManager")}
       renderLeftAction={() => (
-        <TouchableOpacity onPress={() => router.back()}>
+        <TouchableOpacity onPress={() => navigation.goBack()}>
           <MaterialCommunityIcons
             name="chevron-left"
             size={32}

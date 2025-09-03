@@ -1,4 +1,4 @@
-// src/app/settings/notifications.tsx
+// FILE: src/screens/NotificationsScreen.tsx
 import { Screen } from "@/components/Screen";
 import { ThemedText } from "@/components/base/ThemedText";
 import { AppTheme } from "@/constants/theme";
@@ -7,7 +7,7 @@ import useAppStore from "@/core/store/appStore";
 import { useTheme } from "@/core/theme/ThemeContext";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { format } from "date-fns";
-import { useRouter } from "expo-router";
+import { useNavigation } from "@react-navigation/native";
 import React, { useState } from "react";
 import {
   StyleSheet,
@@ -21,7 +21,7 @@ import DateTimePicker, {
 } from "@react-native-community/datetimepicker";
 
 const NotificationsScreen = () => {
-  const router = useRouter();
+  const navigation = useNavigation();
   const { theme } = useTheme();
   const styles = getStyles(theme);
 
@@ -49,7 +49,7 @@ const NotificationsScreen = () => {
       <Screen
         title={i18n.t("screens.notifications")}
         renderLeftAction={() => (
-          <TouchableOpacity onPress={() => router.back()}>
+          <TouchableOpacity onPress={() => navigation.goBack()}>
             <MaterialCommunityIcons
               name="chevron-left"
               size={32}

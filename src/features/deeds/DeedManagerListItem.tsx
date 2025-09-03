@@ -1,4 +1,4 @@
-// src/features/deeds/DeedManagerListItem.tsx
+// FILE: src/features/deeds/DeedManagerListItem.tsx
 import { Box } from "@/components/base/Box";
 import { ThemedText } from "@/components/base/ThemedText";
 import { AppTheme } from "@/constants/theme";
@@ -7,8 +7,10 @@ import i18n from "@/core/i18n";
 import useAppStore from "@/core/store/appStore";
 import { useTheme } from "@/core/theme/ThemeContext";
 import { triggerHaptic } from "@/core/utils/haptics";
+import { HomeStackParamList } from "@/navigation/AppNavigator";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-import { useRouter } from "expo-router";
+import { useNavigation } from "@react-navigation/native";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import React from "react";
 import { Alert, StyleSheet, TouchableOpacity } from "react-native";
 import { ScaleDecorator } from "react-native-draggable-flatlist";
@@ -19,6 +21,8 @@ type DeedManagerListItemProps = {
   isDragging: boolean;
 };
 
+type DeedManagerNavigationProp = NativeStackNavigationProp<HomeStackParamList>;
+
 export const DeedManagerListItem = ({
   deed,
   drag,
@@ -26,17 +30,14 @@ export const DeedManagerListItem = ({
 }: DeedManagerListItemProps) => {
   const { theme } = useTheme();
   const styles = getStyles(theme);
-  const router = useRouter();
+  const navigation = useNavigation<DeedManagerNavigationProp>();
   const deleteDeed = useAppStore((state) => state.deleteDeed);
 
   const isEditable = !deed.isCore;
 
   const handleEdit = () => {
     triggerHaptic();
-    router.push({
-      pathname: "/create-deed",
-      params: { deedId: deed.id },
-    });
+    navigation.navigate("CreateDeed", { deedId: deed.id });
   };
 
   const handleDelete = () => {

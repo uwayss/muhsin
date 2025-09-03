@@ -1,7 +1,8 @@
-// src/features/settings/settingsData.ts
+// FILE: src/features/settings/settingsData.ts
 import i18n from "@/core/i18n";
 import { AppSettings } from "@/core/store/appStore";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { SettingsStackParamList } from "@/navigation/AppNavigator";
 
 // --- Type Definitions ---
 type BaseSettingsItem = {
@@ -11,7 +12,7 @@ type BaseSettingsItem = {
 
 export type NavigationSettingsItem = BaseSettingsItem & {
   type: "navigation";
-  path: string;
+  path: keyof SettingsStackParamList;
 };
 
 export type ToggleSettingsItem = BaseSettingsItem & {
@@ -33,8 +34,6 @@ export type ActionSettingsItem = BaseSettingsItem & {
   color?: string;
 };
 
-// --- CORRECTED LINE ---
-// ActionSettingsItem was missing from this union, causing all the errors.
 export type SettingsItem =
   | NavigationSettingsItem
   | ToggleSettingsItem
@@ -58,13 +57,13 @@ export const getSettingsData = (actions: {
         type: "navigation",
         label: i18n.t("settings.deedManager"),
         icon: "format-list-bulleted-square",
-        path: "/settings/deed-manager",
+        path: "DeedManager",
       },
       {
         type: "navigation",
         label: i18n.t("settings.notifications"),
         icon: "bell-outline",
-        path: "/settings/notifications",
+        path: "Notifications",
       },
       {
         type: "modal",

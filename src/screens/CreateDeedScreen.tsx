@@ -1,4 +1,4 @@
-// src/app/index/create-deed.tsx
+// FILE: src/screens/CreateDeedScreen.tsx
 import { Box } from "@/components/base/Box";
 import { ThemedText } from "@/components/base/ThemedText";
 import { ThemedTextInput } from "@/components/base/ThemedTextInput";
@@ -9,7 +9,7 @@ import useAppStore from "@/core/store/appStore";
 import { useTheme } from "@/core/theme/ThemeContext";
 import { IconSelectorModal } from "@/features/deeds/IconSelectorModal";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-import { useLocalSearchParams, useRouter } from "expo-router";
+import { useNavigation, useRoute, RouteProp } from "@react-navigation/native";
 import React, { useEffect, useState } from "react";
 import {
   Alert,
@@ -18,13 +18,22 @@ import {
   View,
   ActivityIndicator,
 } from "react-native";
+import { HomeStackParamList } from "@/navigation/AppNavigator";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+
+type CreateDeedScreenNavigationProp = NativeStackNavigationProp<
+  HomeStackParamList,
+  "CreateDeed"
+>;
+type CreateDeedScreenRouteProp = RouteProp<HomeStackParamList, "CreateDeed">;
 
 const CreateDeedScreen = () => {
-  const router = useRouter();
+  const navigation = useNavigation<CreateDeedScreenNavigationProp>();
+  const route = useRoute<CreateDeedScreenRouteProp>();
   const { theme } = useTheme();
   const styles = getStyles(theme);
-  const params = useLocalSearchParams();
-  const deedId = typeof params.deedId === "string" ? params.deedId : undefined;
+
+  const deedId = route.params?.deedId;
   const isEditMode = !!deedId;
 
   const {
@@ -54,7 +63,7 @@ const CreateDeedScreen = () => {
       return;
     }
     saveDraftDeed();
-    router.back();
+    navigation.goBack();
   };
 
   const handleSelectIcon = (
@@ -106,7 +115,7 @@ const CreateDeedScreen = () => {
       <Screen
         title={screenTitle}
         renderLeftAction={() => (
-          <TouchableOpacity onPress={() => router.back()}>
+          <TouchableOpacity onPress={() => navigation.goBack()}>
             <MaterialCommunityIcons
               name="close"
               size={28}
@@ -148,19 +157,19 @@ const CreateDeedScreen = () => {
             icon="calendar-sync"
             label={i18n.t("deeds.frequency")}
             value={getFrequencyLabel()}
-            onPress={() => router.push("/configure-frequency")}
+            onPress={() => navigation.navigate("ConfigureFrequency")}
           />
           <ConfigRow
             icon="bullseye-arrow"
             label={i18n.t("deeds.goal")}
             value={getGoalLabel()}
-            onPress={() => router.push("/configure-goal")}
+            onPress={() => navigation.navigate("ConfigureGoal")}
           />
           <ConfigRow
             icon="file-tree"
             label={i18n.t("deeds.parentDeed")}
             value={getParentLabel()}
-            onPress={() => router.push("/configure-parent")}
+            onPress={() => navigation.navigate("ConfigureParent")}
           />
         </View>
       </Screen>

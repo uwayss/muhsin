@@ -7,7 +7,7 @@ import i18n from "@/core/i18n";
 import { useTheme } from "@/core/theme/ThemeContext";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import React from "react";
-import { I18nManager, StyleSheet, TouchableOpacity } from "react-native";
+import { StyleSheet, TouchableOpacity } from "react-native";
 
 type DeedListItemProps = {
   deed: Deed;
@@ -66,7 +66,7 @@ const getStyles = (theme: AppTheme) =>
       flex: 1,
       marginStart: theme.spacing.m,
       fontSize: theme.typography.fontSize.m,
-      textAlign: I18nManager.isRTL ? "right" : "left",
+      // textAlign: I18nManager.isRTL ? "right" : "left",
     },
     statusBadge: {
       padding: theme.spacing.xs,

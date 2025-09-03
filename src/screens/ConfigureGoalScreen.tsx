@@ -1,4 +1,4 @@
-// src/app/index/configure-goal.tsx
+// FILE: src/screens/ConfigureGoalScreen.tsx
 import { Screen } from "@/components/Screen";
 import { ThemedText } from "@/components/base/ThemedText";
 import { ThemedTextInput } from "@/components/base/ThemedTextInput";
@@ -7,12 +7,12 @@ import i18n from "@/core/i18n";
 import useAppStore from "@/core/store/appStore";
 import { useTheme } from "@/core/theme/ThemeContext";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-import { useRouter } from "expo-router";
+import { useNavigation } from "@react-navigation/native";
 import React, { useState } from "react";
 import { StyleSheet, TouchableOpacity, View } from "react-native";
 
 const ConfigureGoalScreen = () => {
-  const router = useRouter();
+  const navigation = useNavigation();
   const { theme } = useTheme();
   const styles = getStyles(theme);
 
@@ -44,7 +44,7 @@ const ConfigureGoalScreen = () => {
     <Screen
       title={i18n.t("screens.configureGoal")}
       renderLeftAction={() => (
-        <TouchableOpacity onPress={() => router.back()}>
+        <TouchableOpacity onPress={() => navigation.goBack()}>
           <MaterialCommunityIcons
             name="chevron-left"
             size={32}

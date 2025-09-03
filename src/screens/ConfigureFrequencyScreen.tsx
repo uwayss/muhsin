@@ -1,4 +1,4 @@
-// src/app/index/configure-frequency.tsx
+// FILE: src/screens/ConfigureFrequencyScreen.tsx
 import { Screen } from "@/components/Screen";
 import { ThemedText } from "@/components/base/ThemedText";
 import { AppTheme } from "@/constants/theme";
@@ -7,9 +7,10 @@ import i18n from "@/core/i18n";
 import useAppStore from "@/core/store/appStore";
 import { useTheme } from "@/core/theme/ThemeContext";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-import { useRouter } from "expo-router";
+import { useNavigation } from "@react-navigation/native";
 import React from "react";
 import { StyleSheet, TouchableOpacity, View, TextInput } from "react-native";
+
 const DAYS = [
   { label: i18n.t("frequency.days_abbr.sun"), value: 0 },
   { label: i18n.t("frequency.days_abbr.mon"), value: 1 },
@@ -20,7 +21,7 @@ const DAYS = [
   { label: i18n.t("frequency.days_abbr.sat"), value: 6 },
 ];
 const ConfigureFrequencyScreen = () => {
-  const router = useRouter();
+  const navigation = useNavigation();
   const { theme } = useTheme();
   const styles = getStyles(theme);
   const { draftDeed, updateDraftDeed } = useAppStore();
@@ -52,7 +53,7 @@ const ConfigureFrequencyScreen = () => {
     <Screen
       title={i18n.t("screens.configureFrequency")}
       renderLeftAction={() => (
-        <TouchableOpacity onPress={() => router.back()}>
+        <TouchableOpacity onPress={() => navigation.goBack()}>
           <MaterialCommunityIcons
             name="chevron-left"
             size={32}

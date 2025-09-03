@@ -12,7 +12,6 @@ import { formatISO } from "date-fns";
 import { Alert, Appearance, I18nManager } from "react-native";
 import { generateDemoLogs } from "../data/demoData";
 import i18n from "../i18n";
-import * as Updates from "expo-updates";
 
 export type AppSettings = {
   theme: "system" | "light" | "dark";
@@ -160,8 +159,7 @@ const useAppStore = create<AppState & AppActions>((set, get) => ({
             text: i18n.t("alerts.restartNow"),
             style: "default",
             onPress: async () => {
-              await I18nManager.forceRTL(isRTL);
-              await Updates.reloadAsync();
+              I18nManager.forceRTL(isRTL);
             },
           },
         ],

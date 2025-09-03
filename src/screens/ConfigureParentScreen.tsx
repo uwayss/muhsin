@@ -1,4 +1,4 @@
-// src/app/index/configure-parent.tsx
+// FILE: src/screens/ConfigureParentScreen.tsx
 import { Screen } from "@/components/Screen";
 import { ThemedText } from "@/components/base/ThemedText";
 import { AppTheme } from "@/constants/theme";
@@ -6,12 +6,12 @@ import i18n from "@/core/i18n";
 import useAppStore from "@/core/store/appStore";
 import { useTheme } from "@/core/theme/ThemeContext";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-import { useRouter } from "expo-router";
+import { useNavigation } from "@react-navigation/native";
 import React from "react";
 import { FlatList, StyleSheet, TouchableOpacity } from "react-native";
 
 const ConfigureParentScreen = () => {
-  const router = useRouter();
+  const navigation = useNavigation();
   const { theme } = useTheme();
   const styles = getStyles(theme);
 
@@ -21,14 +21,14 @@ const ConfigureParentScreen = () => {
 
   const handleSelect = (deedId: string | null) => {
     updateDraftDeed({ parentId: deedId });
-    router.back();
+    navigation.goBack();
   };
 
   return (
     <Screen
       title={i18n.t("screens.configureParent")}
       renderLeftAction={() => (
-        <TouchableOpacity onPress={() => router.back()}>
+        <TouchableOpacity onPress={() => navigation.goBack()}>
           <MaterialCommunityIcons
             name="chevron-left"
             size={32}

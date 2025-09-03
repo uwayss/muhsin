@@ -1,4 +1,4 @@
-// src/app/index/home.tsx
+// FILE: src/screens/HomeScreen.tsx
 import { Box } from "@/components/base/Box";
 import { Screen } from "@/components/Screen";
 import { ThemedText } from "@/components/base/ThemedText";
@@ -13,7 +13,7 @@ import { DeedListItem } from "@/features/deeds/DeedListItem";
 import { LogDeedModal } from "@/features/deeds/LogDeedModal";
 import { DateScroller } from "@/features/home/DateScroller";
 import { format, formatISO, getDay } from "date-fns";
-import { useRouter } from "expo-router";
+import { useNavigation } from "@react-navigation/native";
 import React, { useMemo, useState } from "react";
 import {
   ActivityIndicator,
@@ -21,11 +21,18 @@ import {
   SectionList,
   StyleSheet,
 } from "react-native";
+import { HomeStackParamList } from "@/navigation/AppNavigator";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+
+type HomeScreenNavigationProp = NativeStackNavigationProp<
+  HomeStackParamList,
+  "HomeMain"
+>;
 
 const HomeScreen = () => {
   const { theme } = useTheme();
   const styles = getStyles(theme);
-  const router = useRouter();
+  const navigation = useNavigation<HomeScreenNavigationProp>();
 
   // --- Global State ---
   const { isInitialized, deeds, logs, addOrUpdateLog, settings } =
@@ -46,8 +53,6 @@ const HomeScreen = () => {
       hijriDate: formatHijriDate(selectedDate),
     };
   }, [selectedDate, activeLocale]);
-
-  // ... (rest of the component is unchanged)
 
   const logsForSelectedDate = useMemo(() => {
     const dateString = formatISO(selectedDate, { representation: "date" });
@@ -140,7 +145,7 @@ const HomeScreen = () => {
           }}
           contentContainerStyle={styles.listContent}
         />
-        <FAB onPress={() => router.push("/add-deed")} />
+        <FAB onPress={() => navigation.navigate("AddDeed")} />
       </Box>
       <LogDeedModal
         isVisible={isModalVisible}

@@ -122,6 +122,6 @@ const getStyles = (theme: AppTheme) =>
     label: {
       flex: 1,
       fontSize: theme.typography.fontSize.m,
-      textAlign: I18nManager.isRTL ? "right" : "left",
+      // textAlign: I18nManager.isRTL ? "right" : "left",
     },
   });
