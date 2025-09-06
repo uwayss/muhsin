@@ -7,7 +7,6 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Box } from "./base/Box";
 import { Header, HeaderProps } from "./Header";
 
-// Omit 'insets' from HeaderProps as Screen will provide it automatically
 type ScreenProps = Partial<Omit<HeaderProps, "insets">> & {
   children: React.ReactNode;
 };
@@ -20,7 +19,6 @@ export const Screen = ({ children, title, ...headerProps }: ScreenProps) => {
   return (
     <Box style={[styles.container]}>
       {title && <Header title={title} {...headerProps} insets={insets} />}
-
       <Box style={styles.content}>{children}</Box>
     </Box>
   );

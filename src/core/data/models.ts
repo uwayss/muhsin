@@ -62,4 +62,5 @@ export type DeedLog = {
   deedId: string; // Foreign key to the Deed
   date: string; // ISO 8601 date string (e.g., "2025-08-29")
   statusId: string; // Foreign key to the DeedStatus
+  value?: number; // Optional numeric value for goal tracking
 };

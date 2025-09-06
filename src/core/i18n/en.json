@@ -54,7 +54,8 @@
     "save": "Save",
     "logDeedTitle": "How did you complete {{deedName}} today?",
     "weeklyLabel": "Weekly ({{dayCount}} days)",
-    "weeklyLabel_singular": "Weekly ({{dayCount}} day)"
+    "weeklyLabel_singular": "Weekly ({{dayCount}} day)",
+    "linkedDeeds": "Linked Deeds"
   },
   "frequency": {
     "type": "Type",
@@ -88,7 +89,8 @@
     "notPrayed": "Not Prayed",
     "times": "{{count}} times",
     "activity": "Activity",
-    "statsByDeed": "Stats by Deed"
+    "statsByDeed": "Stats by Deed",
+    "goalProgress": "Goal Progress"
   },
   "intervals": {
     "week": "Week",
@@ -121,8 +123,10 @@
     "devMode": " (Dev)"
   },
   "devMenu": {
-    "title": "Developer Menu",
-    "enableDemo": "Enable Demo Mode"
+    "title": "Developer Options",
+    "enableDemo": "Enable Demo Mode",
+    "sendTest": "Send Test Notification",
+    "scheduleTest": "Schedule notification for 30 seconds"
   },
   "iconSelector": {
     "title": "Choose an Icon"

@@ -1,19 +1,22 @@
-// FILE: src/screens/HomeScreen.tsx
+// src/screens/HomeScreen.tsx
 import { Box } from "@/components/base/Box";
 import { Screen } from "@/components/Screen";
 import { ThemedText } from "@/components/base/ThemedText";
 import { FAB } from "@/components/FAB";
 import { AppTheme } from "@/constants/theme";
-import { Deed, DeedStatus } from "@/core/data/models";
+import { Deed, DeedLog, DeedStatus } from "@/core/data/models";
 import i18n, { dateLocales } from "@/core/i18n";
 import useAppStore from "@/core/store/appStore";
 import { useTheme } from "@/core/theme/ThemeContext";
 import { formatHijriDate } from "@/core/utils/dateFormatter";
 import { DeedListItem } from "@/features/deeds/DeedListItem";
 import { LogDeedModal } from "@/features/deeds/LogDeedModal";
+import { LogGoalModal } from "@/features/deeds/LogGoalModal";
 import { DateScroller } from "@/features/home/DateScroller";
-import { format, formatISO, getDay } from "date-fns";
+import { HomeStackParamList } from "@/navigation/AppNavigator";
 import { useNavigation } from "@react-navigation/native";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { format, formatISO, getDay } from "date-fns";
 import React, { useMemo, useState } from "react";
 import {
   ActivityIndicator,
@@ -21,8 +24,6 @@ import {
   SectionList,
   StyleSheet,
 } from "react-native";
-import { HomeStackParamList } from "@/navigation/AppNavigator";
-import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 
 type HomeScreenNavigationProp = NativeStackNavigationProp<
   HomeStackParamList,
@@ -41,8 +42,12 @@ const HomeScreen = () => {
 
   // --- Local State ---
   const [selectedDate, setSelectedDate] = useState(new Date());
-  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [isLogDeedModalVisible, setLogDeedModalVisible] = useState(false);
+  const [isLogGoalModalVisible, setLogGoalModalVisible] = useState(false);
   const [selectedDeed, setSelectedDeed] = useState<Deed | null>(null);
+  const [selectedLog, setSelectedLog] = useState<DeedLog | undefined>(
+    undefined,
+  );
 
   // --- Memos ---
   const { gregorianDate, hijriDate } = useMemo(() => {
@@ -62,7 +67,10 @@ const HomeScreen = () => {
   const deedsBySection = useMemo(() => {
     const dayOfWeek = getDay(selectedDate);
 
+    // Filter out deeds that have a parent
     const visibleDeeds = deeds.filter((deed) => {
+      if (deed.parentId) return false;
+
       if (!deed.frequency) {
         return true;
       }
@@ -97,15 +105,33 @@ const HomeScreen = () => {
     return sections;
   }, [deeds, selectedDate]);
 
-  const handleOpenLogModal = (deed: Deed) => {
+  const handleOpenModal = (deed: Deed) => {
+    const log = logsForSelectedDate.find((l) => l.deedId === deed.id);
     setSelectedDeed(deed);
-    setIsModalVisible(true);
+    setSelectedLog(log);
+
+    if (deed.goal) {
+      setLogGoalModalVisible(true);
+    } else {
+      setLogDeedModalVisible(true);
+    }
   };
 
   const handleLogStatus = (status: DeedStatus) => {
     if (!selectedDeed) return;
     addOrUpdateLog(selectedDeed, selectedDate, status);
-    setIsModalVisible(false);
+    // Do not close modal here to allow child deed logging
+  };
+
+  const handleLogGoal = (value: number) => {
+    if (!selectedDeed) return;
+    // For goals, we determine status based on value.
+    const status =
+      value > 0
+        ? selectedDeed.statuses.find((s) => s.id === "completed")!
+        : selectedDeed.statuses.find((s) => s.id === "missed")!;
+    addOrUpdateLog(selectedDeed, selectedDate, status, value);
+    setLogGoalModalVisible(false);
     setSelectedDeed(null);
   };
 
@@ -139,7 +165,7 @@ const HomeScreen = () => {
               <DeedListItem
                 deed={deed}
                 log={log}
-                onPress={() => handleOpenLogModal(deed)}
+                onPress={() => handleOpenModal(deed)}
               />
             );
           }}
@@ -148,10 +174,19 @@ const HomeScreen = () => {
         <FAB onPress={() => navigation.navigate("AddDeed")} />
       </Box>
       <LogDeedModal
-        isVisible={isModalVisible}
+        isVisible={isLogDeedModalVisible}
         deed={selectedDeed}
-        onClose={() => setIsModalVisible(false)}
+        date={selectedDate}
+        onClose={() => setLogDeedModalVisible(false)}
         onLogStatus={handleLogStatus}
+      />
+      <LogGoalModal
+        isVisible={isLogGoalModalVisible}
+        deed={selectedDeed}
+        log={selectedLog}
+        date={selectedDate}
+        onClose={() => setLogGoalModalVisible(false)}
+        onLogGoal={handleLogGoal}
       />
     </Screen>
   );

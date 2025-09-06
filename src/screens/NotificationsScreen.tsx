@@ -4,8 +4,8 @@ import { ThemedText } from "@/components/base/ThemedText";
 import { AppTheme } from "@/constants/theme";
 import i18n from "@/core/i18n";
 import {
-  sendTestNotification,
   scheduleTestNotificationIn5s,
+  sendTestNotification,
 } from "@/core/services/notificationService";
 import useAppStore from "@/core/store/appStore";
 import { useTheme } from "@/core/theme/ThemeContext";
@@ -97,13 +97,15 @@ const NotificationsScreen = () => {
 
         {isDevMode && (
           <View style={styles.devContainer}>
-            <ThemedText style={styles.devTitle}>Developer Options</ThemedText>
+            <ThemedText style={styles.devTitle}>
+              {i18n.t("devMenu.title")}
+            </ThemedText>
             <TouchableOpacity
               style={styles.devButton}
               onPress={sendTestNotification}
             >
               <ThemedText style={styles.devButtonText}>
-                Send Test Notification
+                {i18n.t("devMenu.sendTest")}
               </ThemedText>
             </TouchableOpacity>
             <TouchableOpacity
@@ -111,7 +113,7 @@ const NotificationsScreen = () => {
               onPress={scheduleTestNotificationIn5s}
             >
               <ThemedText style={styles.devButtonText}>
-                Schedule notification for 5 seconds
+                {i18n.t("devMenu.scheduleTest")}
               </ThemedText>
             </TouchableOpacity>
           </View>

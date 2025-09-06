@@ -54,7 +54,8 @@
     "save": "حفظ",
     "logDeedTitle": "كيف أتممت {{deedName}} اليوم؟",
     "weeklyLabel": "أسبوعيًا ({{dayCount}} أيام)",
-    "weeklyLabel_singular": "أسبوعيًا (يوم واحد)"
+    "weeklyLabel_singular": "أسبوعيًا (يوم واحد)",
+    "linkedDeeds": "الأعمال المرتبطة"
   },
   "frequency": {
     "type": "النوع",
@@ -88,7 +89,8 @@
     "notPrayed": "لم تصل",
     "times": "{{count}} مرات",
     "activity": "النشاط",
-    "statsByDeed": "إحصائيات حسب العمل"
+    "statsByDeed": "إحصائيات حسب العمل",
+    "goalProgress": "تقدم الأهداف"
   },
   "intervals": {
     "week": "أسبوع",
@@ -122,7 +124,9 @@
   },
   "devMenu": {
     "title": "قائمة المطور",
-    "enableDemo": "تفعيل الوضع التجريبي"
+    "enableDemo": "تفعيل الوضع التجريبي",
+    "sendTest": "إرسال إشعار اختباري",
+    "scheduleTest": "جدولة إشعار بعد 30 ثانية"
   },
   "iconSelector": {
     "title": "اختر أيقونة"

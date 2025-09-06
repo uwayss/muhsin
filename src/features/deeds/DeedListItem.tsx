@@ -15,11 +15,59 @@ type DeedListItemProps = {
   onPress: () => void;
 };
 
+const renderStatus = (
+  deed: Deed,
+  log: DeedLog | undefined,
+  theme: AppTheme,
+  styles: ReturnType<typeof getStyles>,
+) => {
+  if (!log) return null;
+
+  // Render goal progress if the deed has a goal and a value is logged
+  if (deed.goal && typeof log.value === "number") {
+    const isComplete = log.value >= deed.goal.value;
+    return (
+      <Box
+        style={[
+          styles.statusBadge,
+          isComplete ? styles.goalComplete : styles.goalInProgress,
+        ]}
+      >
+        <ThemedText
+          style={[
+            styles.goalText,
+            isComplete ? styles.goalCompleteText : styles.goalInProgressText,
+          ]}
+        >
+          {log.value} / {deed.goal.value}
+        </ThemedText>
+      </Box>
+    );
+  }
+
+  // Render default status icon
+  const status = deed.statuses.find((s) => s.id === log.statusId);
+  if (!status) return null;
+
+  return (
+    <Box
+      style={[
+        styles.statusBadge,
+        { backgroundColor: theme.colors[status.color] },
+      ]}
+    >
+      <MaterialCommunityIcons
+        name={status.icon}
+        size={16}
+        color={theme.colors.primaryContrast}
+      />
+    </Box>
+  );
+};
+
 export const DeedListItem = ({ deed, log, onPress }: DeedListItemProps) => {
   const { theme } = useTheme();
   const styles = getStyles(theme);
-
-  const status = log ? deed.statuses.find((s) => s.id === log.statusId) : null;
 
   return (
     <TouchableOpacity onPress={onPress} activeOpacity={0.8}>
@@ -33,20 +81,7 @@ export const DeedListItem = ({ deed, log, onPress }: DeedListItemProps) => {
           {i18n.t(`deeds_names.${deed.id}`, { defaultValue: deed.name })}
         </ThemedText>
 
-        {status && (
-          <Box
-            style={[
-              styles.statusBadge,
-              { backgroundColor: theme.colors[status.color] },
-            ]}
-          >
-            <MaterialCommunityIcons
-              name={status.icon}
-              size={16}
-              color={theme.colors.primaryContrast}
-            />
-          </Box>
-        )}
+        {renderStatus(deed, log, theme, styles)}
       </Box>
     </TouchableOpacity>
   );
@@ -66,12 +101,31 @@ const getStyles = (theme: AppTheme) =>
       flex: 1,
       marginStart: theme.spacing.m,
       fontSize: theme.typography.fontSize.m,
-      // textAlign: I18nManager.isRTL ? "right" : "left",
     },
     statusBadge: {
-      padding: theme.spacing.xs,
+      paddingVertical: theme.spacing.xs,
+      paddingHorizontal: theme.spacing.s,
       borderRadius: 16,
       justifyContent: "center",
       alignItems: "center",
+      minWidth: 32,
+    },
+    goalInProgress: {
+      backgroundColor: theme.colors.background,
+      borderWidth: 1,
+      borderColor: theme.colors.primary,
+    },
+    goalComplete: {
+      backgroundColor: theme.colors.primary,
+    },
+    goalText: {
+      fontSize: theme.typography.fontSize.xs,
+      fontWeight: theme.typography.fontWeight.semibold,
+    },
+    goalInProgressText: {
+      color: theme.colors.primary,
+    },
+    goalCompleteText: {
+      color: theme.colors.primaryContrast,
     },
   });

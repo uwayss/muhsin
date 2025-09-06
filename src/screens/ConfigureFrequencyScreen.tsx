@@ -87,7 +87,7 @@ const ConfigureFrequencyScreen = () => {
             selected={frequency.type === "yearly"}
             onPress={() => setType("yearly")}
           />
-        </View>{" "}
+        </View>
         {frequency.type === "weekly" && (
           <>
             <ThemedText style={styles.sectionHeader}>

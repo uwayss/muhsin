@@ -47,7 +47,12 @@ type AppState = AppData & {
 
 type AppActions = {
   initialize: () => Promise<void>;
-  addOrUpdateLog: (deed: Deed, date: Date, status: DeedStatus) => void;
+  addOrUpdateLog: (
+    deed: Deed,
+    date: Date,
+    status: DeedStatus,
+    value?: number,
+  ) => void;
   addDeed: (deed: Deed) => void;
   // DEED MANAGEMENT
   initializeDraftDeed: (deedId?: string) => void;
@@ -178,7 +183,7 @@ const useAppStore = create<AppState & AppActions>((set, get) => ({
     }
   },
 
-  addOrUpdateLog: (deed, date, status) => {
+  addOrUpdateLog: (deed, date, status, value) => {
     const dateString = formatISO(date, { representation: "date" });
     const currentLogs = get().logs;
     const existingLogIndex = currentLogs.findIndex(
@@ -188,12 +193,14 @@ const useAppStore = create<AppState & AppActions>((set, get) => ({
     if (existingLogIndex > -1) {
       newLogs = [...currentLogs];
       newLogs[existingLogIndex].statusId = status.id;
+      newLogs[existingLogIndex].value = value;
     } else {
       const newLog: DeedLog = {
         id: `log-${Date.now()}`,
         deedId: deed.id,
         date: dateString,
         statusId: status.id,
+        value,
       };
       newLogs = [...currentLogs, newLog];
     }

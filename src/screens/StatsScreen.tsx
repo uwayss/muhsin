@@ -1,4 +1,4 @@
-// FILE: src/screens/StatsScreen.tsx
+// src/screens/StatsScreen.tsx
 import { Screen } from "@/components/Screen";
 import { ThemedText } from "@/components/base/ThemedText";
 import { AppTheme } from "@/constants/theme";
@@ -7,6 +7,7 @@ import useAppStore from "@/core/store/appStore";
 import { useTheme } from "@/core/theme/ThemeContext";
 import { ActivityGraph } from "@/features/stats/ActivityGraph";
 import { DeedStatsRow } from "@/features/stats/DeedStatsRow";
+import { GoalStatsRow } from "@/features/stats/GoalStatsRow";
 import {
   IntervalSwitcher,
   TimeInterval,
@@ -38,11 +39,18 @@ const StatsScreen = () => {
   const { isInitialized, deeds, logs } = useAppStore();
   const [interval, setInterval] = useState<TimeInterval>("week");
 
-  const prayerDeeds = useMemo(() => {
-    return PRAYER_DEED_IDS.map((id) => deeds.find((d) => d.id === id)).filter(
-      Boolean,
-    );
-  }, [deeds]);
+  const prayerDeeds = useMemo(
+    () =>
+      PRAYER_DEED_IDS.map((id) => deeds.find((d) => d.id === id)).filter(
+        Boolean,
+      ),
+    [deeds],
+  );
+
+  const goalDeeds = useMemo(
+    () => deeds.filter((d) => d.goal && !d.isCore),
+    [deeds],
+  );
 
   const dateRange = useMemo(() => {
     const today = new Date();
@@ -125,6 +133,23 @@ const StatsScreen = () => {
         showsVerticalScrollIndicator={false}
       >
         <IntervalSwitcher selected={interval} onSelect={setInterval} />
+
+        {goalDeeds.length > 0 && (
+          <>
+            <ThemedText style={styles.sectionTitle}>
+              {i18n.t("stats.goalProgress")}
+            </ThemedText>
+            <View style={styles.deedStatsContainer}>
+              {goalDeeds.map((deed) => (
+                <GoalStatsRow
+                  key={deed.id}
+                  deed={deed}
+                  logs={filteredLogs.filter((l) => l.deedId === deed.id)}
+                />
+              ))}
+            </View>
+          </>
+        )}
 
         <ThemedText style={styles.sectionTitle}>
           {i18n.t("stats.prayerPerformance")}
