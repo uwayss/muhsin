@@ -134,6 +134,14 @@
     "SOCIAL": "اجتماعي",
     "CUSTOM": "مخصص"
   },
+  "notifications": {
+    "reminderTitle": "تذكير من محسن",
+    "reminderBody": "لا تنس تسجيل أعمالك لهذا اليوم!",
+    "testTitle": "إشعار اختباري",
+    "testBody": "هذا إشعار اختباري فوري.",
+    "scheduledTestTitle": "اختبار مجدول",
+    "scheduledTestBody": "تمت جدولة هذا الإشعار قبل 5 ثانية."
+  },
   "deeds_names": {
     "prayer-fajr": "الفجر",
     "prayer-dhuhr": "الظهر",

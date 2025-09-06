@@ -134,6 +134,14 @@
     "SOCIAL": "Social",
     "CUSTOM": "Custom"
   },
+  "notifications": {
+    "reminderTitle": "Muhsin Reminder",
+    "reminderBody": "Don't forget to log your deeds for today!",
+    "testTitle": "Test Notification",
+    "testBody": "This is an immediate test notification.",
+    "scheduledTestTitle": "Scheduled Test",
+    "scheduledTestBody": "This notification was scheduled 5 seconds ago."
+  },
   "deeds_names": {
     "prayer-fajr": "Fajr",
     "prayer-dhuhr": "Dhuhr",

@@ -1,24 +1,28 @@
-// FILE: src/screens/NotificationsScreen.tsx
+// src/screens/NotificationsScreen.tsx
 import { Screen } from "@/components/Screen";
 import { ThemedText } from "@/components/base/ThemedText";
 import { AppTheme } from "@/constants/theme";
 import i18n from "@/core/i18n";
+import {
+  sendTestNotification,
+  scheduleTestNotificationIn5s,
+} from "@/core/services/notificationService";
 import useAppStore from "@/core/store/appStore";
 import { useTheme } from "@/core/theme/ThemeContext";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
+import DateTimePicker, {
+  DateTimePickerEvent,
+} from "@react-native-community/datetimepicker";
 import { format } from "date-fns";
 import { useNavigation } from "@react-navigation/native";
 import React, { useState } from "react";
 import {
+  Platform,
   StyleSheet,
   Switch,
   TouchableOpacity,
   View,
-  Platform,
 } from "react-native";
-import DateTimePicker, {
-  DateTimePickerEvent,
-} from "@react-native-community/datetimepicker";
 
 const NotificationsScreen = () => {
   const navigation = useNavigation();
@@ -26,7 +30,7 @@ const NotificationsScreen = () => {
   const styles = getStyles(theme);
 
   const { settings, setReminderTime, toggleReminder } = useAppStore();
-  const { isReminderEnabled, reminderTime } = settings;
+  const { isReminderEnabled, reminderTime, isDevMode } = settings;
 
   const [isPickerVisible, setPickerVisible] = useState(false);
 
@@ -90,6 +94,28 @@ const NotificationsScreen = () => {
             </TouchableOpacity>
           )}
         </View>
+
+        {isDevMode && (
+          <View style={styles.devContainer}>
+            <ThemedText style={styles.devTitle}>Developer Options</ThemedText>
+            <TouchableOpacity
+              style={styles.devButton}
+              onPress={sendTestNotification}
+            >
+              <ThemedText style={styles.devButtonText}>
+                Send Test Notification
+              </ThemedText>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.devButton}
+              onPress={scheduleTestNotificationIn5s}
+            >
+              <ThemedText style={styles.devButtonText}>
+                Schedule notification for 5 seconds
+              </ThemedText>
+            </TouchableOpacity>
+          </View>
+        )}
       </Screen>
       {isPickerVisible && (
         <DateTimePicker
@@ -132,5 +158,30 @@ const getStyles = (theme: AppTheme) =>
     valueText: {
       color: theme.colors.textSecondary,
       marginEnd: theme.spacing.xs,
+    },
+    devContainer: {
+      marginTop: theme.spacing.xl,
+      backgroundColor: theme.colors.foreground,
+      borderRadius: 16,
+      padding: theme.spacing.m,
+    },
+    devTitle: {
+      fontSize: theme.typography.fontSize.s,
+      fontWeight: theme.typography.fontWeight.bold,
+      color: theme.colors.textSecondary,
+      textTransform: "uppercase",
+      textAlign: "center",
+      marginBottom: theme.spacing.m,
+    },
+    devButton: {
+      backgroundColor: theme.colors.primary,
+      padding: theme.spacing.m,
+      borderRadius: 8,
+      alignItems: "center",
+      marginBottom: theme.spacing.s,
+    },
+    devButtonText: {
+      color: theme.colors.primaryContrast,
+      fontWeight: theme.typography.fontWeight.semibold,
     },
   });

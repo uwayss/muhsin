@@ -12,6 +12,10 @@ import { formatISO } from "date-fns";
 import { Alert, Appearance, I18nManager } from "react-native";
 import { generateDemoLogs } from "../data/demoData";
 import i18n from "../i18n";
+import {
+  cancelAllReminders,
+  scheduleDailyReminder,
+} from "../services/notificationService";
 
 export type AppSettings = {
   theme: "system" | "light" | "dark";
@@ -123,6 +127,12 @@ const useAppStore = create<AppState & AppActions>((set, get) => ({
     i18n.locale = settings.language;
     // This initial call sets the layout direction on first launch
     I18nManager.forceRTL(settings.language === "ar");
+
+    // Ensure reminder is scheduled on app start if enabled
+    if (settings.isReminderEnabled) {
+      scheduleDailyReminder(settings.reminderTime);
+    }
+
     set({ isInitialized: true });
   },
 
@@ -335,13 +345,24 @@ const useAppStore = create<AppState & AppActions>((set, get) => ({
       Appearance.setColorScheme(theme);
     }
     await saveDataToFile(initialState);
+    await cancelAllReminders(); // Also cancel reminders on reset
   },
 
   toggleReminder: () => {
+    const isEnabled = get().settings.isReminderEnabled;
+    const reminderTime = get().settings.reminderTime;
+    const newIsEnabled = !isEnabled;
+
+    if (newIsEnabled) {
+      scheduleDailyReminder(reminderTime);
+    } else {
+      cancelAllReminders();
+    }
+
     set((state) => ({
       settings: {
         ...state.settings,
-        isReminderEnabled: !state.settings.isReminderEnabled,
+        isReminderEnabled: newIsEnabled,
       },
     }));
     persistState(get());
@@ -351,6 +372,10 @@ const useAppStore = create<AppState & AppActions>((set, get) => ({
     set((state) => ({
       settings: { ...state.settings, reminderTime: time },
     }));
+    // Only reschedule if the reminder is already enabled
+    if (get().settings.isReminderEnabled) {
+      scheduleDailyReminder(time);
+    }
     persistState(get());
   },
 }));
