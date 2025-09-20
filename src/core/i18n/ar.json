@@ -90,12 +90,14 @@
     "times": "{{count}} مرات",
     "activity": "النشاط",
     "statsByDeed": "إحصائيات حسب العمل",
-    "goalProgress": "تقدم الأهداف"
+    "goalProgress": "تقدم الأهداف",
+    "fardPrayers": "الصلوات المفروضة"
   },
   "intervals": {
     "week": "أسبوع",
     "month": "شهر",
-    "year": "سنة"
+    "year": "سنة",
+    "allTime": "كل الوقت"
   },
   "alerts": {
     "missingNameTitle": "الاسم مفقود",

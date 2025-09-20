@@ -90,12 +90,14 @@
     "times": "{{count}} times",
     "activity": "Activity",
     "statsByDeed": "Stats by Deed",
-    "goalProgress": "Goal Progress"
+    "goalProgress": "Goal Progress",
+    "fardPrayers": "Fard Prayers"
   },
   "intervals": {
     "week": "Week",
     "month": "Month",
-    "year": "Year"
+    "year": "Year",
+    "allTime": "All Time"
   },
   "alerts": {
     "missingNameTitle": "Missing Name",

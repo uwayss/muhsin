@@ -6,7 +6,7 @@ import { useTheme } from "@/core/theme/ThemeContext";
 import React from "react";
 import { StyleSheet, TouchableOpacity, View } from "react-native";
 
-export type TimeInterval = "week" | "month" | "year";
+export type TimeInterval = "week" | "month" | "year" | "all";
 
 type IntervalSwitcherProps = {
   selected: TimeInterval;
@@ -23,6 +23,7 @@ export const IntervalSwitcher = ({
     { label: i18n.t("intervals.week"), value: "week" },
     { label: i18n.t("intervals.month"), value: "month" },
     { label: i18n.t("intervals.year"), value: "year" },
+    { label: i18n.t("intervals.allTime"), value: "all" },
   ];
   return (
     <View style={styles.switcherContainer}>

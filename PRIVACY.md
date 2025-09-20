@@ -12,4 +12,4 @@ Nothing leaves your device. The app doesn't access the internet. No one knows ab
 
 3.  **It Works Completely Offline.** You don't need an internet connection to use Muhsin. It's designed to be your private companion, not a data-collection tool.
 
-4.  **Want to Check Our Work? Go Ahead.** This app is fully open-source. You can read every line of code [right here on GitHub](https://github.com/uwayss/muhsin) to see for yourself that we stand by this promise.
+4.  **Want to Check The Code? Go Ahead.** This app is fully open-source. You can read every line of code [right here on GitHub](https://github.com/uwayss/muhsin) to see for yourself that we stand by this promise.

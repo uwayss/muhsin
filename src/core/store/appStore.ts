@@ -40,9 +40,6 @@ type AppState = AppData & {
   isInitialized: boolean;
   suggestedDeeds: Deed[];
   draftDeed: CustomDeedPayload | null;
-  // For demo mode
-  originalDeeds: Deed[] | null;
-  originalLogs: DeedLog[] | null;
 };
 
 type AppActions = {
@@ -66,7 +63,7 @@ type AppActions = {
   setLanguage: (language: AppSettings["language"]) => void;
   toggleHaptics: () => void;
   setDevMode: (isDev: boolean) => void;
-  toggleDemoMode: () => void;
+  toggleDemoMode: () => Promise<void>;
   resetData: () => Promise<void>;
   toggleReminder: () => void;
   setReminderTime: (time: string) => void;
@@ -83,15 +80,21 @@ const defaultSettings: AppSettings = {
 };
 
 const persistState = (state: AppState) => {
-  if (state.settings.isDemoMode) {
-    console.log("Demo mode is active. Skipping data persistence.");
-    return;
-  }
   const dataToSave: AppData = {
-    deeds: state.deeds,
-    logs: state.logs,
+    // Only save the user's actual deeds and logs, not the demo ones
+    deeds: state.settings.isDemoMode ? MOCK_DEEDS : state.deeds,
+    logs: state.settings.isDemoMode ? [] : state.logs,
     settings: state.settings,
   };
+
+  // If demo mode is on, we save the user's real data from the original file load
+  // to prevent it from being overwritten.
+  const loadedData = useAppStore.getState();
+  if (state.settings.isDemoMode && loadedData.isInitialized) {
+    dataToSave.deeds = loadedData.deeds;
+    dataToSave.logs = loadedData.logs;
+  }
+
   saveDataToFile(dataToSave);
 };
 
@@ -103,37 +106,36 @@ const useAppStore = create<AppState & AppActions>((set, get) => ({
   suggestedDeeds: SUGGESTED_DEEDS,
   isInitialized: false,
   draftDeed: null,
-  originalDeeds: null,
-  originalLogs: null,
 
   // --- ACTIONS ---
   initialize: async () => {
     const loadedData = await loadDataFromFile();
     let settings = defaultSettings;
+    let initialDeeds = MOCK_DEEDS;
+    let initialLogs = MOCK_LOGS;
+
     if (loadedData) {
       settings = { ...defaultSettings, ...loadedData.settings };
-      set({
-        ...loadedData,
-        settings,
-      });
-    } else {
-      const initialState: AppData = {
-        deeds: MOCK_DEEDS,
-        logs: MOCK_LOGS,
-        settings: defaultSettings,
-      };
-      set(initialState);
-      await saveDataToFile(initialState);
+      initialDeeds = loadedData.deeds;
+      initialLogs = loadedData.logs;
     }
-    // Set theme and language on initial load
+
+    set({ deeds: initialDeeds, logs: initialLogs, settings });
+
+    // If demo mode was enabled last session, load the demo data over the user data
+    if (settings.isDemoMode) {
+      set({
+        deeds: MOCK_DEEDS,
+        logs: generateDemoLogs(),
+      });
+    }
+
     if (settings.theme !== "system") {
       Appearance.setColorScheme(settings.theme);
     }
     i18n.locale = settings.language;
-    // This initial call sets the layout direction on first launch
     I18nManager.forceRTL(settings.language === "ar");
 
-    // Ensure reminder is scheduled on app start if enabled
     if (settings.isReminderEnabled) {
       scheduleDailyReminder(settings.reminderTime);
     }
@@ -149,7 +151,6 @@ const useAppStore = create<AppState & AppActions>((set, get) => ({
     const isRTL = language === "ar";
     const needsRestart = isRTL !== I18nManager.isRTL;
 
-    // Update the state immediately so the UI (like the alert) uses the new language
     set((state) => ({ settings: { ...state.settings, language } }));
     persistState(get());
 
@@ -162,7 +163,6 @@ const useAppStore = create<AppState & AppActions>((set, get) => ({
             text: i18n.t("alerts.cancel"),
             style: "cancel",
             onPress: () => {
-              // If the user cancels, we must revert the change to avoid a broken state
               i18n.locale = currentLanguage;
               set((state) => ({
                 settings: { ...state.settings, language: currentLanguage },
@@ -178,7 +178,7 @@ const useAppStore = create<AppState & AppActions>((set, get) => ({
             },
           },
         ],
-        { cancelable: false }, // User must make a choice
+        { cancelable: false },
       );
     }
   },
@@ -306,36 +306,38 @@ const useAppStore = create<AppState & AppActions>((set, get) => ({
     persistState(get());
   },
 
-  toggleDemoMode: () => {
-    const { settings, originalDeeds, originalLogs, deeds, logs } = get();
-    const { isDemoMode } = settings;
+  toggleDemoMode: async () => {
+    const isCurrentlyDemo = get().settings.isDemoMode;
+    const newIsDemo = !isCurrentlyDemo;
 
-    if (!isDemoMode) {
-      const demoLogs = generateDemoLogs();
+    set((state) => ({
+      settings: { ...state.settings, isDemoMode: newIsDemo },
+    }));
+
+    if (newIsDemo) {
+      // Enabling Demo Mode
       set({
-        originalDeeds: deeds,
-        originalLogs: logs,
         deeds: MOCK_DEEDS,
-        logs: demoLogs,
-        settings: { ...get().settings, isDemoMode: true },
+        logs: generateDemoLogs(),
       });
       Alert.alert(
         i18n.t("alerts.demoModeEnabledTitle"),
         i18n.t("alerts.demoModeEnabledMessage"),
       );
     } else {
+      // Disabling Demo Mode: Reload user's original data from disk
+      const originalData = await loadDataFromFile();
       set({
-        deeds: originalDeeds || MOCK_DEEDS,
-        logs: originalLogs || [],
-        originalDeeds: null,
-        originalLogs: null,
-        settings: { ...get().settings, isDemoMode: false },
+        deeds: originalData?.deeds || MOCK_DEEDS,
+        logs: originalData?.logs || [],
       });
       Alert.alert(
         i18n.t("alerts.demoModeDisabledTitle"),
         i18n.t("alerts.demoModeDisabledMessage"),
       );
     }
+    // Persist the new state of `isDemoMode` in settings
+    persistState(get());
   },
 
   resetData: async () => {
@@ -352,7 +354,7 @@ const useAppStore = create<AppState & AppActions>((set, get) => ({
       Appearance.setColorScheme(theme);
     }
     await saveDataToFile(initialState);
-    await cancelAllReminders(); // Also cancel reminders on reset
+    await cancelAllReminders();
   },
 
   toggleReminder: () => {
@@ -379,7 +381,6 @@ const useAppStore = create<AppState & AppActions>((set, get) => ({
     set((state) => ({
       settings: { ...state.settings, reminderTime: time },
     }));
-    // Only reschedule if the reminder is already enabled
     if (get().settings.isReminderEnabled) {
       scheduleDailyReminder(time);
     }
