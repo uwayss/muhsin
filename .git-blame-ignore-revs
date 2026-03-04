@@ -1,0 +1,6 @@
+# We put the id's of the commits that we want to ignore in this file, one per line. 
+# For example: this is a format commit that we don't want to see in the blame output:
+2d222c86c982bef96b232e705dd536f4a7cd853b
+# Because it doesn't change the code, just the formatting:
+# Tell git to use this file for blame by running the following command in your terminal:
+# git config blame.ignoreRevsFile .git-blame-ignore-revs
