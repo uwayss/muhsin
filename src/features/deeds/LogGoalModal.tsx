@@ -1,15 +1,15 @@
 // src/features/deeds/LogGoalModal.tsx
-import { Box } from "@/components/base/Box";
-import { ThemedText } from "@/components/base/ThemedText";
-import { AppTheme } from "@/constants/theme";
-import { Deed, DeedLog } from "@/core/data/models";
-import i18n from "@/core/i18n";
-import useAppStore from "@/core/store/appStore";
-import { useTheme } from "@/core/theme/ThemeContext";
-import { triggerHaptic } from "@/core/utils/haptics";
-import { MaterialCommunityIcons } from "@expo/vector-icons";
-import { formatISO } from "date-fns";
-import React, { useEffect, useMemo, useState } from "react";
+import { Box } from '@/components/base/Box';
+import { ThemedText } from '@/components/base/ThemedText';
+import { AppTheme } from '@/constants/theme';
+import { Deed, DeedLog } from '@/core/data/models';
+import i18n from '@/core/i18n';
+import useAppStore from '@/core/store/appStore';
+import { useTheme } from '@/core/theme/ThemeContext';
+import { triggerHaptic } from '@/core/utils/haptics';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { formatISO } from 'date-fns';
+import React, { useEffect, useMemo, useState } from 'react';
 import {
   Modal,
   ScrollView,
@@ -17,8 +17,8 @@ import {
   TouchableOpacity,
   TouchableWithoutFeedback,
   View,
-} from "react-native";
-import { ChildDeedLogItem } from "./ChildDeedLogItem";
+} from 'react-native';
+import { ChildDeedLogItem } from './ChildDeedLogItem';
 
 type LogGoalModalProps = {
   deed: Deed | null;
@@ -50,7 +50,7 @@ export const LogGoalModal = ({
   }, [deed, allDeeds]);
 
   const logsForDate = useMemo(() => {
-    const dateString = formatISO(date, { representation: "date" });
+    const dateString = formatISO(date, { representation: 'date' });
     return allLogs.filter((log) => log.date === dateString);
   }, [date, allLogs]);
 
@@ -80,32 +80,20 @@ export const LogGoalModal = ({
   });
 
   return (
-    <Modal
-      transparent
-      animationType="fade"
-      visible={isVisible}
-      onRequestClose={onClose}
-    >
+    <Modal transparent animationType="fade" visible={isVisible} onRequestClose={onClose}>
       <TouchableWithoutFeedback onPress={onClose}>
         <View style={styles.overlay}>
           <TouchableOpacity activeOpacity={1} style={styles.container}>
             <ScrollView>
               <Box style={styles.header}>
-                <MaterialCommunityIcons
-                  name={deed.icon}
-                  size={32}
-                  color={theme.colors.text}
-                />
+                <MaterialCommunityIcons name={deed.icon} size={32} color={theme.colors.text} />
                 <ThemedText style={styles.title}>
-                  {i18n.t("deeds.logDeedTitle", { deedName })}
+                  {i18n.t('deeds.logDeedTitle', { deedName })}
                 </ThemedText>
               </Box>
 
               <View style={styles.counterContainer}>
-                <TouchableOpacity
-                  style={styles.counterButton}
-                  onPress={handleDecrement}
-                >
+                <TouchableOpacity style={styles.counterButton} onPress={handleDecrement}>
                   <MaterialCommunityIcons
                     name="minus-circle-outline"
                     size={48}
@@ -115,15 +103,10 @@ export const LogGoalModal = ({
 
                 <View style={styles.valueDisplay}>
                   <ThemedText style={styles.counterValue}>{value}</ThemedText>
-                  <ThemedText style={styles.unitLabel}>
-                    {deed.goal.unit}
-                  </ThemedText>
+                  <ThemedText style={styles.unitLabel}>{deed.goal.unit}</ThemedText>
                 </View>
 
-                <TouchableOpacity
-                  style={styles.counterButton}
-                  onPress={handleIncrement}
-                >
+                <TouchableOpacity style={styles.counterButton} onPress={handleIncrement}>
                   <MaterialCommunityIcons
                     name="plus-circle-outline"
                     size={48}
@@ -133,27 +116,18 @@ export const LogGoalModal = ({
               </View>
 
               <TouchableOpacity style={styles.saveButton} onPress={handleSave}>
-                <ThemedText style={styles.saveButtonText}>
-                  {i18n.t("deeds.save")}
-                </ThemedText>
+                <ThemedText style={styles.saveButtonText}>{i18n.t('deeds.save')}</ThemedText>
               </TouchableOpacity>
 
               {childDeeds.length > 0 && (
                 <View style={styles.childDeedsContainer}>
                   <ThemedText style={styles.childDeedsTitle}>
-                    {i18n.t("deeds.linkedDeeds")}
+                    {i18n.t('deeds.linkedDeeds')}
                   </ThemedText>
                   {childDeeds.map((child) => {
-                    const childLog = logsForDate.find(
-                      (l) => l.deedId === child.id,
-                    );
+                    const childLog = logsForDate.find((l) => l.deedId === child.id);
                     return (
-                      <ChildDeedLogItem
-                        key={child.id}
-                        deed={child}
-                        log={childLog}
-                        date={date}
-                      />
+                      <ChildDeedLogItem key={child.id} deed={child} log={childLog} date={date} />
                     );
                   })}
                 </View>
@@ -170,40 +144,40 @@ const getStyles = (theme: AppTheme) =>
   StyleSheet.create({
     overlay: {
       flex: 1,
-      justifyContent: "center",
-      alignItems: "center",
-      backgroundColor: "rgba(0, 0, 0, 0.6)",
+      justifyContent: 'center',
+      alignItems: 'center',
+      backgroundColor: 'rgba(0, 0, 0, 0.6)',
       padding: theme.spacing.l,
     },
     container: {
-      width: "100%",
-      maxHeight: "80%",
+      width: '100%',
+      maxHeight: '80%',
       backgroundColor: theme.colors.foreground,
       borderRadius: 16,
       padding: theme.spacing.l,
     },
     header: {
-      alignItems: "center",
+      alignItems: 'center',
       marginBottom: theme.spacing.m,
     },
     title: {
       fontSize: theme.typography.fontSize.l,
       fontWeight: theme.typography.fontWeight.semibold,
-      textAlign: "center",
+      textAlign: 'center',
       marginTop: theme.spacing.m,
     },
     counterContainer: {
-      flexDirection: "row",
-      alignItems: "center",
-      justifyContent: "space-around",
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'space-around',
       marginBottom: theme.spacing.m,
     },
     counterButton: {
       padding: theme.spacing.s,
     },
     valueDisplay: {
-      alignItems: "center",
-      justifyContent: "center",
+      alignItems: 'center',
+      justifyContent: 'center',
       minWidth: 100,
     },
     counterValue: {
@@ -219,7 +193,7 @@ const getStyles = (theme: AppTheme) =>
       backgroundColor: theme.colors.primary,
       padding: theme.spacing.m,
       borderRadius: 8,
-      alignItems: "center",
+      alignItems: 'center',
       marginBottom: theme.spacing.l,
     },
     saveButtonText: {
@@ -236,7 +210,7 @@ const getStyles = (theme: AppTheme) =>
       fontSize: theme.typography.fontSize.s,
       fontWeight: theme.typography.fontWeight.bold,
       color: theme.colors.textSecondary,
-      textTransform: "uppercase",
+      textTransform: 'uppercase',
       marginBottom: theme.spacing.s,
     },
   });

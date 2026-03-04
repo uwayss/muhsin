@@ -10,10 +10,10 @@ export const typography = {
     xxl: 32,
   },
   fontWeight: {
-    light: "300",
-    normal: "400",
-    medium: "500",
-    semibold: "600",
-    bold: "700",
+    light: '300',
+    normal: '400',
+    medium: '500',
+    semibold: '600',
+    bold: '700',
   },
 } as const;

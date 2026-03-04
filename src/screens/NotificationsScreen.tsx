@@ -1,28 +1,20 @@
 // src/screens/NotificationsScreen.tsx
-import { Screen } from "@/components/Screen";
-import { ThemedText } from "@/components/base/ThemedText";
-import { AppTheme } from "@/constants/theme";
-import i18n from "@/core/i18n";
+import { Screen } from '@/components/Screen';
+import { ThemedText } from '@/components/base/ThemedText';
+import { AppTheme } from '@/constants/theme';
+import i18n from '@/core/i18n';
 import {
   scheduleTestNotificationIn5s,
   sendTestNotification,
-} from "@/core/services/notificationService";
-import useAppStore from "@/core/store/appStore";
-import { useTheme } from "@/core/theme/ThemeContext";
-import { MaterialCommunityIcons } from "@expo/vector-icons";
-import DateTimePicker, {
-  DateTimePickerEvent,
-} from "@react-native-community/datetimepicker";
-import { format } from "date-fns";
-import { useNavigation } from "@react-navigation/native";
-import React, { useState } from "react";
-import {
-  Platform,
-  StyleSheet,
-  Switch,
-  TouchableOpacity,
-  View,
-} from "react-native";
+} from '@/core/services/notificationService';
+import useAppStore from '@/core/store/appStore';
+import { useTheme } from '@/core/theme/ThemeContext';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
+import DateTimePicker, { DateTimePickerEvent } from '@react-native-community/datetimepicker';
+import { format } from 'date-fns';
+import { useNavigation } from '@react-navigation/native';
+import React, { useState } from 'react';
+import { Platform, StyleSheet, Switch, TouchableOpacity, View } from 'react-native';
 
 const NotificationsScreen = () => {
   const navigation = useNavigation();
@@ -35,13 +27,13 @@ const NotificationsScreen = () => {
   const [isPickerVisible, setPickerVisible] = useState(false);
 
   const reminderDate = new Date();
-  const [hours, minutes] = (reminderTime || "20:00").split(":").map(Number);
+  const [hours, minutes] = (reminderTime || '20:00').split(':').map(Number);
   reminderDate.setHours(hours);
   reminderDate.setMinutes(minutes);
   const onChange = (event: DateTimePickerEvent, selectedDate?: Date) => {
     setPickerVisible(false);
-    if (event.type === "set" && selectedDate) {
-      setReminderTime(format(selectedDate, "HH:mm"));
+    if (event.type === 'set' && selectedDate) {
+      setReminderTime(format(selectedDate, 'HH:mm'));
     }
   };
   const showPicker = () => {
@@ -51,22 +43,15 @@ const NotificationsScreen = () => {
   return (
     <>
       <Screen
-        title={i18n.t("screens.notifications")}
+        title={i18n.t('screens.notifications')}
         renderLeftAction={() => (
           <TouchableOpacity onPress={() => navigation.goBack()}>
-            <MaterialCommunityIcons
-              name="chevron-left"
-              size={32}
-              color={theme.colors.text}
-            />
+            <MaterialCommunityIcons name="chevron-left" size={32} color={theme.colors.text} />
           </TouchableOpacity>
-        )}
-      >
+        )}>
         <View style={styles.container}>
           <View style={styles.row}>
-            <ThemedText style={styles.label}>
-              {i18n.t("settings.dailyReminder")}
-            </ThemedText>
+            <ThemedText style={styles.label}>{i18n.t('settings.dailyReminder')}</ThemedText>
             <Switch
               value={isReminderEnabled}
               onValueChange={toggleReminder}
@@ -80,9 +65,7 @@ const NotificationsScreen = () => {
 
           {isReminderEnabled && (
             <TouchableOpacity style={styles.row} onPress={showPicker}>
-              <ThemedText style={styles.label}>
-                {i18n.t("settings.time")}
-              </ThemedText>
+              <ThemedText style={styles.label}>{i18n.t('settings.time')}</ThemedText>
               <View style={styles.valueContainer}>
                 <ThemedText style={styles.valueText}>{reminderTime}</ThemedText>
                 <MaterialCommunityIcons
@@ -97,24 +80,12 @@ const NotificationsScreen = () => {
 
         {isDevMode && (
           <View style={styles.devContainer}>
-            <ThemedText style={styles.devTitle}>
-              {i18n.t("devMenu.title")}
-            </ThemedText>
-            <TouchableOpacity
-              style={styles.devButton}
-              onPress={sendTestNotification}
-            >
-              <ThemedText style={styles.devButtonText}>
-                {i18n.t("devMenu.sendTest")}
-              </ThemedText>
+            <ThemedText style={styles.devTitle}>{i18n.t('devMenu.title')}</ThemedText>
+            <TouchableOpacity style={styles.devButton} onPress={sendTestNotification}>
+              <ThemedText style={styles.devButtonText}>{i18n.t('devMenu.sendTest')}</ThemedText>
             </TouchableOpacity>
-            <TouchableOpacity
-              style={styles.devButton}
-              onPress={scheduleTestNotificationIn5s}
-            >
-              <ThemedText style={styles.devButtonText}>
-                {i18n.t("devMenu.scheduleTest")}
-              </ThemedText>
+            <TouchableOpacity style={styles.devButton} onPress={scheduleTestNotificationIn5s}>
+              <ThemedText style={styles.devButtonText}>{i18n.t('devMenu.scheduleTest')}</ThemedText>
             </TouchableOpacity>
           </View>
         )}
@@ -124,7 +95,7 @@ const NotificationsScreen = () => {
           value={reminderDate}
           mode="time"
           is24Hour={true}
-          display={Platform.OS === "ios" ? "spinner" : "default"}
+          display={Platform.OS === 'ios' ? 'spinner' : 'default'}
           onChange={onChange}
         />
       )}
@@ -140,12 +111,12 @@ const getStyles = (theme: AppTheme) =>
       marginTop: theme.spacing.m,
       backgroundColor: theme.colors.foreground,
       borderRadius: 16,
-      overflow: "hidden",
+      overflow: 'hidden',
     },
     row: {
-      flexDirection: "row",
-      alignItems: "center",
-      justifyContent: "space-between",
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'space-between',
       padding: theme.spacing.m,
       borderBottomWidth: 1,
       borderBottomColor: theme.colors.background,
@@ -154,8 +125,8 @@ const getStyles = (theme: AppTheme) =>
       fontSize: theme.typography.fontSize.m,
     },
     valueContainer: {
-      flexDirection: "row",
-      alignItems: "center",
+      flexDirection: 'row',
+      alignItems: 'center',
     },
     valueText: {
       color: theme.colors.textSecondary,
@@ -171,15 +142,15 @@ const getStyles = (theme: AppTheme) =>
       fontSize: theme.typography.fontSize.s,
       fontWeight: theme.typography.fontWeight.bold,
       color: theme.colors.textSecondary,
-      textTransform: "uppercase",
-      textAlign: "center",
+      textTransform: 'uppercase',
+      textAlign: 'center',
       marginBottom: theme.spacing.m,
     },
     devButton: {
       backgroundColor: theme.colors.primary,
       padding: theme.spacing.m,
       borderRadius: 8,
-      alignItems: "center",
+      alignItems: 'center',
       marginBottom: theme.spacing.s,
     },
     devButtonText: {

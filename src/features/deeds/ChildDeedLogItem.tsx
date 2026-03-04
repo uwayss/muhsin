@@ -1,15 +1,15 @@
 // src/features/deeds/ChildDeedLogItem.tsx
-import { Box } from "@/components/base/Box";
-import { ThemedText } from "@/components/base/ThemedText";
-import { AppTheme } from "@/constants/theme";
-import { Deed, DeedLog, DeedStatus } from "@/core/data/models";
-import i18n from "@/core/i18n";
-import useAppStore from "@/core/store/appStore";
-import { useTheme } from "@/core/theme/ThemeContext";
-import { triggerHaptic } from "@/core/utils/haptics";
-import { MaterialCommunityIcons } from "@expo/vector-icons";
-import React from "react";
-import { StyleSheet, TouchableOpacity, View } from "react-native";
+import { Box } from '@/components/base/Box';
+import { ThemedText } from '@/components/base/ThemedText';
+import { AppTheme } from '@/constants/theme';
+import { Deed, DeedLog, DeedStatus } from '@/core/data/models';
+import i18n from '@/core/i18n';
+import useAppStore from '@/core/store/appStore';
+import { useTheme } from '@/core/theme/ThemeContext';
+import { triggerHaptic } from '@/core/utils/haptics';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
+import React from 'react';
+import { StyleSheet, TouchableOpacity, View } from 'react-native';
 
 type ChildDeedLogItemProps = {
   deed: Deed;
@@ -17,11 +17,7 @@ type ChildDeedLogItemProps = {
   date: Date;
 };
 
-export const ChildDeedLogItem = ({
-  deed,
-  log,
-  date,
-}: ChildDeedLogItemProps) => {
+export const ChildDeedLogItem = ({ deed, log, date }: ChildDeedLogItemProps) => {
   const { theme } = useTheme();
   const styles = getStyles(theme);
   const addOrUpdateLog = useAppStore((state) => state.addOrUpdateLog);
@@ -33,11 +29,7 @@ export const ChildDeedLogItem = ({
 
   return (
     <View style={styles.container}>
-      <MaterialCommunityIcons
-        name={deed.icon}
-        size={24}
-        color={theme.colors.textSecondary}
-      />
+      <MaterialCommunityIcons name={deed.icon} size={24} color={theme.colors.textSecondary} />
       <ThemedText style={styles.deedName}>
         {i18n.t(`deeds_names.${deed.id}`, { defaultValue: deed.name })}
       </ThemedText>
@@ -52,16 +44,11 @@ export const ChildDeedLogItem = ({
                 { borderColor: theme.colors[status.color] },
                 isSelected && { backgroundColor: theme.colors[status.color] },
               ]}
-              onPress={() => handleLogStatus(status)}
-            >
+              onPress={() => handleLogStatus(status)}>
               <MaterialCommunityIcons
                 name={status.icon}
                 size={20}
-                color={
-                  isSelected
-                    ? theme.colors.primaryContrast
-                    : theme.colors[status.color]
-                }
+                color={isSelected ? theme.colors.primaryContrast : theme.colors[status.color]}
               />
             </TouchableOpacity>
           );
@@ -74,8 +61,8 @@ export const ChildDeedLogItem = ({
 const getStyles = (theme: AppTheme) =>
   StyleSheet.create({
     container: {
-      flexDirection: "row",
-      alignItems: "center",
+      flexDirection: 'row',
+      alignItems: 'center',
       paddingVertical: theme.spacing.s,
     },
     deedName: {
@@ -84,7 +71,7 @@ const getStyles = (theme: AppTheme) =>
       fontSize: theme.typography.fontSize.m,
     },
     actionsContainer: {
-      flexDirection: "row",
+      flexDirection: 'row',
     },
     statusButton: {
       padding: theme.spacing.s,

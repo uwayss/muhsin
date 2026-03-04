@@ -1,11 +1,11 @@
 // src/components/Header.tsx
-import { AppTheme } from "@/constants/theme";
-import { useTheme } from "@/core/theme/ThemeContext";
-import React from "react";
-import { StyleSheet } from "react-native";
-import { EdgeInsets } from "react-native-safe-area-context";
-import { Box } from "./base/Box";
-import { ThemedText } from "./base/ThemedText";
+import { AppTheme } from '@/constants/theme';
+import { useTheme } from '@/core/theme/ThemeContext';
+import React from 'react';
+import { StyleSheet } from 'react-native';
+import { EdgeInsets } from 'react-native-safe-area-context';
+import { Box } from './base/Box';
+import { ThemedText } from './base/ThemedText';
 
 export type HeaderProps = {
   title: string;
@@ -27,9 +27,7 @@ export const Header = ({
 
   return (
     <Box style={styles.container}>
-      <Box style={styles.actionSlot}>
-        {renderLeftAction && renderLeftAction()}
-      </Box>
+      <Box style={styles.actionSlot}>{renderLeftAction && renderLeftAction()}</Box>
 
       <Box style={styles.titleContainer}>
         <ThemedText style={styles.title} numberOfLines={1}>
@@ -42,9 +40,7 @@ export const Header = ({
         )}
       </Box>
 
-      <Box style={styles.actionSlot}>
-        {renderRightAction && renderRightAction()}
-      </Box>
+      <Box style={styles.actionSlot}>{renderRightAction && renderRightAction()}</Box>
     </Box>
   );
 };
@@ -52,9 +48,9 @@ export const Header = ({
 const getStyles = (theme: AppTheme, insets: EdgeInsets) =>
   StyleSheet.create({
     container: {
-      flexDirection: "row",
-      alignItems: "center",
-      justifyContent: "space-between",
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'space-between',
       paddingHorizontal: theme.spacing.m,
       height: 60 + insets.top,
       paddingTop: insets.top,
@@ -62,13 +58,13 @@ const getStyles = (theme: AppTheme, insets: EdgeInsets) =>
     },
     actionSlot: {
       width: 40,
-      justifyContent: "center",
-      alignItems: "center",
+      justifyContent: 'center',
+      alignItems: 'center',
     },
     titleContainer: {
       flex: 1,
-      justifyContent: "center",
-      alignItems: "center",
+      justifyContent: 'center',
+      alignItems: 'center',
     },
     title: {
       fontSize: theme.typography.fontSize.l,

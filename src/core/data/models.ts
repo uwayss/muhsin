@@ -1,6 +1,6 @@
 // src/core/data/models.ts
-import { MaterialCommunityIcons } from "@expo/vector-icons";
-import { ColorTheme } from "@/constants/theme";
+import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { ColorTheme } from '@/constants/theme';
 
 /**
  * Represents a single possible status for a deed.
@@ -8,12 +8,9 @@ import { ColorTheme } from "@/constants/theme";
  */
 export type DeedStatus = {
   id: string; // e.g., 'on-time', 'completed'
-  icon: React.ComponentProps<typeof MaterialCommunityIcons>["name"];
+  icon: React.ComponentProps<typeof MaterialCommunityIcons>['name'];
   // Use keys of our theme colors for type safety
-  color: keyof Pick<
-    ColorTheme,
-    "jamaah" | "onTime" | "late" | "missed" | "primary"
-  >;
+  color: keyof Pick<ColorTheme, 'jamaah' | 'onTime' | 'late' | 'missed' | 'primary'>;
 };
 
 /**
@@ -24,7 +21,7 @@ export type DeedStatus = {
  * - 'yearly': The deed has a target count per year.
  */
 export type DeedFrequency = {
-  type: "daily" | "weekly" | "monthly" | "yearly";
+  type: 'daily' | 'weekly' | 'monthly' | 'yearly';
   // For 'weekly', an array of numbers representing days (0=Sun, 1=Mon, ..., 6=Sat)
   days?: number[];
   // For 'monthly' or 'yearly', the target number of times
@@ -45,8 +42,8 @@ export type DeedGoal = {
 export type Deed = {
   id: string; // e.g., 'prayer-fajr'
   name: string; // e.g., "Fajr"
-  icon: React.ComponentProps<typeof MaterialCommunityIcons>["name"];
-  category: "PRAYERS" | "QURAN" | "LEARNING" | "SOCIAL" | "CUSTOM";
+  icon: React.ComponentProps<typeof MaterialCommunityIcons>['name'];
+  category: 'PRAYERS' | 'QURAN' | 'LEARNING' | 'SOCIAL' | 'CUSTOM';
   statuses: DeedStatus[];
   isCore?: boolean; // True for fundamental deeds that cannot be edited/deleted
   frequency?: DeedFrequency;

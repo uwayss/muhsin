@@ -1,17 +1,11 @@
 // src/features/settings/DevMenuModal.tsx
-import { ThemedText } from "@/components/base/ThemedText";
-import { AppTheme } from "@/constants/theme";
-import i18n from "@/core/i18n";
-import useAppStore from "@/core/store/appStore";
-import { useTheme } from "@/core/theme/ThemeContext";
-import React from "react";
-import {
-  Modal,
-  StyleSheet,
-  Switch,
-  TouchableWithoutFeedback,
-  View,
-} from "react-native";
+import { ThemedText } from '@/components/base/ThemedText';
+import { AppTheme } from '@/constants/theme';
+import i18n from '@/core/i18n';
+import useAppStore from '@/core/store/appStore';
+import { useTheme } from '@/core/theme/ThemeContext';
+import React from 'react';
+import { Modal, StyleSheet, Switch, TouchableWithoutFeedback, View } from 'react-native';
 
 type DevMenuModalProps = {
   isVisible: boolean;
@@ -25,23 +19,14 @@ export const DevMenuModal = ({ isVisible, onClose }: DevMenuModalProps) => {
   const isDemoMode = useAppStore((state) => state.settings.isDemoMode);
 
   return (
-    <Modal
-      transparent
-      animationType="fade"
-      visible={isVisible}
-      onRequestClose={onClose}
-    >
+    <Modal transparent animationType="fade" visible={isVisible} onRequestClose={onClose}>
       <TouchableWithoutFeedback onPress={onClose}>
         <View style={styles.overlay}>
           <TouchableWithoutFeedback>
             <View style={styles.container}>
-              <ThemedText style={styles.title}>
-                {i18n.t("devMenu.title")}
-              </ThemedText>
+              <ThemedText style={styles.title}>{i18n.t('devMenu.title')}</ThemedText>
               <View style={styles.optionRow}>
-                <ThemedText style={styles.optionLabel}>
-                  {i18n.t("devMenu.enableDemo")}
-                </ThemedText>
+                <ThemedText style={styles.optionLabel}>{i18n.t('devMenu.enableDemo')}</ThemedText>
                 <Switch
                   value={isDemoMode}
                   onValueChange={toggleDemoMode}
@@ -64,13 +49,13 @@ const getStyles = (theme: AppTheme) =>
   StyleSheet.create({
     overlay: {
       flex: 1,
-      justifyContent: "center",
-      alignItems: "center",
-      backgroundColor: "rgba(0, 0, 0, 0.6)",
+      justifyContent: 'center',
+      alignItems: 'center',
+      backgroundColor: 'rgba(0, 0, 0, 0.6)',
       padding: theme.spacing.l,
     },
     container: {
-      width: "100%",
+      width: '100%',
       backgroundColor: theme.colors.foreground,
       borderRadius: 16,
       padding: theme.spacing.m,
@@ -78,13 +63,13 @@ const getStyles = (theme: AppTheme) =>
     title: {
       fontSize: theme.typography.fontSize.l,
       fontWeight: theme.typography.fontWeight.semibold,
-      textAlign: "center",
+      textAlign: 'center',
       marginBottom: theme.spacing.m,
     },
     optionRow: {
-      flexDirection: "row",
-      alignItems: "center",
-      justifyContent: "space-between",
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'space-between',
       paddingVertical: theme.spacing.m,
       paddingHorizontal: theme.spacing.s,
     },

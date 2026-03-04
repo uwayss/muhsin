@@ -1,6 +1,6 @@
 // src/core/utils/haptics.ts
-import * as Haptics from "expo-haptics";
-import useAppStore from "../store/appStore";
+import * as Haptics from 'expo-haptics';
+import useAppStore from '../store/appStore';
 
 /**
  * Triggers haptic feedback if the user has it enabled in settings.

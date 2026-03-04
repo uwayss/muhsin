@@ -1,30 +1,18 @@
 // src/features/stats/ExpandableSection.tsx
-import { ThemedText } from "@/components/base/ThemedText";
-import { AppTheme } from "@/constants/theme";
-import { useTheme } from "@/core/theme/ThemeContext";
-import { MaterialCommunityIcons } from "@expo/vector-icons";
-import React, { useState } from "react";
-import {
-  LayoutChangeEvent,
-  StyleSheet,
-  TouchableOpacity,
-  View,
-} from "react-native";
-import Animated, {
-  useAnimatedStyle,
-  useSharedValue,
-  withTiming,
-} from "react-native-reanimated";
+import { ThemedText } from '@/components/base/ThemedText';
+import { AppTheme } from '@/constants/theme';
+import { useTheme } from '@/core/theme/ThemeContext';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
+import React, { useState } from 'react';
+import { LayoutChangeEvent, StyleSheet, TouchableOpacity, View } from 'react-native';
+import Animated, { useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
 
 type ExpandableSectionProps = {
   title: string;
   children: React.ReactNode;
 };
 
-export const ExpandableSection = ({
-  title,
-  children,
-}: ExpandableSectionProps) => {
+export const ExpandableSection = ({ title, children }: ExpandableSectionProps) => {
   const { theme } = useTheme();
   const styles = getStyles(theme);
   const [isExpanded, setIsExpanded] = useState(true);
@@ -67,11 +55,7 @@ export const ExpandableSection = ({
 
   return (
     <View style={styles.wrapper}>
-      <TouchableOpacity
-        style={styles.header}
-        onPress={toggleExpansion}
-        activeOpacity={0.8}
-      >
+      <TouchableOpacity style={styles.header} onPress={toggleExpansion} activeOpacity={0.8}>
         <ThemedText style={styles.title}>{title}</ThemedText>
         <Animated.View style={animatedIconStyle}>
           <MaterialCommunityIcons
@@ -95,23 +79,23 @@ const getStyles = (theme: AppTheme) =>
     wrapper: {
       backgroundColor: theme.colors.foreground,
       borderRadius: 16,
-      overflow: "hidden",
+      overflow: 'hidden',
     },
     header: {
-      flexDirection: "row",
-      alignItems: "center",
-      justifyContent: "space-between",
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'space-between',
       padding: theme.spacing.m,
     },
     title: {
       fontWeight: theme.typography.fontWeight.semibold,
     },
     contentContainer: {
-      overflow: "hidden",
+      overflow: 'hidden',
     },
     content: {
-      position: "absolute",
-      width: "100%",
+      position: 'absolute',
+      width: '100%',
       padding: theme.spacing.m,
       paddingTop: 0,
     },

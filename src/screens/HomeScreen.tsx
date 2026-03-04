@@ -1,34 +1,26 @@
 // src/screens/HomeScreen.tsx
-import { Box } from "@/components/base/Box";
-import { Screen } from "@/components/Screen";
-import { ThemedText } from "@/components/base/ThemedText";
-import { FAB } from "@/components/FAB";
-import { AppTheme } from "@/constants/theme";
-import { Deed, DeedLog, DeedStatus } from "@/core/data/models";
-import i18n, { dateLocales } from "@/core/i18n";
-import useAppStore from "@/core/store/appStore";
-import { useTheme } from "@/core/theme/ThemeContext";
-import { formatHijriDate } from "@/core/utils/dateFormatter";
-import { DeedListItem } from "@/features/deeds/DeedListItem";
-import { LogDeedModal } from "@/features/deeds/LogDeedModal";
-import { LogGoalModal } from "@/features/deeds/LogGoalModal";
-import { DateScroller } from "@/features/home/DateScroller";
-import { HomeStackParamList } from "@/navigation/AppNavigator";
-import { useNavigation } from "@react-navigation/native";
-import { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import { format, formatISO, getDay } from "date-fns";
-import React, { useMemo, useState } from "react";
-import {
-  ActivityIndicator,
-  I18nManager,
-  SectionList,
-  StyleSheet,
-} from "react-native";
+import { Box } from '@/components/base/Box';
+import { Screen } from '@/components/Screen';
+import { ThemedText } from '@/components/base/ThemedText';
+import { FAB } from '@/components/FAB';
+import { AppTheme } from '@/constants/theme';
+import { Deed, DeedLog, DeedStatus } from '@/core/data/models';
+import i18n, { dateLocales } from '@/core/i18n';
+import useAppStore from '@/core/store/appStore';
+import { useTheme } from '@/core/theme/ThemeContext';
+import { formatHijriDate } from '@/core/utils/dateFormatter';
+import { DeedListItem } from '@/features/deeds/DeedListItem';
+import { LogDeedModal } from '@/features/deeds/LogDeedModal';
+import { LogGoalModal } from '@/features/deeds/LogGoalModal';
+import { DateScroller } from '@/features/home/DateScroller';
+import { HomeStackParamList } from '@/navigation/AppNavigator';
+import { useNavigation } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { format, formatISO, getDay } from 'date-fns';
+import React, { useMemo, useState } from 'react';
+import { ActivityIndicator, I18nManager, SectionList, StyleSheet } from 'react-native';
 
-type HomeScreenNavigationProp = NativeStackNavigationProp<
-  HomeStackParamList,
-  "HomeMain"
->;
+type HomeScreenNavigationProp = NativeStackNavigationProp<HomeStackParamList, 'HomeMain'>;
 
 const HomeScreen = () => {
   const { theme } = useTheme();
@@ -36,8 +28,7 @@ const HomeScreen = () => {
   const navigation = useNavigation<HomeScreenNavigationProp>();
 
   // --- Global State ---
-  const { isInitialized, deeds, logs, addOrUpdateLog, settings } =
-    useAppStore();
+  const { isInitialized, deeds, logs, addOrUpdateLog, settings } = useAppStore();
   const activeLocale = dateLocales[settings.language];
 
   // --- Local State ---
@@ -45,14 +36,12 @@ const HomeScreen = () => {
   const [isLogDeedModalVisible, setLogDeedModalVisible] = useState(false);
   const [isLogGoalModalVisible, setLogGoalModalVisible] = useState(false);
   const [selectedDeed, setSelectedDeed] = useState<Deed | null>(null);
-  const [selectedLog, setSelectedLog] = useState<DeedLog | undefined>(
-    undefined,
-  );
+  const [selectedLog, setSelectedLog] = useState<DeedLog | undefined>(undefined);
 
   // --- Memos ---
   const { gregorianDate, hijriDate } = useMemo(() => {
     return {
-      gregorianDate: format(selectedDate, "MMMM d", {
+      gregorianDate: format(selectedDate, 'MMMM d', {
         locale: activeLocale,
       }),
       hijriDate: formatHijriDate(selectedDate),
@@ -60,7 +49,7 @@ const HomeScreen = () => {
   }, [selectedDate, activeLocale]);
 
   const logsForSelectedDate = useMemo(() => {
-    const dateString = formatISO(selectedDate, { representation: "date" });
+    const dateString = formatISO(selectedDate, { representation: 'date' });
     return logs.filter((log) => log.date === dateString);
   }, [selectedDate, logs]);
 
@@ -75,13 +64,13 @@ const HomeScreen = () => {
         return true;
       }
       if (
-        deed.frequency.type === "daily" ||
-        deed.frequency.type === "monthly" ||
-        deed.frequency.type === "yearly"
+        deed.frequency.type === 'daily' ||
+        deed.frequency.type === 'monthly' ||
+        deed.frequency.type === 'yearly'
       ) {
         return true;
       }
-      if (deed.frequency.type === "weekly") {
+      if (deed.frequency.type === 'weekly') {
         return deed.frequency.days?.includes(dayOfWeek) ?? false;
       }
       return false;
@@ -128,8 +117,8 @@ const HomeScreen = () => {
     // For goals, we determine status based on value.
     const status =
       value > 0
-        ? selectedDeed.statuses.find((s) => s.id === "completed")!
-        : selectedDeed.statuses.find((s) => s.id === "missed")!;
+        ? selectedDeed.statuses.find((s) => s.id === 'completed')!
+        : selectedDeed.statuses.find((s) => s.id === 'missed')!;
     addOrUpdateLog(selectedDeed, selectedDate, status, value);
     setLogGoalModalVisible(false);
     setSelectedDeed(null);
@@ -137,7 +126,7 @@ const HomeScreen = () => {
 
   if (!isInitialized) {
     return (
-      <Screen title={i18n.t("screens.homeLoading")}>
+      <Screen title={i18n.t('screens.homeLoading')}>
         <Box style={styles.centered}>
           <ActivityIndicator />
         </Box>
@@ -161,17 +150,11 @@ const HomeScreen = () => {
           )}
           renderItem={({ item: deed }) => {
             const log = logsForSelectedDate.find((l) => l.deedId === deed.id);
-            return (
-              <DeedListItem
-                deed={deed}
-                log={log}
-                onPress={() => handleOpenModal(deed)}
-              />
-            );
+            return <DeedListItem deed={deed} log={log} onPress={() => handleOpenModal(deed)} />;
           }}
           contentContainerStyle={styles.listContent}
         />
-        <FAB onPress={() => navigation.navigate("AddDeed")} />
+        <FAB onPress={() => navigation.navigate('AddDeed')} />
       </Box>
       <LogDeedModal
         isVisible={isLogDeedModalVisible}
@@ -199,17 +182,17 @@ const getStyles = (theme: AppTheme) =>
       fontWeight: theme.typography.fontWeight.bold,
       fontSize: theme.typography.fontSize.s,
       color: theme.colors.textSecondary,
-      textTransform: "uppercase",
+      textTransform: 'uppercase',
       marginBottom: theme.spacing.s,
       marginTop: theme.spacing.m,
-      textAlign: I18nManager.isRTL ? "right" : "left",
+      textAlign: I18nManager.isRTL ? 'right' : 'left',
     },
     listContent: {
       paddingTop: theme.spacing.s,
     },
     centered: {
       flex: 1,
-      justifyContent: "center",
-      alignItems: "center",
+      justifyContent: 'center',
+      alignItems: 'center',
     },
   });

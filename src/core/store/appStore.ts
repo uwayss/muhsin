@@ -1,28 +1,20 @@
 // src/core/store/appStore.ts
-import { create } from "zustand";
-import { Deed, DeedLog, DeedStatus } from "../data/models";
-import {
-  GENERIC_STATUSES,
-  MOCK_DEEDS,
-  MOCK_LOGS,
-  SUGGESTED_DEEDS,
-} from "../data/mock";
-import { loadDataFromFile, saveDataToFile } from "../storage/storageService";
-import { formatISO } from "date-fns";
-import { Alert, Appearance, I18nManager } from "react-native";
-import { generateDemoLogs } from "../data/demoData";
-import i18n from "../i18n";
-import {
-  cancelAllReminders,
-  scheduleDailyReminder,
-} from "../services/notificationService";
+import { create } from 'zustand';
+import { Deed, DeedLog, DeedStatus } from '../data/models';
+import { GENERIC_STATUSES, MOCK_DEEDS, MOCK_LOGS, SUGGESTED_DEEDS } from '../data/mock';
+import { loadDataFromFile, saveDataToFile } from '../storage/storageService';
+import { formatISO } from 'date-fns';
+import { Alert, Appearance, I18nManager } from 'react-native';
+import { generateDemoLogs } from '../data/demoData';
+import i18n from '../i18n';
+import { cancelAllReminders, scheduleDailyReminder } from '../services/notificationService';
 
 export type AppSettings = {
-  theme: "system" | "light" | "dark";
+  theme: 'system' | 'light' | 'dark';
   isHapticsEnabled: boolean;
   isDevMode: boolean;
   isDemoMode: boolean;
-  language: "en" | "ar"; // Updated language options
+  language: 'en' | 'ar'; // Updated language options
   isReminderEnabled: boolean;
   reminderTime: string;
 };
@@ -44,12 +36,7 @@ type AppState = AppData & {
 
 type AppActions = {
   initialize: () => Promise<void>;
-  addOrUpdateLog: (
-    deed: Deed,
-    date: Date,
-    status: DeedStatus,
-    value?: number,
-  ) => void;
+  addOrUpdateLog: (deed: Deed, date: Date, status: DeedStatus, value?: number) => void;
   addDeed: (deed: Deed) => void;
   // DEED MANAGEMENT
   initializeDraftDeed: (deedId?: string) => void;
@@ -59,8 +46,8 @@ type AppActions = {
   deleteDeed: (deedId: string) => void;
   setDeeds: (deeds: Deed[]) => void;
   // SETTINGS
-  setTheme: (theme: AppSettings["theme"]) => void;
-  setLanguage: (language: AppSettings["language"]) => void;
+  setTheme: (theme: AppSettings['theme']) => void;
+  setLanguage: (language: AppSettings['language']) => void;
   toggleHaptics: () => void;
   setDevMode: (isDev: boolean) => void;
   toggleDemoMode: () => Promise<void>;
@@ -70,13 +57,13 @@ type AppActions = {
 };
 
 const defaultSettings: AppSettings = {
-  theme: "system",
+  theme: 'system',
   isHapticsEnabled: true,
   isDevMode: false,
   isDemoMode: false,
-  language: "en",
+  language: 'en',
   isReminderEnabled: false,
-  reminderTime: "20:00",
+  reminderTime: '20:00',
 };
 
 const persistState = (state: AppState) => {
@@ -130,11 +117,11 @@ const useAppStore = create<AppState & AppActions>((set, get) => ({
       });
     }
 
-    if (settings.theme !== "system") {
+    if (settings.theme !== 'system') {
       Appearance.setColorScheme(settings.theme);
     }
     i18n.locale = settings.language;
-    I18nManager.forceRTL(settings.language === "ar");
+    I18nManager.forceRTL(settings.language === 'ar');
 
     if (settings.isReminderEnabled) {
       scheduleDailyReminder(settings.reminderTime);
@@ -148,7 +135,7 @@ const useAppStore = create<AppState & AppActions>((set, get) => ({
     if (currentLanguage === language) return;
 
     i18n.locale = language;
-    const isRTL = language === "ar";
+    const isRTL = language === 'ar';
     const needsRestart = isRTL !== I18nManager.isRTL;
 
     set((state) => ({ settings: { ...state.settings, language } }));
@@ -156,12 +143,12 @@ const useAppStore = create<AppState & AppActions>((set, get) => ({
 
     if (needsRestart) {
       Alert.alert(
-        i18n.t("alerts.restartTitle"),
-        i18n.t("alerts.restartMessage"),
+        i18n.t('alerts.restartTitle'),
+        i18n.t('alerts.restartMessage'),
         [
           {
-            text: i18n.t("alerts.cancel"),
-            style: "cancel",
+            text: i18n.t('alerts.cancel'),
+            style: 'cancel',
             onPress: () => {
               i18n.locale = currentLanguage;
               set((state) => ({
@@ -171,8 +158,8 @@ const useAppStore = create<AppState & AppActions>((set, get) => ({
             },
           },
           {
-            text: i18n.t("alerts.restartNow"),
-            style: "default",
+            text: i18n.t('alerts.restartNow'),
+            style: 'default',
             onPress: async () => {
               I18nManager.forceRTL(isRTL);
             },
@@ -184,7 +171,7 @@ const useAppStore = create<AppState & AppActions>((set, get) => ({
   },
 
   addOrUpdateLog: (deed, date, status, value) => {
-    const dateString = formatISO(date, { representation: "date" });
+    const dateString = formatISO(date, { representation: 'date' });
     const currentLogs = get().logs;
     const existingLogIndex = currentLogs.findIndex(
       (log) => log.deedId === deed.id && log.date === dateString,
@@ -223,10 +210,10 @@ const useAppStore = create<AppState & AppActions>((set, get) => ({
     } else {
       set({
         draftDeed: {
-          name: "",
-          icon: "star-outline",
-          frequency: { type: "daily" },
-          category: "CUSTOM",
+          name: '',
+          icon: 'star-outline',
+          frequency: { type: 'daily' },
+          category: 'CUSTOM',
           statuses: GENERIC_STATUSES,
         },
       });
@@ -255,7 +242,7 @@ const useAppStore = create<AppState & AppActions>((set, get) => ({
         id: `custom-${Date.now()}`,
         name: draft.name,
         icon: draft.icon,
-        category: "CUSTOM",
+        category: 'CUSTOM',
         statuses: GENERIC_STATUSES,
         frequency: draft.frequency,
         goal: draft.goal,
@@ -281,7 +268,7 @@ const useAppStore = create<AppState & AppActions>((set, get) => ({
 
   setTheme: (theme) => {
     set((state) => ({ settings: { ...state.settings, theme } }));
-    if (theme === "system") {
+    if (theme === 'system') {
       Appearance.setColorScheme(null);
     } else {
       Appearance.setColorScheme(theme);
@@ -320,10 +307,7 @@ const useAppStore = create<AppState & AppActions>((set, get) => ({
         deeds: MOCK_DEEDS,
         logs: generateDemoLogs(),
       });
-      Alert.alert(
-        i18n.t("alerts.demoModeEnabledTitle"),
-        i18n.t("alerts.demoModeEnabledMessage"),
-      );
+      Alert.alert(i18n.t('alerts.demoModeEnabledTitle'), i18n.t('alerts.demoModeEnabledMessage'));
     } else {
       // Disabling Demo Mode: Reload user's original data from disk
       const originalData = await loadDataFromFile();
@@ -331,10 +315,7 @@ const useAppStore = create<AppState & AppActions>((set, get) => ({
         deeds: originalData?.deeds || MOCK_DEEDS,
         logs: originalData?.logs || [],
       });
-      Alert.alert(
-        i18n.t("alerts.demoModeDisabledTitle"),
-        i18n.t("alerts.demoModeDisabledMessage"),
-      );
+      Alert.alert(i18n.t('alerts.demoModeDisabledTitle'), i18n.t('alerts.demoModeDisabledMessage'));
     }
     // Persist the new state of `isDemoMode` in settings
     persistState(get());
@@ -348,7 +329,7 @@ const useAppStore = create<AppState & AppActions>((set, get) => ({
     };
     set(initialState);
     const theme = initialState.settings.theme;
-    if (theme === "system") {
+    if (theme === 'system') {
       Appearance.setColorScheme(null);
     } else {
       Appearance.setColorScheme(theme);

@@ -1,22 +1,16 @@
 // src/features/deeds/LogDeedModal.tsx
-import { Box } from "@/components/base/Box";
-import { ThemedText } from "@/components/base/ThemedText";
-import { AppTheme } from "@/constants/theme";
-import { Deed, DeedStatus } from "@/core/data/models";
-import i18n from "@/core/i18n";
-import useAppStore from "@/core/store/appStore";
-import { useTheme } from "@/core/theme/ThemeContext";
-import { MaterialCommunityIcons } from "@expo/vector-icons";
-import { formatISO } from "date-fns";
-import React, { useMemo } from "react";
-import {
-  Modal,
-  StyleSheet,
-  TouchableOpacity,
-  View,
-  ScrollView,
-} from "react-native";
-import { ChildDeedLogItem } from "./ChildDeedLogItem";
+import { Box } from '@/components/base/Box';
+import { ThemedText } from '@/components/base/ThemedText';
+import { AppTheme } from '@/constants/theme';
+import { Deed, DeedStatus } from '@/core/data/models';
+import i18n from '@/core/i18n';
+import useAppStore from '@/core/store/appStore';
+import { useTheme } from '@/core/theme/ThemeContext';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { formatISO } from 'date-fns';
+import React, { useMemo } from 'react';
+import { Modal, StyleSheet, TouchableOpacity, View, ScrollView } from 'react-native';
+import { ChildDeedLogItem } from './ChildDeedLogItem';
 
 type LogDeedModalProps = {
   deed: Deed | null;
@@ -45,7 +39,7 @@ export const LogDeedModal = ({
   }, [deed, allDeeds]);
 
   const logsForDate = useMemo(() => {
-    const dateString = formatISO(date, { representation: "date" });
+    const dateString = formatISO(date, { representation: 'date' });
     return allLogs.filter((log) => log.date === dateString);
   }, [date, allLogs]);
 
@@ -56,41 +50,27 @@ export const LogDeedModal = ({
   });
 
   return (
-    <Modal
-      transparent
-      animationType="fade"
-      visible={isVisible}
-      onRequestClose={onClose}
-    >
-      <TouchableOpacity
-        style={styles.overlay}
-        activeOpacity={1}
-        onPress={onClose}
-      >
+    <Modal transparent animationType="fade" visible={isVisible} onRequestClose={onClose}>
+      <TouchableOpacity style={styles.overlay} activeOpacity={1} onPress={onClose}>
         <TouchableOpacity activeOpacity={1} style={styles.container}>
           <ScrollView>
             <Box style={styles.header}>
-              <MaterialCommunityIcons
-                name={deed.icon}
-                size={32}
-                color={theme.colors.text}
-              />
+              <MaterialCommunityIcons name={deed.icon} size={32} color={theme.colors.text} />
               <ThemedText style={styles.title}>
-                {i18n.t("deeds.logDeedTitle", { deedName })}
+                {i18n.t('deeds.logDeedTitle', { deedName })}
               </ThemedText>
             </Box>
             <View>
               {deed.statuses.map((status) => {
                 const statusLabelKey =
-                  deed.isCore || status.id !== "missed"
+                  deed.isCore || status.id !== 'missed'
                     ? `deeds_statuses.${status.id}`
                     : `deeds_statuses.generic-missed`;
                 return (
                   <TouchableOpacity
                     key={status.id}
                     style={styles.optionRow}
-                    onPress={() => onLogStatus(status)}
-                  >
+                    onPress={() => onLogStatus(status)}>
                     <MaterialCommunityIcons
                       name={status.icon}
                       size={24}
@@ -98,7 +78,7 @@ export const LogDeedModal = ({
                     />
                     <ThemedText style={styles.optionLabel}>
                       {i18n.t(statusLabelKey, {
-                        defaultValue: status.id.replace("-", " "),
+                        defaultValue: status.id.replace('-', ' '),
                       })}
                     </ThemedText>
                   </TouchableOpacity>
@@ -109,18 +89,11 @@ export const LogDeedModal = ({
             {childDeeds.length > 0 && (
               <View style={styles.childDeedsContainer}>
                 <ThemedText style={styles.childDeedsTitle}>
-                  {i18n.t("deeds.linkedDeeds")}
+                  {i18n.t('deeds.linkedDeeds')}
                 </ThemedText>
                 {childDeeds.map((child) => {
                   const log = logsForDate.find((l) => l.deedId === child.id);
-                  return (
-                    <ChildDeedLogItem
-                      key={child.id}
-                      deed={child}
-                      log={log}
-                      date={date}
-                    />
-                  );
+                  return <ChildDeedLogItem key={child.id} deed={child} log={log} date={date} />;
                 })}
               </View>
             )}
@@ -135,31 +108,31 @@ const getStyles = (theme: AppTheme) =>
   StyleSheet.create({
     overlay: {
       flex: 1,
-      justifyContent: "center",
-      alignItems: "center",
-      backgroundColor: "rgba(0, 0, 0, 0.6)",
+      justifyContent: 'center',
+      alignItems: 'center',
+      backgroundColor: 'rgba(0, 0, 0, 0.6)',
       padding: theme.spacing.l,
     },
     container: {
-      width: "100%",
-      maxHeight: "80%",
+      width: '100%',
+      maxHeight: '80%',
       backgroundColor: theme.colors.foreground,
       borderRadius: 16,
       padding: theme.spacing.l,
     },
     header: {
-      alignItems: "center",
+      alignItems: 'center',
       marginBottom: theme.spacing.m,
     },
     title: {
       fontSize: theme.typography.fontSize.l,
       fontWeight: theme.typography.fontWeight.semibold,
-      textAlign: "center",
+      textAlign: 'center',
       marginTop: theme.spacing.m,
     },
     optionRow: {
-      flexDirection: "row",
-      alignItems: "center",
+      flexDirection: 'row',
+      alignItems: 'center',
       paddingVertical: theme.spacing.m,
     },
     optionLabel: {
@@ -176,7 +149,7 @@ const getStyles = (theme: AppTheme) =>
       fontSize: theme.typography.fontSize.s,
       fontWeight: theme.typography.fontWeight.bold,
       color: theme.colors.textSecondary,
-      textTransform: "uppercase",
+      textTransform: 'uppercase',
       marginBottom: theme.spacing.s,
     },
   });
