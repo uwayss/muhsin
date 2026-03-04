@@ -24,7 +24,7 @@ This is more than a habit tracker; it's a tool designed to help cultivate _Ihsan
 
 ## Getting Started
 
-To get a local copy up and running, just clone this repository and build the app just like any other Expo app .
+To get a local copy up and running, just clone this repository and build the app just like any other Expo app.
 
 ## How to Contribute
 
