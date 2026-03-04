@@ -2,7 +2,7 @@
 import { create } from 'zustand';
 import { Deed, DeedLog, DeedStatus } from '../data/models';
 import { GENERIC_STATUSES, MOCK_DEEDS, MOCK_LOGS, SUGGESTED_DEEDS } from '../data/mock';
-import { loadDataFromFile, saveDataToFile } from '../storage/storageService';
+import { loadData, saveData } from '../storage/storageService';
 import { formatISO } from 'date-fns';
 import { Alert, Appearance, I18nManager } from 'react-native';
 import { generateDemoLogs } from '../data/demoData';
@@ -82,7 +82,7 @@ const persistState = (state: AppState) => {
     dataToSave.logs = loadedData.logs;
   }
 
-  saveDataToFile(dataToSave);
+  saveData(dataToSave);
 };
 
 const useAppStore = create<AppState & AppActions>((set, get) => ({
@@ -96,7 +96,7 @@ const useAppStore = create<AppState & AppActions>((set, get) => ({
 
   // --- ACTIONS ---
   initialize: async () => {
-    const loadedData = await loadDataFromFile();
+    const loadedData = await loadData();
     let settings = defaultSettings;
     let initialDeeds = MOCK_DEEDS;
     let initialLogs = MOCK_LOGS;
@@ -310,7 +310,7 @@ const useAppStore = create<AppState & AppActions>((set, get) => ({
       Alert.alert(i18n.t('alerts.demoModeEnabledTitle'), i18n.t('alerts.demoModeEnabledMessage'));
     } else {
       // Disabling Demo Mode: Reload user's original data from disk
-      const originalData = await loadDataFromFile();
+      const originalData = await loadData();
       set({
         deeds: originalData?.deeds || MOCK_DEEDS,
         logs: originalData?.logs || [],
@@ -334,7 +334,7 @@ const useAppStore = create<AppState & AppActions>((set, get) => ({
     } else {
       Appearance.setColorScheme(theme);
     }
-    await saveDataToFile(initialState);
+    saveData(initialState);
     await cancelAllReminders();
   },
 
