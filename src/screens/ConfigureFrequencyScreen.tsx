@@ -1,42 +1,42 @@
 // FILE: src/screens/ConfigureFrequencyScreen.tsx
-import { Screen } from "@/components/Screen";
-import { ThemedText } from "@/components/base/ThemedText";
-import { AppTheme } from "@/constants/theme";
-import { DeedFrequency } from "@/core/data/models";
-import i18n from "@/core/i18n";
-import useAppStore from "@/core/store/appStore";
-import { useTheme } from "@/core/theme/ThemeContext";
-import { MaterialCommunityIcons } from "@expo/vector-icons";
-import { useNavigation } from "@react-navigation/native";
-import React from "react";
-import { StyleSheet, TouchableOpacity, View, TextInput } from "react-native";
+import { Screen } from '@/components/Screen';
+import { ThemedText } from '@/components/base/ThemedText';
+import { AppTheme } from '@/constants/theme';
+import { DeedFrequency } from '@/core/data/models';
+import i18n from '@/core/i18n';
+import useAppStore from '@/core/store/appStore';
+import { useTheme } from '@/core/theme/ThemeContext';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { useNavigation } from '@react-navigation/native';
+import React from 'react';
+import { StyleSheet, TouchableOpacity, View, TextInput } from 'react-native';
 
 const DAYS = [
-  { label: i18n.t("frequency.days_abbr.sun"), value: 0 },
-  { label: i18n.t("frequency.days_abbr.mon"), value: 1 },
-  { label: i18n.t("frequency.days_abbr.tue"), value: 2 },
-  { label: i18n.t("frequency.days_abbr.wed"), value: 3 },
-  { label: i18n.t("frequency.days_abbr.thu"), value: 4 },
-  { label: i18n.t("frequency.days_abbr.fri"), value: 5 },
-  { label: i18n.t("frequency.days_abbr.sat"), value: 6 },
+  { label: i18n.t('frequency.days_abbr.sun'), value: 0 },
+  { label: i18n.t('frequency.days_abbr.mon'), value: 1 },
+  { label: i18n.t('frequency.days_abbr.tue'), value: 2 },
+  { label: i18n.t('frequency.days_abbr.wed'), value: 3 },
+  { label: i18n.t('frequency.days_abbr.thu'), value: 4 },
+  { label: i18n.t('frequency.days_abbr.fri'), value: 5 },
+  { label: i18n.t('frequency.days_abbr.sat'), value: 6 },
 ];
 const ConfigureFrequencyScreen = () => {
   const navigation = useNavigation();
   const { theme } = useTheme();
   const styles = getStyles(theme);
   const { draftDeed, updateDraftDeed } = useAppStore();
-  const frequency = draftDeed?.frequency || { type: "daily" };
-  const setType = (type: DeedFrequency["type"]) => {
+  const frequency = draftDeed?.frequency || { type: 'daily' };
+  const setType = (type: DeedFrequency['type']) => {
     const newFrequency: DeedFrequency = { type };
-    if (type === "weekly") {
+    if (type === 'weekly') {
       newFrequency.days = frequency.days || [];
-    } else if (type === "monthly" || type === "yearly") {
+    } else if (type === 'monthly' || type === 'yearly') {
       newFrequency.count = frequency.count || 1;
     }
     updateDraftDeed({ frequency: newFrequency });
   };
   const toggleDay = (dayValue: number) => {
-    if (frequency.type !== "weekly") return;
+    if (frequency.type !== 'weekly') return;
     const currentDays = frequency.days || [];
     const newDays = currentDays.includes(dayValue)
       ? currentDays.filter((d) => d !== dayValue)
@@ -51,48 +51,39 @@ const ConfigureFrequencyScreen = () => {
   };
   return (
     <Screen
-      title={i18n.t("screens.configureFrequency")}
+      title={i18n.t('screens.configureFrequency')}
       renderLeftAction={() => (
         <TouchableOpacity onPress={() => navigation.goBack()}>
-          <MaterialCommunityIcons
-            name="chevron-left"
-            size={32}
-            color={theme.colors.text}
-          />
+          <MaterialCommunityIcons name="chevron-left" size={32} color={theme.colors.text} />
         </TouchableOpacity>
-      )}
-    >
+      )}>
       <View style={styles.container}>
-        <ThemedText style={styles.sectionHeader}>
-          {i18n.t("frequency.type")}
-        </ThemedText>
+        <ThemedText style={styles.sectionHeader}>{i18n.t('frequency.type')}</ThemedText>
         <View style={styles.optionGroup}>
           <OptionButton
-            label={i18n.t("frequency.daily")}
-            selected={frequency.type === "daily"}
-            onPress={() => setType("daily")}
+            label={i18n.t('frequency.daily')}
+            selected={frequency.type === 'daily'}
+            onPress={() => setType('daily')}
           />
           <OptionButton
-            label={i18n.t("frequency.weekly")}
-            selected={frequency.type === "weekly"}
-            onPress={() => setType("weekly")}
+            label={i18n.t('frequency.weekly')}
+            selected={frequency.type === 'weekly'}
+            onPress={() => setType('weekly')}
           />
           <OptionButton
-            label={i18n.t("frequency.monthly")}
-            selected={frequency.type === "monthly"}
-            onPress={() => setType("monthly")}
+            label={i18n.t('frequency.monthly')}
+            selected={frequency.type === 'monthly'}
+            onPress={() => setType('monthly')}
           />
           <OptionButton
-            label={i18n.t("frequency.yearly")}
-            selected={frequency.type === "yearly"}
-            onPress={() => setType("yearly")}
+            label={i18n.t('frequency.yearly')}
+            selected={frequency.type === 'yearly'}
+            onPress={() => setType('yearly')}
           />
         </View>
-        {frequency.type === "weekly" && (
+        {frequency.type === 'weekly' && (
           <>
-            <ThemedText style={styles.sectionHeader}>
-              {i18n.t("frequency.selectDays")}
-            </ThemedText>
+            <ThemedText style={styles.sectionHeader}>{i18n.t('frequency.selectDays')}</ThemedText>
             <View style={styles.daySelector}>
               {DAYS.map((day) => (
                 <DayButton
@@ -105,18 +96,18 @@ const ConfigureFrequencyScreen = () => {
             </View>
           </>
         )}
-        {(frequency.type === "monthly" || frequency.type === "yearly") && (
+        {(frequency.type === 'monthly' || frequency.type === 'yearly') && (
           <>
             <ThemedText style={styles.sectionHeader}>
-              {i18n.t("frequency.howManyTimes", {
-                interval: frequency.type.replace("ly", ""),
+              {i18n.t('frequency.howManyTimes', {
+                interval: frequency.type.replace('ly', ''),
               })}
             </ThemedText>
             <View style={styles.countContainer}>
               <TextInput
                 style={styles.countInput}
                 keyboardType="number-pad"
-                value={frequency.count?.toString() || "1"}
+                value={frequency.count?.toString() || '1'}
                 onChangeText={handleCountChange}
                 placeholderTextColor={theme.colors.textSecondary}
               />
@@ -132,13 +123,8 @@ const OptionButton = ({ label, selected, onPress }) => {
   const { theme } = useTheme();
   const styles = getStyles(theme);
   return (
-    <TouchableOpacity
-      style={[styles.optionButton, selected && styles.selected]}
-      onPress={onPress}
-    >
-      <ThemedText style={[styles.optionText, selected && styles.selectedText]}>
-        {label}
-      </ThemedText>
+    <TouchableOpacity style={[styles.optionButton, selected && styles.selected]} onPress={onPress}>
+      <ThemedText style={[styles.optionText, selected && styles.selectedText]}>{label}</ThemedText>
     </TouchableOpacity>
   );
 };
@@ -146,13 +132,8 @@ const DayButton = ({ label, selected, onPress }) => {
   const { theme } = useTheme();
   const styles = getStyles(theme);
   return (
-    <TouchableOpacity
-      style={[styles.dayButton, selected && styles.selectedDay]}
-      onPress={onPress}
-    >
-      <ThemedText style={[styles.dayText, selected && styles.selectedText]}>
-        {label}
-      </ThemedText>
+    <TouchableOpacity style={[styles.dayButton, selected && styles.selectedDay]} onPress={onPress}>
+      <ThemedText style={[styles.dayText, selected && styles.selectedText]}>{label}</ThemedText>
     </TouchableOpacity>
   );
 };
@@ -164,16 +145,16 @@ const getStyles = (theme: AppTheme) =>
       marginTop: theme.spacing.l,
       marginBottom: theme.spacing.s,
       color: theme.colors.textSecondary,
-      textTransform: "uppercase",
+      textTransform: 'uppercase',
       fontWeight: theme.typography.fontWeight.bold,
     },
     optionGroup: {
-      flexDirection: "row",
+      flexDirection: 'row',
       backgroundColor: theme.colors.foreground,
       borderRadius: 8,
-      overflow: "hidden",
+      overflow: 'hidden',
     },
-    optionButton: { flex: 1, padding: theme.spacing.m, alignItems: "center" },
+    optionButton: { flex: 1, padding: theme.spacing.m, alignItems: 'center' },
     selected: { backgroundColor: theme.colors.primary },
     optionText: {
       fontWeight: theme.typography.fontWeight.semibold,
@@ -182,8 +163,8 @@ const getStyles = (theme: AppTheme) =>
     },
     selectedText: { color: theme.colors.primaryContrast },
     daySelector: {
-      flexDirection: "row",
-      justifyContent: "space-between",
+      flexDirection: 'row',
+      justifyContent: 'space-between',
       backgroundColor: theme.colors.foreground,
       borderRadius: 8,
       padding: theme.spacing.s,
@@ -192,8 +173,8 @@ const getStyles = (theme: AppTheme) =>
       flex: 1,
       height: 44,
       borderRadius: 8,
-      justifyContent: "center",
-      alignItems: "center",
+      justifyContent: 'center',
+      alignItems: 'center',
       marginHorizontal: theme.spacing.xs / 2,
     },
     selectedDay: { backgroundColor: theme.colors.primary },
@@ -209,6 +190,6 @@ const getStyles = (theme: AppTheme) =>
     countInput: {
       color: theme.colors.text,
       fontSize: theme.typography.fontSize.m,
-      textAlign: "center",
+      textAlign: 'center',
     },
   });

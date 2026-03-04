@@ -1,15 +1,15 @@
 // src/features/stats/DeedStatsRow.tsx
-import { ThemedText } from "@/components/base/ThemedText";
-import { AppTheme, ColorTheme } from "@/constants/theme";
-import { Deed, DeedLog } from "@/core/data/models";
-import { useTheme } from "@/core/theme/ThemeContext";
-import { MaterialCommunityIcons } from "@expo/vector-icons";
-import React, { useMemo } from "react";
-import { StyleSheet, View, I18nManager } from "react-native";
-import { colors } from "@/constants/colors";
-import i18n from "@/core/i18n";
+import { ThemedText } from '@/components/base/ThemedText';
+import { AppTheme, ColorTheme } from '@/constants/theme';
+import { Deed, DeedLog } from '@/core/data/models';
+import { useTheme } from '@/core/theme/ThemeContext';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
+import React, { useMemo } from 'react';
+import { StyleSheet, View, I18nManager } from 'react-native';
+import { colors } from '@/constants/colors';
+import i18n from '@/core/i18n';
 
-const PRAYER_STATUS_BREAKDOWN_ORDER = ["jamaah", "on-time", "late", "missed"];
+const PRAYER_STATUS_BREAKDOWN_ORDER = ['jamaah', 'on-time', 'late', 'missed'];
 
 const isColorLight = (hexColor: string) => {
   const r = parseInt(hexColor.slice(1, 3), 16);
@@ -18,13 +18,7 @@ const isColorLight = (hexColor: string) => {
   return r * 0.299 + g * 0.587 + b * 0.114 > 186;
 };
 
-export const DeedStatsRow = ({
-  deed,
-  logs,
-}: {
-  deed: Deed;
-  logs: DeedLog[];
-}) => {
+export const DeedStatsRow = ({ deed, logs }: { deed: Deed; logs: DeedLog[] }) => {
   const { theme } = useTheme();
   const styles = getStyles(theme);
 
@@ -48,9 +42,7 @@ export const DeedStatsRow = ({
         id: statusId,
         percentage: (count / total) * 100,
         color: theme.colors[colorKey],
-        textColor: isColorLight(hexColor)
-          ? theme.colors.text
-          : theme.colors.primaryContrast,
+        textColor: isColorLight(hexColor) ? theme.colors.text : theme.colors.primaryContrast,
       };
     }).filter((item) => item.percentage > 0);
   }, [logs, deed, theme.colors]);
@@ -73,12 +65,9 @@ export const DeedStatsRow = ({
             style={[
               styles.barSegment,
               { width: `${stat.percentage}%`, backgroundColor: stat.color },
-            ]}
-          >
+            ]}>
             {stat.percentage >= 15 && (
-              <ThemedText
-                style={[styles.percentageText, { color: stat.textColor }]}
-              >
+              <ThemedText style={[styles.percentageText, { color: stat.textColor }]}>
                 {stat.percentage.toFixed(0)}%
               </ThemedText>
             )}
@@ -92,30 +81,30 @@ export const DeedStatsRow = ({
 const getStyles = (theme: AppTheme) =>
   StyleSheet.create({
     deedStatRow: {
-      flexDirection: I18nManager.isRTL ? "row-reverse" : "row",
-      alignItems: "center",
+      flexDirection: I18nManager.isRTL ? 'row-reverse' : 'row',
+      alignItems: 'center',
       marginBottom: theme.spacing.m,
     },
     deedStatIcon: {
       marginHorizontal: theme.spacing.m,
     },
     deedStatName: {
-      width: "25%",
+      width: '25%',
       fontWeight: theme.typography.fontWeight.semibold,
-      textAlign: I18nManager.isRTL ? "right" : "left",
+      textAlign: I18nManager.isRTL ? 'right' : 'left',
     },
     deedStatBar: {
       flex: 1,
       height: 24,
       borderRadius: 12,
       backgroundColor: theme.colors.background,
-      flexDirection: "row",
-      overflow: "hidden",
+      flexDirection: 'row',
+      overflow: 'hidden',
     },
     barSegment: {
-      height: "100%",
-      justifyContent: "center",
-      alignItems: "center",
+      height: '100%',
+      justifyContent: 'center',
+      alignItems: 'center',
     },
     percentageText: {
       fontSize: theme.typography.fontSize.xs,

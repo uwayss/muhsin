@@ -1,14 +1,14 @@
 // FILE: App.tsx
-import { ThemeProvider } from "@/core/theme/ThemeContext";
-import React, { useEffect } from "react";
-import { StatusBar } from "expo-status-bar";
-import useAppStore from "@/core/store/appStore";
-import { GestureHandlerRootView } from "react-native-gesture-handler";
-import i18n from "@/core/i18n";
-import { useForceUpdate } from "@/core/hooks/useForceUpdate";
-import { I18nManager } from "react-native";
-import { NavigationContainer } from "@react-navigation/native";
-import AppNavigator from "@/navigation/AppNavigator";
+import { ThemeProvider } from '@/core/theme/ThemeContext';
+import React, { useEffect } from 'react';
+import { StatusBar } from 'expo-status-bar';
+import useAppStore from '@/core/store/appStore';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import i18n from '@/core/i18n';
+import { useForceUpdate } from '@/core/hooks/useForceUpdate';
+import { I18nManager } from 'react-native';
+import { NavigationContainer } from '@react-navigation/native';
+import AppNavigator from '@/navigation/AppNavigator';
 
 I18nManager.allowRTL(true);
 
@@ -33,7 +33,7 @@ export default function App() {
       <GestureHandlerRootView style={{ flex: 1 }}>
         <NavigationContainer>
           <AppContent />
-          <StatusBar style={"auto"} />
+          <StatusBar style={'auto'} />
         </NavigationContainer>
       </GestureHandlerRootView>
     </ThemeProvider>

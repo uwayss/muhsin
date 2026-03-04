@@ -1,8 +1,8 @@
 // src/components/base/ThemedTextInput.tsx
-import { AppTheme } from "@/constants/theme";
-import { useTheme } from "@/core/theme/ThemeContext";
-import React from "react";
-import { StyleSheet, TextInput, TextInputProps } from "react-native";
+import { AppTheme } from '@/constants/theme';
+import { useTheme } from '@/core/theme/ThemeContext';
+import React from 'react';
+import { StyleSheet, TextInput, TextInputProps } from 'react-native';
 
 export const ThemedTextInput = (props: TextInputProps) => {
   const { theme } = useTheme();

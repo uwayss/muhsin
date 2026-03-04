@@ -1,20 +1,14 @@
 // src/features/stats/GoalStatsRow.tsx
-import { ThemedText } from "@/components/base/ThemedText";
-import { AppTheme } from "@/constants/theme";
-import { Deed, DeedLog } from "@/core/data/models";
-import i18n from "@/core/i18n";
-import { useTheme } from "@/core/theme/ThemeContext";
-import { MaterialCommunityIcons } from "@expo/vector-icons";
-import React, { useMemo } from "react";
-import { StyleSheet, View } from "react-native";
+import { ThemedText } from '@/components/base/ThemedText';
+import { AppTheme } from '@/constants/theme';
+import { Deed, DeedLog } from '@/core/data/models';
+import i18n from '@/core/i18n';
+import { useTheme } from '@/core/theme/ThemeContext';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
+import React, { useMemo } from 'react';
+import { StyleSheet, View } from 'react-native';
 
-export const GoalStatsRow = ({
-  deed,
-  logs,
-}: {
-  deed: Deed;
-  logs: DeedLog[];
-}) => {
+export const GoalStatsRow = ({ deed, logs }: { deed: Deed; logs: DeedLog[] }) => {
   const { theme } = useTheme();
   const styles = getStyles(theme);
 
@@ -37,27 +31,16 @@ export const GoalStatsRow = ({
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <MaterialCommunityIcons
-          name={deed.icon}
-          size={20}
-          color={theme.colors.textSecondary}
-        />
+        <MaterialCommunityIcons name={deed.icon} size={20} color={theme.colors.textSecondary} />
         <ThemedText style={styles.deedName}>
           {i18n.t(`deeds_names.${deed.id}`, { defaultValue: deed.name })}
         </ThemedText>
         <ThemedText style={styles.progressText}>
-          {`${totalProgress} / ${deed.goal.value * logs.length} ${
-            deed.goal.unit
-          }`}
+          {`${totalProgress} / ${deed.goal.value * logs.length} ${deed.goal.unit}`}
         </ThemedText>
       </View>
       <View style={styles.progressBar}>
-        <View
-          style={[
-            styles.progressBarFill,
-            { width: `${Math.min(percentage, 100)}%` },
-          ]}
-        />
+        <View style={[styles.progressBarFill, { width: `${Math.min(percentage, 100)}%` }]} />
       </View>
     </View>
   );
@@ -69,8 +52,8 @@ const getStyles = (theme: AppTheme) =>
       marginBottom: theme.spacing.m,
     },
     header: {
-      flexDirection: "row",
-      alignItems: "center",
+      flexDirection: 'row',
+      alignItems: 'center',
       marginBottom: theme.spacing.s,
     },
     deedName: {
@@ -86,10 +69,10 @@ const getStyles = (theme: AppTheme) =>
       height: 8,
       borderRadius: 4,
       backgroundColor: theme.colors.background,
-      overflow: "hidden",
+      overflow: 'hidden',
     },
     progressBarFill: {
-      height: "100%",
+      height: '100%',
       backgroundColor: theme.colors.primary,
     },
   });

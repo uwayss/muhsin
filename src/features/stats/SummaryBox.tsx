@@ -1,10 +1,10 @@
 // src/features/stats/SummaryBox.tsx
-import { ThemedText } from "@/components/base/ThemedText";
-import { AppTheme } from "@/constants/theme";
-import i18n from "@/core/i18n";
-import { useTheme } from "@/core/theme/ThemeContext";
-import React from "react";
-import { StyleSheet, View } from "react-native";
+import { ThemedText } from '@/components/base/ThemedText';
+import { AppTheme } from '@/constants/theme';
+import i18n from '@/core/i18n';
+import { useTheme } from '@/core/theme/ThemeContext';
+import React from 'react';
+import { StyleSheet, View } from 'react-native';
 
 type SummaryBoxProps = {
   title: string;
@@ -13,32 +13,20 @@ type SummaryBoxProps = {
   count: number;
 };
 
-export const SummaryBox = ({
-  title,
-  color,
-  percentage,
-  count,
-}: SummaryBoxProps) => {
+export const SummaryBox = ({ title, color, percentage, count }: SummaryBoxProps) => {
   const { theme } = useTheme();
   const styles = getStyles(theme);
   return (
     <View style={styles.summaryBox}>
-      <View style={{ flexDirection: "row", alignItems: "center" }}>
+      <View style={{ flexDirection: 'row', alignItems: 'center' }}>
         <View style={[styles.summaryDot, { backgroundColor: color }]} />
         <ThemedText style={styles.summaryTitle}>{title}</ThemedText>
       </View>
-      <ThemedText style={styles.summaryPercentage}>
-        {percentage.toFixed(0)}%
-      </ThemedText>
-      <ThemedText style={styles.summaryCount}>
-        {i18n.t("stats.times", { count })}
-      </ThemedText>
+      <ThemedText style={styles.summaryPercentage}>{percentage.toFixed(0)}%</ThemedText>
+      <ThemedText style={styles.summaryCount}>{i18n.t('stats.times', { count })}</ThemedText>
       <View style={styles.summaryBar}>
         <View
-          style={[
-            styles.summaryBarFill,
-            { width: `${percentage}%`, backgroundColor: color },
-          ]}
+          style={[styles.summaryBarFill, { width: `${percentage}%`, backgroundColor: color }]}
         />
       </View>
     </View>
@@ -48,7 +36,7 @@ export const SummaryBox = ({
 const getStyles = (theme: AppTheme) =>
   StyleSheet.create({
     summaryBox: {
-      width: "48%",
+      width: '48%',
       backgroundColor: theme.colors.foreground,
       borderRadius: 16,
       padding: theme.spacing.m,
@@ -78,9 +66,9 @@ const getStyles = (theme: AppTheme) =>
       borderRadius: 2,
       backgroundColor: theme.colors.background,
       marginTop: theme.spacing.m,
-      overflow: "hidden",
+      overflow: 'hidden',
     },
     summaryBarFill: {
-      height: "100%",
+      height: '100%',
     },
   });

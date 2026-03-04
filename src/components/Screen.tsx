@@ -1,13 +1,13 @@
 // src/components/Screen.tsx
-import { AppTheme } from "@/constants/theme";
-import { useTheme } from "@/core/theme/ThemeContext";
-import React from "react";
-import { StyleSheet } from "react-native";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { Box } from "./base/Box";
-import { Header, HeaderProps } from "./Header";
+import { AppTheme } from '@/constants/theme';
+import { useTheme } from '@/core/theme/ThemeContext';
+import React from 'react';
+import { StyleSheet } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { Box } from './base/Box';
+import { Header, HeaderProps } from './Header';
 
-type ScreenProps = Partial<Omit<HeaderProps, "insets">> & {
+type ScreenProps = Partial<Omit<HeaderProps, 'insets'>> & {
   children: React.ReactNode;
 };
 

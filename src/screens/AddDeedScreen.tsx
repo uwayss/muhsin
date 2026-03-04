@@ -1,23 +1,20 @@
 // FILE: src/screens/AddDeedScreen.tsx
-import { Screen } from "@/components/Screen";
-import { ThemedText } from "@/components/base/ThemedText";
-import { AppTheme } from "@/constants/theme";
-import { Deed } from "@/core/data/models";
-import i18n from "@/core/i18n";
-import useAppStore from "@/core/store/appStore";
-import { useTheme } from "@/core/theme/ThemeContext";
-import { SuggestedDeedListItem } from "@/features/deeds/SuggestedDeedListItem";
-import { MaterialCommunityIcons } from "@expo/vector-icons";
-import { useNavigation } from "@react-navigation/native";
-import React, { useMemo } from "react";
-import { SectionList, StyleSheet, TouchableOpacity } from "react-native";
-import { HomeStackParamList } from "@/navigation/AppNavigator";
-import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { Screen } from '@/components/Screen';
+import { ThemedText } from '@/components/base/ThemedText';
+import { AppTheme } from '@/constants/theme';
+import { Deed } from '@/core/data/models';
+import i18n from '@/core/i18n';
+import useAppStore from '@/core/store/appStore';
+import { useTheme } from '@/core/theme/ThemeContext';
+import { SuggestedDeedListItem } from '@/features/deeds/SuggestedDeedListItem';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { useNavigation } from '@react-navigation/native';
+import React, { useMemo } from 'react';
+import { SectionList, StyleSheet, TouchableOpacity } from 'react-native';
+import { HomeStackParamList } from '@/navigation/AppNavigator';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
-type AddDeedScreenNavigationProp = NativeStackNavigationProp<
-  HomeStackParamList,
-  "AddDeed"
->;
+type AddDeedScreenNavigationProp = NativeStackNavigationProp<HomeStackParamList, 'AddDeed'>;
 
 const AddDeedScreen = () => {
   const navigation = useNavigation<AddDeedScreenNavigationProp>();
@@ -29,10 +26,7 @@ const AddDeedScreen = () => {
   const suggestedDeeds = useAppStore((state) => state.suggestedDeeds);
   const addDeed = useAppStore((state) => state.addDeed);
 
-  const userDeedIds = useMemo(
-    () => new Set(userDeeds.map((d) => d.id)),
-    [userDeeds],
-  );
+  const userDeedIds = useMemo(() => new Set(userDeeds.map((d) => d.id)), [userDeeds]);
 
   const suggestedDeedsBySection = useMemo(() => {
     const sections: { title: string; data: Deed[] }[] = [];
@@ -55,17 +49,12 @@ const AddDeedScreen = () => {
 
   return (
     <Screen
-      title={i18n.t("screens.addDeed")}
+      title={i18n.t('screens.addDeed')}
       renderLeftAction={() => (
         <TouchableOpacity onPress={() => navigation.goBack()}>
-          <MaterialCommunityIcons
-            name="chevron-left"
-            size={32}
-            color={theme.colors.text}
-          />
+          <MaterialCommunityIcons name="chevron-left" size={32} color={theme.colors.text} />
         </TouchableOpacity>
-      )}
-    >
+      )}>
       <SectionList
         sections={suggestedDeedsBySection}
         keyExtractor={(item) => item.id}
@@ -82,15 +71,10 @@ const AddDeedScreen = () => {
         ListHeaderComponent={
           <TouchableOpacity
             style={styles.createDeedButton}
-            onPress={() => navigation.navigate("CreateDeed", {})}
-          >
-            <MaterialCommunityIcons
-              name="plus-circle"
-              size={24}
-              color={theme.colors.primary}
-            />
+            onPress={() => navigation.navigate('CreateDeed', {})}>
+            <MaterialCommunityIcons name="plus-circle" size={24} color={theme.colors.primary} />
             <ThemedText style={styles.createDeedText}>
-              {i18n.t("deeds.createDeedButton")}
+              {i18n.t('deeds.createDeedButton')}
             </ThemedText>
           </TouchableOpacity>
         }
@@ -108,7 +92,7 @@ const getStyles = (theme: AppTheme) =>
       fontWeight: theme.typography.fontWeight.bold,
       fontSize: theme.typography.fontSize.s,
       color: theme.colors.textSecondary,
-      textTransform: "uppercase",
+      textTransform: 'uppercase',
       marginBottom: theme.spacing.s,
       marginTop: theme.spacing.l,
     },
@@ -117,8 +101,8 @@ const getStyles = (theme: AppTheme) =>
       paddingTop: theme.spacing.s,
     },
     createDeedButton: {
-      flexDirection: "row",
-      alignItems: "center",
+      flexDirection: 'row',
+      alignItems: 'center',
       padding: theme.spacing.m,
       backgroundColor: theme.colors.foreground,
       borderRadius: 8,

@@ -7,10 +7,10 @@ import {
   startOfWeek,
   subYears,
   Locale,
-} from "date-fns";
-import React, { useCallback, useMemo, useRef } from "react";
-import { FlatList, useWindowDimensions, I18nManager } from "react-native";
-import { DateItem, ITEM_MARGIN } from "./DateItem";
+} from 'date-fns';
+import React, { useCallback, useMemo, useRef } from 'react';
+import { FlatList, useWindowDimensions, I18nManager } from 'react-native';
+import { DateItem, ITEM_MARGIN } from './DateItem';
 
 type DateScrollerProps = {
   selectedDate: Date;
@@ -18,11 +18,7 @@ type DateScrollerProps = {
   locale: Locale;
 };
 
-const DateScrollerComponent = ({
-  selectedDate,
-  onDateSelect,
-  locale,
-}: DateScrollerProps) => {
+const DateScrollerComponent = ({ selectedDate, onDateSelect, locale }: DateScrollerProps) => {
   const flatListRef = useRef<FlatList>(null);
   const { width: screenWidth } = useWindowDimensions();
 
@@ -30,8 +26,7 @@ const DateScrollerComponent = ({
   const containerPadding = 32;
 
   const itemWidth =
-    (screenWidth - containerPadding - numberOfVisibleDays * ITEM_MARGIN * 2) /
-    numberOfVisibleDays;
+    (screenWidth - containerPadding - numberOfVisibleDays * ITEM_MARGIN * 2) / numberOfVisibleDays;
 
   const dateRange = useMemo(() => {
     const today = new Date();

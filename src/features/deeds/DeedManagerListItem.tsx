@@ -1,19 +1,19 @@
 // FILE: src/features/deeds/DeedManagerListItem.tsx
-import { Box } from "@/components/base/Box";
-import { ThemedText } from "@/components/base/ThemedText";
-import { AppTheme } from "@/constants/theme";
-import { Deed } from "@/core/data/models";
-import i18n from "@/core/i18n";
-import useAppStore from "@/core/store/appStore";
-import { useTheme } from "@/core/theme/ThemeContext";
-import { triggerHaptic } from "@/core/utils/haptics";
-import { HomeStackParamList } from "@/navigation/AppNavigator";
-import { MaterialCommunityIcons } from "@expo/vector-icons";
-import { useNavigation } from "@react-navigation/native";
-import { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import React from "react";
-import { Alert, StyleSheet, TouchableOpacity } from "react-native";
-import { ScaleDecorator } from "react-native-draggable-flatlist";
+import { Box } from '@/components/base/Box';
+import { ThemedText } from '@/components/base/ThemedText';
+import { AppTheme } from '@/constants/theme';
+import { Deed } from '@/core/data/models';
+import i18n from '@/core/i18n';
+import useAppStore from '@/core/store/appStore';
+import { useTheme } from '@/core/theme/ThemeContext';
+import { triggerHaptic } from '@/core/utils/haptics';
+import { HomeStackParamList } from '@/navigation/AppNavigator';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { useNavigation } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import React from 'react';
+import { Alert, StyleSheet, TouchableOpacity } from 'react-native';
+import { ScaleDecorator } from 'react-native-draggable-flatlist';
 
 type DeedManagerListItemProps = {
   deed: Deed;
@@ -23,11 +23,7 @@ type DeedManagerListItemProps = {
 
 type DeedManagerNavigationProp = NativeStackNavigationProp<HomeStackParamList>;
 
-export const DeedManagerListItem = ({
-  deed,
-  drag,
-  isDragging,
-}: DeedManagerListItemProps) => {
+export const DeedManagerListItem = ({ deed, drag, isDragging }: DeedManagerListItemProps) => {
   const { theme } = useTheme();
   const styles = getStyles(theme);
   const navigation = useNavigation<DeedManagerNavigationProp>();
@@ -37,7 +33,7 @@ export const DeedManagerListItem = ({
 
   const handleEdit = () => {
     triggerHaptic();
-    navigation.navigate("CreateDeed", { deedId: deed.id });
+    navigation.navigate('CreateDeed', { deedId: deed.id });
   };
 
   const handleDelete = () => {
@@ -46,13 +42,13 @@ export const DeedManagerListItem = ({
       defaultValue: deed.name,
     });
     Alert.alert(
-      i18n.t("alerts.deleteDeedTitle"),
-      i18n.t("alerts.deleteDeedMessage", { deedName }),
+      i18n.t('alerts.deleteDeedTitle'),
+      i18n.t('alerts.deleteDeedMessage', { deedName }),
       [
-        { text: i18n.t("alerts.cancel"), style: "cancel" },
+        { text: i18n.t('alerts.cancel'), style: 'cancel' },
         {
-          text: i18n.t("alerts.delete"),
-          style: "destructive",
+          text: i18n.t('alerts.delete'),
+          style: 'destructive',
           onPress: () => deleteDeed(deed.id),
         },
       ],
@@ -65,8 +61,7 @@ export const DeedManagerListItem = ({
         onLongPress={drag}
         delayLongPress={150}
         activeOpacity={0.8}
-        style={[styles.container, isDragging && styles.dragging]}
-      >
+        style={[styles.container, isDragging && styles.dragging]}>
         <TouchableOpacity onPressIn={drag} style={styles.dragHandle}>
           <MaterialCommunityIcons
             name="drag-horizontal-variant"
@@ -94,10 +89,7 @@ export const DeedManagerListItem = ({
                 color={theme.colors.textSecondary}
               />
             </TouchableOpacity>
-            <TouchableOpacity
-              onPress={handleDelete}
-              style={styles.actionButton}
-            >
+            <TouchableOpacity onPress={handleDelete} style={styles.actionButton}>
               <MaterialCommunityIcons
                 name="trash-can-outline"
                 size={22}
@@ -114,15 +106,15 @@ export const DeedManagerListItem = ({
 const getStyles = (theme: AppTheme) =>
   StyleSheet.create({
     container: {
-      flexDirection: "row",
-      alignItems: "center",
+      flexDirection: 'row',
+      alignItems: 'center',
       paddingEnd: theme.spacing.s,
       backgroundColor: theme.colors.foreground,
       borderRadius: 12,
       marginBottom: theme.spacing.s,
     },
     dragging: {
-      shadowColor: "#000",
+      shadowColor: '#000',
       shadowOffset: { width: 0, height: 2 },
       shadowOpacity: 0.25,
       shadowRadius: 3.84,
@@ -138,7 +130,7 @@ const getStyles = (theme: AppTheme) =>
       flex: 1,
     },
     actionsContainer: {
-      flexDirection: "row",
+      flexDirection: 'row',
     },
     actionButton: {
       padding: theme.spacing.s,

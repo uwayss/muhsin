@@ -1,11 +1,11 @@
 // FILE: src/features/stats/GraphColumn.tsx
 // FILE: src/features/stats/GraphColumn.tsx
-import { AppTheme } from "@/constants/theme";
-import { useTheme } from "@/core/theme/ThemeContext";
-import { format } from "date-fns";
-import React from "react";
-import { StyleSheet, View } from "react-native";
-import { ThemedText } from "@/components/base/ThemedText";
+import { AppTheme } from '@/constants/theme';
+import { useTheme } from '@/core/theme/ThemeContext';
+import { format } from 'date-fns';
+import React from 'react';
+import { StyleSheet, View } from 'react-native';
+import { ThemedText } from '@/components/base/ThemedText';
 
 // Define the shape of the pre-computed data
 export type GraphColumnData = {
@@ -22,22 +22,15 @@ type GraphColumnProps = {
   columnWidth: number;
 };
 
-const GraphColumnComponent = ({
-  data,
-  cellSize,
-  columnWidth,
-}: GraphColumnProps) => {
+const GraphColumnComponent = ({ data, cellSize, columnWidth }: GraphColumnProps) => {
   const { theme } = useTheme();
   const styles = getStyles(theme, cellSize);
 
   return (
     <View style={[styles.column, { width: columnWidth }]}>
-      <ThemedText style={styles.dayText}>{format(data.date, "d")}</ThemedText>
+      <ThemedText style={styles.dayText}>{format(data.date, 'd')}</ThemedText>
       {data.cells.map((cell) => (
-        <View
-          key={cell.id}
-          style={[styles.cell, { backgroundColor: cell.color }]}
-        />
+        <View key={cell.id} style={[styles.cell, { backgroundColor: cell.color }]} />
       ))}
     </View>
   );
@@ -48,8 +41,8 @@ export const GraphColumn = React.memo(GraphColumnComponent);
 const getStyles = (theme: AppTheme, cellSize: number) =>
   StyleSheet.create({
     column: {
-      justifyContent: "flex-start",
-      alignItems: "center",
+      justifyContent: 'flex-start',
+      alignItems: 'center',
       paddingHorizontal: 2,
     },
     dayText: {

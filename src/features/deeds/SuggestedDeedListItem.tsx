@@ -1,13 +1,13 @@
 // src/features/deeds/SuggestedDeedListItem.tsx
-import { Box } from "@/components/base/Box";
-import { ThemedText } from "@/components/base/ThemedText";
-import { AppTheme } from "@/constants/theme";
-import { Deed } from "@/core/data/models";
-import i18n from "@/core/i18n";
-import { useTheme } from "@/core/theme/ThemeContext";
-import { MaterialCommunityIcons } from "@expo/vector-icons";
-import React from "react";
-import { StyleSheet, TouchableOpacity } from "react-native";
+import { Box } from '@/components/base/Box';
+import { ThemedText } from '@/components/base/ThemedText';
+import { AppTheme } from '@/constants/theme';
+import { Deed } from '@/core/data/models';
+import i18n from '@/core/i18n';
+import { useTheme } from '@/core/theme/ThemeContext';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
+import React from 'react';
+import { StyleSheet, TouchableOpacity } from 'react-native';
 
 type SuggestedDeedListItemProps = {
   deed: Deed;
@@ -15,31 +15,22 @@ type SuggestedDeedListItemProps = {
   onPress: () => void;
 };
 
-export const SuggestedDeedListItem = ({
-  deed,
-  isAdded,
-  onPress,
-}: SuggestedDeedListItemProps) => {
+export const SuggestedDeedListItem = ({ deed, isAdded, onPress }: SuggestedDeedListItemProps) => {
   const { theme } = useTheme();
   const styles = getStyles(theme);
 
   return (
     <Box style={styles.container}>
-      <MaterialCommunityIcons
-        name={deed.icon}
-        size={28}
-        color={theme.colors.textSecondary}
-      />
+      <MaterialCommunityIcons name={deed.icon} size={28} color={theme.colors.textSecondary} />
       <ThemedText style={styles.deedName}>
         {i18n.t(`deeds_names.${deed.id}`, { defaultValue: deed.name })}
       </ThemedText>
       <TouchableOpacity
         onPress={onPress}
         disabled={isAdded}
-        style={[styles.addButton, isAdded && styles.addedButton]}
-      >
+        style={[styles.addButton, isAdded && styles.addedButton]}>
         <MaterialCommunityIcons
-          name={isAdded ? "check" : "plus"}
+          name={isAdded ? 'check' : 'plus'}
           size={20}
           color={isAdded ? theme.colors.primary : theme.colors.primaryContrast}
         />
@@ -51,8 +42,8 @@ export const SuggestedDeedListItem = ({
 const getStyles = (theme: AppTheme) =>
   StyleSheet.create({
     container: {
-      flexDirection: "row",
-      alignItems: "center",
+      flexDirection: 'row',
+      alignItems: 'center',
       padding: theme.spacing.m,
       backgroundColor: theme.colors.foreground,
       borderRadius: 8,

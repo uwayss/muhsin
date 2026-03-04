@@ -1,19 +1,14 @@
 // src/features/settings/SettingsListItem.tsx
-import { ThemedText } from "@/components/base/ThemedText";
-import { AppTheme } from "@/constants/theme";
-import useAppStore from "@/core/store/appStore";
-import { useTheme } from "@/core/theme/ThemeContext";
-import { triggerHaptic } from "@/core/utils/haptics";
-import { MaterialCommunityIcons } from "@expo/vector-icons";
-import React from "react";
-import {
-  StyleSheet,
-  Switch,
-  TouchableOpacity,
-  I18nManager,
-} from "react-native";
-import { SettingsItem } from "./settingsData";
-import i18n from "@/core/i18n";
+import { ThemedText } from '@/components/base/ThemedText';
+import { AppTheme } from '@/constants/theme';
+import useAppStore from '@/core/store/appStore';
+import { useTheme } from '@/core/theme/ThemeContext';
+import { triggerHaptic } from '@/core/utils/haptics';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
+import React from 'react';
+import { StyleSheet, Switch, TouchableOpacity, I18nManager } from 'react-native';
+import { SettingsItem } from './settingsData';
+import i18n from '@/core/i18n';
 
 type SettingsListItemProps = {
   item: SettingsItem;
@@ -22,22 +17,17 @@ type SettingsListItemProps = {
   onPress: (item: SettingsItem) => void;
 };
 
-export const SettingsListItem = ({
-  item,
-  isFirst,
-  isLast,
-  onPress,
-}: SettingsListItemProps) => {
+export const SettingsListItem = ({ item, isFirst, isLast, onPress }: SettingsListItemProps) => {
   const { theme } = useTheme();
   const styles = getStyles(theme);
 
   const settings = useAppStore((state) => state.settings);
   const toggleHaptics = useAppStore((state) => state.toggleHaptics);
 
-  const value = item.type === "toggle" ? settings[item.stateKey] : false;
+  const value = item.type === 'toggle' ? settings[item.stateKey] : false;
 
   const handleToggle = () => {
-    if (item.type === "toggle" && item.stateKey === "isHapticsEnabled") {
+    if (item.type === 'toggle' && item.stateKey === 'isHapticsEnabled') {
       toggleHaptics();
       triggerHaptic();
     }
@@ -48,39 +38,26 @@ export const SettingsListItem = ({
     onPress(item);
   };
 
-  const containerStyle = [
-    styles.container,
-    isFirst && styles.isFirst,
-    isLast && styles.isLast,
-  ];
+  const containerStyle = [styles.container, isFirst && styles.isFirst, isLast && styles.isLast];
 
   return (
     <TouchableOpacity
       style={containerStyle}
       onPress={handlePress}
-      disabled={item.type === "toggle"}
-      activeOpacity={0.7}
-    >
+      disabled={item.type === 'toggle'}
+      activeOpacity={0.7}>
       <MaterialCommunityIcons
         name={item.icon}
         size={24}
-        color={
-          item.type === "action" && item.color
-            ? item.color
-            : theme.colors.textSecondary
-        }
+        color={item.type === 'action' && item.color ? item.color : theme.colors.textSecondary}
         style={styles.icon}
       />
       <ThemedText
-        style={[
-          styles.label,
-          item.type === "action" && item.color ? { color: item.color } : {},
-        ]}
-      >
+        style={[styles.label, item.type === 'action' && item.color ? { color: item.color } : {}]}>
         {item.label}
       </ThemedText>
 
-      {item.type === "toggle" && (
+      {item.type === 'toggle' && (
         <Switch
           value={value}
           onValueChange={handleToggle}
@@ -92,13 +69,11 @@ export const SettingsListItem = ({
           style={{ height: 24 }}
         />
       )}
-      {(item.type === "navigation" ||
-        item.type === "modal" ||
-        (item.type === "action" &&
-          item.label !== i18n.t("settings.privacy") &&
-          !item.color)) && (
+      {(item.type === 'navigation' ||
+        item.type === 'modal' ||
+        (item.type === 'action' && item.label !== i18n.t('settings.privacy') && !item.color)) && (
         <MaterialCommunityIcons
-          name={I18nManager.isRTL ? "chevron-left" : "chevron-right"}
+          name={I18nManager.isRTL ? 'chevron-left' : 'chevron-right'}
           size={24}
           color={theme.colors.textSecondary}
         />
@@ -110,8 +85,8 @@ export const SettingsListItem = ({
 const getStyles = (theme: AppTheme) =>
   StyleSheet.create({
     container: {
-      flexDirection: "row",
-      alignItems: "center",
+      flexDirection: 'row',
+      alignItems: 'center',
       paddingHorizontal: theme.spacing.m,
       paddingVertical: theme.spacing.s + 4,
       backgroundColor: theme.colors.foreground,

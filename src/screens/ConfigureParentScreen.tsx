@@ -1,14 +1,14 @@
 // FILE: src/screens/ConfigureParentScreen.tsx
-import { Screen } from "@/components/Screen";
-import { ThemedText } from "@/components/base/ThemedText";
-import { AppTheme } from "@/constants/theme";
-import i18n from "@/core/i18n";
-import useAppStore from "@/core/store/appStore";
-import { useTheme } from "@/core/theme/ThemeContext";
-import { MaterialCommunityIcons } from "@expo/vector-icons";
-import { useNavigation } from "@react-navigation/native";
-import React from "react";
-import { FlatList, StyleSheet, TouchableOpacity } from "react-native";
+import { Screen } from '@/components/Screen';
+import { ThemedText } from '@/components/base/ThemedText';
+import { AppTheme } from '@/constants/theme';
+import i18n from '@/core/i18n';
+import useAppStore from '@/core/store/appStore';
+import { useTheme } from '@/core/theme/ThemeContext';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { useNavigation } from '@react-navigation/native';
+import React from 'react';
+import { FlatList, StyleSheet, TouchableOpacity } from 'react-native';
 
 const ConfigureParentScreen = () => {
   const navigation = useNavigation();
@@ -26,64 +26,36 @@ const ConfigureParentScreen = () => {
 
   return (
     <Screen
-      title={i18n.t("screens.configureParent")}
+      title={i18n.t('screens.configureParent')}
       renderLeftAction={() => (
         <TouchableOpacity onPress={() => navigation.goBack()}>
-          <MaterialCommunityIcons
-            name="chevron-left"
-            size={32}
-            color={theme.colors.text}
-          />
+          <MaterialCommunityIcons name="chevron-left" size={32} color={theme.colors.text} />
         </TouchableOpacity>
-      )}
-    >
+      )}>
       <FlatList
         data={userDeeds}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
           <TouchableOpacity
-            style={[
-              styles.row,
-              draftDeed?.parentId === item.id && styles.selectedRow,
-            ]}
-            onPress={() => handleSelect(item.id)}
-          >
-            <MaterialCommunityIcons
-              name={item.icon}
-              size={24}
-              color={theme.colors.textSecondary}
-            />
+            style={[styles.row, draftDeed?.parentId === item.id && styles.selectedRow]}
+            onPress={() => handleSelect(item.id)}>
+            <MaterialCommunityIcons name={item.icon} size={24} color={theme.colors.textSecondary} />
             <ThemedText style={styles.deedName}>
               {i18n.t(`deeds_names.${item.id}`, { defaultValue: item.name })}
             </ThemedText>
             {draftDeed?.parentId === item.id && (
-              <MaterialCommunityIcons
-                name="check"
-                size={24}
-                color={theme.colors.primary}
-              />
+              <MaterialCommunityIcons name="check" size={24} color={theme.colors.primary} />
             )}
           </TouchableOpacity>
         )}
         ListHeaderComponent={
           <TouchableOpacity
             style={[styles.row, !draftDeed?.parentId && styles.selectedRow]}
-            onPress={() => handleSelect(null)}
-          >
-            <MaterialCommunityIcons
-              name="cancel"
-              size={24}
-              color={theme.colors.textSecondary}
-            />
-            <ThemedText style={styles.deedName}>
-              {i18n.t("deeds.none")}
-            </ThemedText>
+            onPress={() => handleSelect(null)}>
+            <MaterialCommunityIcons name="cancel" size={24} color={theme.colors.textSecondary} />
+            <ThemedText style={styles.deedName}>{i18n.t('deeds.none')}</ThemedText>
             {!draftDeed?.parentId && (
-              <MaterialCommunityIcons
-                name="check"
-                size={24}
-                color={theme.colors.primary}
-              />
+              <MaterialCommunityIcons name="check" size={24} color={theme.colors.primary} />
             )}
           </TouchableOpacity>
         }
@@ -97,8 +69,8 @@ export default ConfigureParentScreen;
 const getStyles = (theme: AppTheme) =>
   StyleSheet.create({
     row: {
-      flexDirection: "row",
-      alignItems: "center",
+      flexDirection: 'row',
+      alignItems: 'center',
       padding: theme.spacing.m,
       backgroundColor: theme.colors.foreground,
       borderRadius: 8,

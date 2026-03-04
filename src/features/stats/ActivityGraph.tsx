@@ -1,18 +1,12 @@
 // FILE: src/features/stats/ActivityGraph.tsx
-import { AppTheme } from "@/constants/theme";
-import { Deed, DeedLog } from "@/core/data/models";
-import { useTheme } from "@/core/theme/ThemeContext";
-import { MaterialCommunityIcons } from "@expo/vector-icons";
-import { formatISO } from "date-fns";
-import React, {
-  useRef,
-  useEffect,
-  useState,
-  useMemo,
-  useCallback,
-} from "react";
-import { FlatList, LayoutChangeEvent, StyleSheet, View } from "react-native";
-import { GraphColumn, GraphColumnData } from "./GraphColumn";
+import { AppTheme } from '@/constants/theme';
+import { Deed, DeedLog } from '@/core/data/models';
+import { useTheme } from '@/core/theme/ThemeContext';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { formatISO } from 'date-fns';
+import React, { useRef, useEffect, useState, useMemo, useCallback } from 'react';
+import { FlatList, LayoutChangeEvent, StyleSheet, View } from 'react-native';
+import { GraphColumn, GraphColumnData } from './GraphColumn';
 
 type ActivityGraphProps = {
   deeds: Deed[];
@@ -20,11 +14,7 @@ type ActivityGraphProps = {
   dateRange: Date[];
 };
 
-export const ActivityGraph = ({
-  deeds,
-  logs,
-  dateRange,
-}: ActivityGraphProps) => {
+export const ActivityGraph = ({ deeds, logs, dateRange }: ActivityGraphProps) => {
   const { theme } = useTheme();
   const [containerWidth, setContainerWidth] = useState(0);
   const flatListRef = useRef<FlatList>(null);
@@ -42,17 +32,13 @@ export const ActivityGraph = ({
     }
 
     return dateRange.map((date) => {
-      const dateString = formatISO(date, { representation: "date" });
+      const dateString = formatISO(date, { representation: 'date' });
       const dailyLogs = logsByDate.get(dateString) || [];
 
       const cells = deeds.map((deed) => {
         const log = dailyLogs.find((l) => l.deedId === deed.id);
-        const status = log
-          ? deed.statuses.find((s) => s.id === log.statusId)
-          : null;
-        const cellColor = status
-          ? theme.colors[status.color]
-          : theme.colors.background;
+        const status = log ? deed.statuses.find((s) => s.id === log.statusId) : null;
+        const cellColor = status ? theme.colors[status.color] : theme.colors.background;
         return {
           id: deed.id,
           color: cellColor,
@@ -72,21 +58,16 @@ export const ActivityGraph = ({
 
   useEffect(() => {
     if (containerWidth > 0) {
-      setTimeout(
-        () => flatListRef.current?.scrollToEnd({ animated: false }),
-        0,
-      );
+      setTimeout(() => flatListRef.current?.scrollToEnd({ animated: false }), 0);
     }
   }, [containerWidth]);
 
   const yAxisWidth = 24;
   const daysToShow = 10;
 
-  const availableGridWidth =
-    containerWidth - yAxisWidth - theme.spacing.s - theme.spacing.m;
+  const availableGridWidth = containerWidth - yAxisWidth - theme.spacing.s - theme.spacing.m;
 
-  const totalWidthPerColumn =
-    containerWidth > 0 ? availableGridWidth / daysToShow : 0;
+  const totalWidthPerColumn = containerWidth > 0 ? availableGridWidth / daysToShow : 0;
 
   const cellSize = (totalWidthPerColumn - 4) * 0.8;
 
@@ -94,13 +75,7 @@ export const ActivityGraph = ({
 
   const renderItem = useCallback(
     ({ item }: { item: GraphColumnData }) => {
-      return (
-        <GraphColumn
-          data={item}
-          cellSize={cellSize}
-          columnWidth={totalWidthPerColumn}
-        />
-      );
+      return <GraphColumn data={item} cellSize={cellSize} columnWidth={totalWidthPerColumn} />;
     },
     [cellSize, totalWidthPerColumn],
   );
@@ -150,14 +125,14 @@ const getStyles = (theme: AppTheme, cellSize: number) =>
       height: (cellSize + 4) * 5 + 16 + theme.spacing.m * 2,
     },
     container: {
-      flexDirection: "row",
+      flexDirection: 'row',
       backgroundColor: theme.colors.foreground,
       borderRadius: 16,
       paddingVertical: theme.spacing.m,
       paddingRight: theme.spacing.m,
     },
     yAxis: {
-      justifyContent: "flex-start",
+      justifyContent: 'flex-start',
       marginLeft: theme.spacing.s,
     },
     yAxisHeaderSpacer: {
@@ -166,7 +141,7 @@ const getStyles = (theme: AppTheme, cellSize: number) =>
     },
     yAxisItem: {
       height: cellSize + 4,
-      justifyContent: "center",
-      alignItems: "center",
+      justifyContent: 'center',
+      alignItems: 'center',
     },
   });

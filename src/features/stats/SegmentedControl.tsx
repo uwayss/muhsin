@@ -1,15 +1,12 @@
 // src/features/stats/SegmentedControl.tsx
-import React from "react";
-import { View, StyleSheet, useWindowDimensions } from "react-native";
-import Animated, {
-  useAnimatedStyle,
-  withSpring,
-} from "react-native-reanimated";
-import { AppTheme } from "@/constants/theme";
-import { useTheme } from "@/core/theme/ThemeContext";
-import { ThemedText } from "@/components/base/ThemedText";
-import { TimeInterval } from "./types";
-import { TouchableOpacity } from "react-native-gesture-handler";
+import React from 'react';
+import { View, StyleSheet, useWindowDimensions } from 'react-native';
+import Animated, { useAnimatedStyle, withSpring } from 'react-native-reanimated';
+import { AppTheme } from '@/constants/theme';
+import { useTheme } from '@/core/theme/ThemeContext';
+import { ThemedText } from '@/components/base/ThemedText';
+import { TimeInterval } from './types';
+import { TouchableOpacity } from 'react-native-gesture-handler';
 
 type Option = {
   label: string;
@@ -22,11 +19,7 @@ type SegmentedControlProps = {
   onSelect: (interval: TimeInterval) => void;
 };
 
-export const SegmentedControl = ({
-  options,
-  selected,
-  onSelect,
-}: SegmentedControlProps) => {
+export const SegmentedControl = ({ options, selected, onSelect }: SegmentedControlProps) => {
   const { theme } = useTheme();
   const styles = getStyles(theme);
   const { width } = useWindowDimensions();
@@ -52,25 +45,13 @@ export const SegmentedControl = ({
 
   return (
     <View style={styles.container}>
-      <Animated.View
-        style={[
-          styles.indicator,
-          { width: segmentWidth },
-          animatedIndicatorStyle,
-        ]}
-      />
+      <Animated.View style={[styles.indicator, { width: segmentWidth }, animatedIndicatorStyle]} />
       {options.map((opt) => (
         <TouchableOpacity
           key={opt.value}
           style={[styles.segment, { width: segmentWidth }]}
-          onPress={() => onSelect(opt.value)}
-        >
-          <ThemedText
-            style={[
-              styles.segmentText,
-              selected === opt.value && styles.selectedText,
-            ]}
-          >
+          onPress={() => onSelect(opt.value)}>
+          <ThemedText style={[styles.segmentText, selected === opt.value && styles.selectedText]}>
             {opt.label}
           </ThemedText>
         </TouchableOpacity>
@@ -82,7 +63,7 @@ export const SegmentedControl = ({
 const getStyles = (theme: AppTheme) =>
   StyleSheet.create({
     container: {
-      flexDirection: "row",
+      flexDirection: 'row',
       backgroundColor: theme.colors.background,
       borderRadius: 12,
       padding: 4,
@@ -90,13 +71,13 @@ const getStyles = (theme: AppTheme) =>
       marginVertical: theme.spacing.m,
     },
     indicator: {
-      position: "absolute",
+      position: 'absolute',
       top: 4,
       left: 4,
-      height: "100%",
+      height: '100%',
       backgroundColor: theme.colors.foreground,
       borderRadius: 8,
-      shadowColor: "#000",
+      shadowColor: '#000',
       shadowOffset: { width: 0, height: 1 },
       shadowOpacity: 0.1,
       shadowRadius: 2,
@@ -104,8 +85,8 @@ const getStyles = (theme: AppTheme) =>
     },
     segment: {
       flex: 1,
-      justifyContent: "center",
-      alignItems: "center",
+      justifyContent: 'center',
+      alignItems: 'center',
     },
     segmentText: {
       fontWeight: theme.typography.fontWeight.semibold,
