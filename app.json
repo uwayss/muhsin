@@ -1,20 +1,20 @@
 {
   "expo": {
-    "name": "muhsin",
+    "name": "Muhsin",
     "slug": "muhsin",
     "scheme": "muhsin-app",
-    "version": "1.0.0",
+    "version": "0.1",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "automatic",
-    "newArchEnabled": true,
     "splash": {
       "image": "./assets/splash-icon.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.uwayss.muhsin"
     },
     "android": {
       "adaptiveIcon": {
@@ -22,7 +22,8 @@
         "backgroundColor": "#ffffff"
       },
       "edgeToEdgeEnabled": true,
-      "package": "com.uwayss.muhsin"
+      "package": "com.uwayss.muhsin",
+      "versionCode": 1
     },
     "web": {
       "favicon": "./assets/favicon.png"
