@@ -1,7 +1,13 @@
 // src/core/store/appStore.ts
 import { create } from 'zustand';
 import { Deed, DeedLog, DeedStatus } from '../data/models';
-import { GENERIC_STATUSES, MOCK_DEEDS, MOCK_LOGS, SUGGESTED_DEEDS } from '../data/mock';
+import {
+  GENERIC_STATUSES,
+  MOCK_DEEDS,
+  MOCK_LOGS,
+  SUGGESTED_DEEDS,
+  hydrateSuggestedDeed,
+} from '../data/mock';
 import { loadData, saveData } from '../storage/storageService';
 import { formatISO } from 'date-fns';
 import { Alert, Appearance, I18nManager } from 'react-native';
@@ -66,6 +72,8 @@ const defaultSettings: AppSettings = {
   reminderTime: '20:00',
 };
 
+const hydrateBuiltInDeedGoals = (deeds: Deed[]) => deeds.map(hydrateSuggestedDeed);
+
 const persistState = (state: AppState) => {
   const dataToSave: AppData = {
     // Only save the user's actual deeds and logs, not the demo ones
@@ -103,7 +111,7 @@ const useAppStore = create<AppState & AppActions>((set, get) => ({
 
     if (loadedData) {
       settings = { ...defaultSettings, ...loadedData.settings };
-      initialDeeds = loadedData.deeds;
+      initialDeeds = hydrateBuiltInDeedGoals(loadedData.deeds);
       initialLogs = loadedData.logs;
     }
 

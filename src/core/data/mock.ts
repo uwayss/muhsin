@@ -81,6 +81,7 @@ export const SUGGESTED_DEEDS: Deed[] = [
     icon: 'book-open-page-variant',
     category: 'QURAN',
     statuses: GENERIC_STATUSES,
+    goal: { value: 1, unit: 'page' },
     isCore: false,
   },
   {
@@ -89,6 +90,7 @@ export const SUGGESTED_DEEDS: Deed[] = [
     icon: 'brain',
     category: 'QURAN',
     statuses: GENERIC_STATUSES,
+    goal: { value: 1, unit: 'ayah' },
     isCore: false,
   },
   // LEARNING
@@ -98,6 +100,7 @@ export const SUGGESTED_DEEDS: Deed[] = [
     icon: 'book-education',
     category: 'LEARNING',
     statuses: GENERIC_STATUSES,
+    goal: { value: 1, unit: 'page' },
     isCore: false,
   },
   // SOCIAL
@@ -118,6 +121,21 @@ export const SUGGESTED_DEEDS: Deed[] = [
     isCore: false,
   },
 ];
+
+const suggestedDeedById = new Map(SUGGESTED_DEEDS.map((deed) => [deed.id, deed]));
+
+export const hydrateSuggestedDeed = (deed: Deed): Deed => {
+  const suggestedDeed = suggestedDeedById.get(deed.id);
+
+  if (!suggestedDeed?.goal || deed.goal) {
+    return deed;
+  }
+
+  return {
+    ...deed,
+    goal: suggestedDeed.goal,
+  };
+};
 
 export const MOCK_LOGS: DeedLog[] = [
   // Today's logs

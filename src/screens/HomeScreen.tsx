@@ -4,6 +4,7 @@ import { Screen } from '@/components/Screen';
 import { ThemedText } from '@/components/base/ThemedText';
 import { FAB } from '@/components/FAB';
 import { AppTheme } from '@/constants/theme';
+import { hydrateSuggestedDeed } from '@/core/data/mock';
 import { Deed, DeedLog, DeedStatus } from '@/core/data/models';
 import i18n, { dateLocales } from '@/core/i18n';
 import useAppStore from '@/core/store/appStore';
@@ -77,7 +78,7 @@ const HomeScreen = () => {
     });
 
     const sections: { title: string; data: Deed[] }[] = [];
-    const deedsByCategory = visibleDeeds.reduce(
+    const deedsByCategory = visibleDeeds.map(hydrateSuggestedDeed).reduce(
       (acc, deed) => {
         (acc[deed.category] = acc[deed.category] || []).push(deed);
         return acc;
