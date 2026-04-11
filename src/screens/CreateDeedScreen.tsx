@@ -1,4 +1,3 @@
-// FILE: src/screens/CreateDeedScreen.tsx
 import { Box } from '@/components/base/Box';
 import { ThemedText } from '@/components/base/ThemedText';
 import { ThemedTextInput } from '@/components/base/ThemedTextInput';

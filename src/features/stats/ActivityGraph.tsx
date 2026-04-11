@@ -1,4 +1,3 @@
-// FILE: src/features/stats/ActivityGraph.tsx
 import { AppTheme } from '@/constants/theme';
 import { Deed, DeedLog } from '@/core/data/models';
 import { useTheme } from '@/core/theme/ThemeContext';

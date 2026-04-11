@@ -11,6 +11,13 @@ import i18n from '@/core/i18n';
 
 const PRAYER_STATUS_BREAKDOWN_ORDER = ['jamaah', 'on-time', 'late', 'missed'];
 
+type DeedBreakdownStat = {
+  id: string;
+  percentage: number;
+  color: string;
+  textColor: string;
+};
+
 const isColorLight = (hexColor: string) => {
   const r = parseInt(hexColor.slice(1, 3), 16);
   const g = parseInt(hexColor.slice(3, 5), 16);
@@ -22,29 +29,36 @@ export const DeedStatsRow = ({ deed, logs }: { deed: Deed; logs: DeedLog[] }) =>
   const { theme } = useTheme();
   const styles = getStyles(theme);
 
-  const deedStats = useMemo(() => {
+  const deedStats = useMemo<DeedBreakdownStat[]>(() => {
     const relevantLogs = logs.filter((log) => log.deedId === deed.id);
     const total = relevantLogs.length;
     if (total === 0) return [];
 
-    const counts = relevantLogs.reduce((acc, log) => {
+    const counts = relevantLogs.reduce<Record<string, number>>((acc, log) => {
       acc[log.statusId] = (acc[log.statusId] || 0) + 1;
       return acc;
     }, {});
 
-    return PRAYER_STATUS_BREAKDOWN_ORDER.map((statusId) => {
+    return PRAYER_STATUS_BREAKDOWN_ORDER.flatMap<DeedBreakdownStat>((statusId) => {
       const count = counts[statusId] || 0;
       const status = deed.statuses.find((s) => s.id === statusId);
+
+      if (!status) {
+        return [];
+      }
+
       const colorKey = status.color as keyof ColorTheme;
       const hexColor = colors.light[colorKey];
 
-      return {
+      const item: DeedBreakdownStat = {
         id: statusId,
         percentage: (count / total) * 100,
         color: theme.colors[colorKey],
         textColor: isColorLight(hexColor) ? theme.colors.text : theme.colors.primaryContrast,
       };
-    }).filter((item) => item.percentage > 0);
+
+      return item.percentage > 0 ? [item] : [];
+    });
   }, [logs, deed, theme.colors]);
 
   return (

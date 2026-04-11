@@ -1,4 +1,3 @@
-// FILE: src/features/deeds/DeedManagerListItem.tsx
 import { Box } from '@/components/base/Box';
 import { ThemedText } from '@/components/base/ThemedText';
 import { AppTheme } from '@/constants/theme';

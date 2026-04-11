@@ -1,4 +1,3 @@
-// FILE: src/screens/ConfigureFrequencyScreen.tsx
 import { Screen } from '@/components/Screen';
 import { ThemedText } from '@/components/base/ThemedText';
 import { AppTheme } from '@/constants/theme';
@@ -20,6 +19,13 @@ const DAYS = [
   { label: i18n.t('frequency.days_abbr.fri'), value: 5 },
   { label: i18n.t('frequency.days_abbr.sat'), value: 6 },
 ];
+
+type ToggleButtonProps = {
+  label: string;
+  selected: boolean;
+  onPress: () => void;
+};
+
 const ConfigureFrequencyScreen = () => {
   const navigation = useNavigation();
   const { theme } = useTheme();
@@ -119,7 +125,7 @@ const ConfigureFrequencyScreen = () => {
   );
 };
 // Helper Components
-const OptionButton = ({ label, selected, onPress }) => {
+const OptionButton = ({ label, selected, onPress }: ToggleButtonProps) => {
   const { theme } = useTheme();
   const styles = getStyles(theme);
   return (
@@ -128,7 +134,7 @@ const OptionButton = ({ label, selected, onPress }) => {
     </TouchableOpacity>
   );
 };
-const DayButton = ({ label, selected, onPress }) => {
+const DayButton = ({ label, selected, onPress }: ToggleButtonProps) => {
   const { theme } = useTheme();
   const styles = getStyles(theme);
   return (

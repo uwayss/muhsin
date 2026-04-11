@@ -1,4 +1,3 @@
-// FILE: src/features/settings/settingsData.ts
 import i18n from '@/core/i18n';
 import { AppSettings } from '@/core/store/appStore';
 import { MaterialCommunityIcons } from '@expo/vector-icons';

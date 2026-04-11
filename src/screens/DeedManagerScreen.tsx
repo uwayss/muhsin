@@ -1,4 +1,3 @@
-// FILE: src/screens/DeedManagerScreen.tsx
 import { Screen } from '@/components/Screen';
 import { AppTheme } from '@/constants/theme';
 import { Deed } from '@/core/data/models';

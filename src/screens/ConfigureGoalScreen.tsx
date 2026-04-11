@@ -1,4 +1,3 @@
-// FILE: src/screens/ConfigureGoalScreen.tsx
 import { Screen } from '@/components/Screen';
 import { ThemedText } from '@/components/base/ThemedText';
 import { ThemedTextInput } from '@/components/base/ThemedTextInput';

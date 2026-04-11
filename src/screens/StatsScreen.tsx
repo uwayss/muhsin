@@ -1,7 +1,7 @@
-// FILE: src/screens/StatsScreen.tsx
 import { Screen } from '@/components/Screen';
 import { ThemedText } from '@/components/base/ThemedText';
 import { AppTheme } from '@/constants/theme';
+import { Deed } from '@/core/data/models';
 import i18n from '@/core/i18n';
 import useAppStore from '@/core/store/appStore';
 import { useTheme } from '@/core/theme/ThemeContext';
@@ -12,15 +12,7 @@ import { GoalStatsRow } from '@/features/stats/GoalStatsRow';
 import { SegmentedControl } from '@/features/stats/SegmentedControl';
 import { TimeInterval } from '@/features/stats/types';
 import { SummaryBox } from '@/features/stats/SummaryBox';
-import {
-  eachDayOfInterval,
-  endOfDay,
-  startOfDay,
-  startOfMonth,
-  startOfWeek,
-  startOfYear,
-  subDays,
-} from 'date-fns';
+import { eachDayOfInterval, endOfDay, startOfDay, startOfYear, subDays } from 'date-fns';
 import React, { useEffect, useMemo, useState } from 'react';
 import { ActivityIndicator, InteractionManager, ScrollView, StyleSheet, View } from 'react-native';
 
@@ -46,7 +38,10 @@ const StatsScreen = () => {
   } | null>(null);
 
   const prayerDeeds = useMemo(
-    () => PRAYER_DEED_IDS.map((id) => deeds.find((d) => d.id === id)).filter(Boolean),
+    () =>
+      PRAYER_DEED_IDS.map((id) => deeds.find((d) => d.id === id)).filter(
+        (deed): deed is Deed => deed !== undefined,
+      ),
     [deeds],
   );
 
@@ -74,8 +69,8 @@ const StatsScreen = () => {
           logs.length > 0 ? new Date(logs.reduce((a, b) => (a.date < b.date ? a : b)).date) : today;
         dateRangeForFilter = { start: startOfDay(firstLogDate), end: today };
       } else {
-        const range = { start: startOfWeek(today), end: endOfDay(today) };
-        if (interval === 'month') range.start = startOfMonth(today);
+        const range = { start: startOfDay(subDays(today, 6)), end: endOfDay(today) };
+        if (interval === 'month') range.start = startOfDay(subDays(today, 29));
         if (interval === 'year') range.start = startOfYear(today);
         dateRangeForFilter = range;
       }

@@ -1,5 +1,3 @@
-// FILE: src/features/stats/GraphColumn.tsx
-// FILE: src/features/stats/GraphColumn.tsx
 import { AppTheme } from '@/constants/theme';
 import { useTheme } from '@/core/theme/ThemeContext';
 import { format } from 'date-fns';

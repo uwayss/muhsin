@@ -1,4 +1,3 @@
-// FILE: App.tsx
 import { ThemeProvider } from '@/core/theme/ThemeContext';
 import React, { useEffect } from 'react';
 import { StatusBar } from 'expo-status-bar';

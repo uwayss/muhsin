@@ -1,4 +1,3 @@
-// FILE: src/screens/AddDeedScreen.tsx
 import { Screen } from '@/components/Screen';
 import { ThemedText } from '@/components/base/ThemedText';
 import { AppTheme } from '@/constants/theme';

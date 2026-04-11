@@ -1,4 +1,3 @@
-// FILE: src/screens/SettingsScreen.tsx
 import { Screen } from '@/components/Screen';
 import { ThemedText } from '@/components/base/ThemedText';
 import { AppTheme } from '@/constants/theme';
@@ -54,9 +53,11 @@ const SettingsScreen = () => {
   const actions = useMemo(
     () => ({
       invite: async () => {
+        const shareMessage = i18n.t('settings.shareMessage') ?? '';
+
         try {
           await Share.share({
-            message: i18n.t('settings.shareMessage'),
+            message: shareMessage,
           });
         } catch (error) {
           console.error('Failed to share:', error);
