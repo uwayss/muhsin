@@ -4,6 +4,7 @@ import React, { useEffect } from 'react';
 import { StatusBar } from 'expo-status-bar';
 import useAppStore from '@/core/store/appStore';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import i18n from '@/core/i18n';
 import { useForceUpdate } from '@/core/hooks/useForceUpdate';
 import { I18nManager } from 'react-native';
