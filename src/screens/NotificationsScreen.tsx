@@ -4,6 +4,8 @@ import { ThemedText } from '@/components/base/ThemedText';
 import { AppTheme } from '@/constants/theme';
 import i18n from '@/core/i18n';
 import {
+  getNotificationPermissionStatus,
+  requestNotificationPermissions,
   scheduleTestNotificationIn5s,
   sendTestNotification,
 } from '@/core/services/notificationService';
@@ -13,8 +15,8 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 import DateTimePicker, { DateTimePickerEvent } from '@react-native-community/datetimepicker';
 import { format } from 'date-fns';
 import { useNavigation } from '@react-navigation/native';
-import React, { useState } from 'react';
-import { Platform, StyleSheet, Switch, TouchableOpacity, View } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { Alert, Platform, StyleSheet, Switch, TouchableOpacity, View } from 'react-native';
 
 const NotificationsScreen = () => {
   const navigation = useNavigation();
@@ -25,17 +27,44 @@ const NotificationsScreen = () => {
   const { isReminderEnabled, reminderTime, isDevMode } = settings;
 
   const [isPickerVisible, setPickerVisible] = useState(false);
+  const [hasPermission, setHasPermission] = useState(false);
 
   const reminderDate = new Date();
   const [hours, minutes] = (reminderTime || '20:00').split(':').map(Number);
   reminderDate.setHours(hours);
   reminderDate.setMinutes(minutes);
+
+  useEffect(() => {
+    const loadPermissionStatus = async () => {
+      setHasPermission(await getNotificationPermissionStatus());
+    };
+
+    void loadPermissionStatus();
+  }, []);
+
   const onChange = (event: DateTimePickerEvent, selectedDate?: Date) => {
     setPickerVisible(false);
     if (event.type === 'set' && selectedDate) {
       setReminderTime(format(selectedDate, 'HH:mm'));
     }
   };
+
+  const handlePermissionRequest = async () => {
+    const granted = await requestNotificationPermissions();
+    setHasPermission(granted);
+
+    Alert.alert(
+      i18n.t(
+        granted ? 'notifications.permissionGrantedTitle' : 'notifications.permissionDeniedTitle',
+      ),
+      i18n.t(
+        granted
+          ? 'notifications.permissionGrantedMessage'
+          : 'notifications.permissionDeniedMessage',
+      ),
+    );
+  };
+
   const showPicker = () => {
     setPickerVisible(true);
   };
@@ -50,11 +79,35 @@ const NotificationsScreen = () => {
           </TouchableOpacity>
         )}>
         <View style={styles.container}>
+          <TouchableOpacity style={styles.row} onPress={handlePermissionRequest}>
+            <ThemedText style={styles.label}>
+              {i18n.t('settings.notificationPermission')}
+            </ThemedText>
+            <View style={styles.valueContainer}>
+              <ThemedText style={styles.valueText}>
+                {i18n.t(
+                  hasPermission
+                    ? 'notifications.permissionGrantedStatus'
+                    : 'notifications.permissionAskButton',
+                )}
+              </ThemedText>
+              <MaterialCommunityIcons
+                name={hasPermission ? 'check-circle-outline' : 'chevron-right'}
+                size={24}
+                color={hasPermission ? theme.colors.primary : theme.colors.textSecondary}
+              />
+            </View>
+          </TouchableOpacity>
+
           <View style={styles.row}>
             <ThemedText style={styles.label}>{i18n.t('settings.dailyReminder')}</ThemedText>
             <Switch
               value={isReminderEnabled}
-              onValueChange={toggleReminder}
+              onValueChange={() => {
+                void toggleReminder().then(async () => {
+                  setHasPermission(await getNotificationPermissionStatus());
+                });
+              }}
               trackColor={{
                 false: theme.colors.background,
                 true: theme.colors.primary,

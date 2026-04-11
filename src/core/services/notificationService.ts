@@ -10,8 +10,8 @@ Notifications.setNotificationHandler({
   handleNotification: async () => ({
     shouldPlaySound: true,
     shouldSetBadge: false,
-    shouldShowBanner: false,
-    shouldShowList: false,
+    shouldShowBanner: true,
+    shouldShowList: true,
   }),
 });
 
@@ -19,7 +19,7 @@ Notifications.setNotificationHandler({
  * Requests notification permissions from the user.
  * @returns {Promise<boolean>} Whether permission was granted.
  */
-const requestPermissions = async (): Promise<boolean> => {
+export const requestNotificationPermissions = async (): Promise<boolean> => {
   const { status: existingStatus } = await Notifications.getPermissionsAsync();
   let finalStatus = existingStatus;
 
@@ -45,16 +45,21 @@ const requestPermissions = async (): Promise<boolean> => {
   return true;
 };
 
+export const getNotificationPermissionStatus = async (): Promise<boolean> => {
+  const { status } = await Notifications.getPermissionsAsync();
+  return status === 'granted';
+};
+
 /**
  * Schedules the daily reminder notification.
  * @param {string} time - The time for the reminder in "HH:mm" format.
  */
 export const scheduleDailyReminder = async (time: string) => {
-  const hasPermission = await requestPermissions();
+  const hasPermission = await requestNotificationPermissions();
   if (!hasPermission) {
     console.log('Notification permission not granted. Cannot schedule.');
     // Silently fail for now, but we could alert the user here.
-    return;
+    return false;
   }
 
   // Cancel any existing reminder to ensure we only have one.
@@ -76,6 +81,7 @@ export const scheduleDailyReminder = async (time: string) => {
   });
 
   console.log(`Daily reminder scheduled for ${time}`);
+  return true;
 };
 
 /**
@@ -92,6 +98,12 @@ export const cancelAllReminders = async () => {
  * Sends a test notification immediately.
  */
 export const sendTestNotification = async () => {
+  const hasPermission = await requestNotificationPermissions();
+  if (!hasPermission) {
+    console.log('Notification permission not granted. Cannot send test notification.');
+    return false;
+  }
+
   console.log('Sending test notification now.');
   await Notifications.scheduleNotificationAsync({
     content: {
@@ -100,12 +112,20 @@ export const sendTestNotification = async () => {
     },
     trigger: null, // null trigger sends it immediately
   });
+
+  return true;
 };
 
 /**
  * Schedules a test notification to be sent in 5 seconds.
  */
 export const scheduleTestNotificationIn5s = async () => {
+  const hasPermission = await requestNotificationPermissions();
+  if (!hasPermission) {
+    console.log('Notification permission not granted. Cannot schedule test notification.');
+    return false;
+  }
+
   console.log('Scheduling a test notification for 5 seconds from now.');
   await Notifications.scheduleNotificationAsync({
     content: {
@@ -117,4 +137,6 @@ export const scheduleTestNotificationIn5s = async () => {
       seconds: 5,
     },
   });
+
+  return true;
 };

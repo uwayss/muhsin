@@ -58,7 +58,7 @@ type AppActions = {
   setDevMode: (isDev: boolean) => void;
   toggleDemoMode: () => Promise<void>;
   resetData: () => Promise<void>;
-  toggleReminder: () => void;
+  toggleReminder: () => Promise<void>;
   setReminderTime: (time: string) => void;
 };
 
@@ -346,15 +346,19 @@ const useAppStore = create<AppState & AppActions>((set, get) => ({
     await cancelAllReminders();
   },
 
-  toggleReminder: () => {
+  toggleReminder: async () => {
     const isEnabled = get().settings.isReminderEnabled;
     const reminderTime = get().settings.reminderTime;
     const newIsEnabled = !isEnabled;
 
     if (newIsEnabled) {
-      scheduleDailyReminder(reminderTime);
+      const didSchedule = await scheduleDailyReminder(reminderTime);
+
+      if (!didSchedule) {
+        return;
+      }
     } else {
-      cancelAllReminders();
+      await cancelAllReminders();
     }
 
     set((state) => ({
