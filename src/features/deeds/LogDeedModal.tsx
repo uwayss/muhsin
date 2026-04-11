@@ -8,7 +8,7 @@ import useAppStore from '@/core/store/appStore';
 import { useTheme } from '@/core/theme/ThemeContext';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { formatISO } from 'date-fns';
-import React, { useMemo } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { Modal, StyleSheet, TouchableOpacity, View, ScrollView } from 'react-native';
 import { ChildDeedLogItem } from './ChildDeedLogItem';
 
@@ -29,6 +29,7 @@ export const LogDeedModal = ({
 }: LogDeedModalProps) => {
   const { theme } = useTheme();
   const styles = getStyles(theme);
+  const [isAwaitingChildLogs, setIsAwaitingChildLogs] = useState(false);
 
   const allDeeds = useAppStore((state) => state.deeds);
   const allLogs = useAppStore((state) => state.logs);
@@ -43,11 +44,46 @@ export const LogDeedModal = ({
     return allLogs.filter((log) => log.date === dateString);
   }, [date, allLogs]);
 
+  const isParentLogged = useMemo(() => {
+    if (!deed) return false;
+    return logsForDate.some((log) => log.deedId === deed.id);
+  }, [deed, logsForDate]);
+
+  const areChildDeedsLogged = useMemo(() => {
+    if (childDeeds.length === 0) return true;
+    return childDeeds.every((child) => logsForDate.some((log) => log.deedId === child.id));
+  }, [childDeeds, logsForDate]);
+
+  useEffect(() => {
+    if (!isVisible) {
+      setIsAwaitingChildLogs(false);
+    }
+  }, [isVisible]);
+
+  useEffect(() => {
+    if (!isVisible || !isAwaitingChildLogs) return;
+
+    if (isParentLogged && areChildDeedsLogged) {
+      onClose();
+    }
+  }, [areChildDeedsLogged, isAwaitingChildLogs, isParentLogged, isVisible, onClose]);
+
   if (!deed) return null;
 
   const deedName = i18n.t(`deeds_names.${deed.id}`, {
     defaultValue: deed.name,
   });
+
+  const handleStatusPress = (status: DeedStatus) => {
+    onLogStatus(status);
+
+    if (childDeeds.length === 0) {
+      onClose();
+      return;
+    }
+
+    setIsAwaitingChildLogs(true);
+  };
 
   return (
     <Modal transparent animationType="fade" visible={isVisible} onRequestClose={onClose}>
@@ -70,7 +106,7 @@ export const LogDeedModal = ({
                   <TouchableOpacity
                     key={status.id}
                     style={styles.optionRow}
-                    onPress={() => onLogStatus(status)}>
+                    onPress={() => handleStatusPress(status)}>
                     <MaterialCommunityIcons
                       name={status.icon}
                       size={24}
