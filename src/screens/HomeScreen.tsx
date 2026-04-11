@@ -17,7 +17,7 @@ import { DateScroller } from '@/features/home/DateScroller';
 import { HomeStackParamList } from '@/navigation/AppNavigator';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { format, formatISO, getDay } from 'date-fns';
+import { format, formatISO, getDay, isAfter, startOfDay } from 'date-fns';
 import React, { useMemo, useState } from 'react';
 import { ActivityIndicator, I18nManager, SectionList, StyleSheet } from 'react-native';
 
@@ -96,6 +96,10 @@ const HomeScreen = () => {
   }, [deeds, selectedDate]);
 
   const handleOpenModal = (deed: Deed) => {
+    if (isAfter(startOfDay(selectedDate), startOfDay(new Date()))) {
+      return;
+    }
+
     const log = logsForSelectedDate.find((l) => l.deedId === deed.id);
     setSelectedDeed(deed);
     setSelectedLog(log);

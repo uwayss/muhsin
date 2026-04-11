@@ -2,9 +2,11 @@
 import {
   addYears,
   eachDayOfInterval,
+  isAfter,
   isSameDay,
   isToday,
   startOfWeek,
+  startOfDay,
   subYears,
   Locale,
 } from 'date-fns';
@@ -51,16 +53,21 @@ const DateScrollerComponent = ({ selectedDate, onDateSelect, locale }: DateScrol
   );
 
   const renderItem = useCallback(
-    ({ item }: { item: Date }) => (
-      <DateItem
-        date={item}
-        isSelected={isSameDay(item, selectedDate)}
-        isToday={isToday(item)}
-        onPress={() => handleDatePress(item)}
-        locale={locale}
-        itemWidth={itemWidth}
-      />
-    ),
+    ({ item }: { item: Date }) => {
+      const isFutureDate = isAfter(startOfDay(item), startOfDay(new Date()));
+
+      return (
+        <DateItem
+          date={item}
+          isSelected={isSameDay(item, selectedDate)}
+          isToday={isToday(item)}
+          isDisabled={isFutureDate}
+          onPress={() => handleDatePress(item)}
+          locale={locale}
+          itemWidth={itemWidth}
+        />
+      );
+    },
     [selectedDate, handleDatePress, locale, itemWidth],
   );
 

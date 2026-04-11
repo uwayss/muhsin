@@ -12,6 +12,7 @@ type DateItemProps = {
   date: Date;
   isSelected: boolean;
   isToday: boolean;
+  isDisabled?: boolean;
   onPress: () => void;
   locale: Locale;
   itemWidth: number;
@@ -21,6 +22,7 @@ const DateItemComponent = ({
   date,
   isSelected,
   isToday,
+  isDisabled = false,
   onPress,
   locale,
   itemWidth,
@@ -32,7 +34,10 @@ const DateItemComponent = ({
   const dayNumber = format(date, 'd', { locale });
 
   return (
-    <TouchableOpacity onPress={onPress} style={[styles.container, { width: itemWidth }]}>
+    <TouchableOpacity
+      onPress={onPress}
+      disabled={isDisabled}
+      style={[styles.container, isDisabled && styles.disabled, { width: itemWidth }]}>
       <ThemedText style={styles.dayName} numberOfLines={1} adjustsFontSizeToFit>
         {dayName}
       </ThemedText>
@@ -56,6 +61,9 @@ const getStyles = (theme: AppTheme, isSelected: boolean, isToday: boolean) =>
       borderColor: isToday ? theme.colors.primary : 'transparent',
       backgroundColor: isSelected ? theme.colors.primary : theme.colors.foreground,
       marginHorizontal: ITEM_MARGIN,
+    },
+    disabled: {
+      opacity: 0.45,
     },
     dayName: {
       fontSize: theme.typography.fontSize.s,
