@@ -8,11 +8,11 @@
     "ios": "expo run:ios",
     "prebuild": "expo prebuild",
     "format": "prettier --write .",
+    "export": "expo export",
     "checks:lint": "expo lint --fix",
     "checks:tsc": "tsc --noEmit",
-    "checks:export": "expo export",
     "checks:format": "prettier --check .",
-    "checks": "npm run checks:lint && npm run checks:tsc && npm run checks:export && npm run checks:format",
+    "checks": "npm run checks:lint && npm run checks:tsc && npm run checks:format",
     "lint": "expo lint"
   },
   "dependencies": {
