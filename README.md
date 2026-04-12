@@ -1,5 +1,6 @@
 # Muhsin (مُحْسِن)
 
+![Banner](.github/assets/banner.png)
 **A modern, open-source, privacy-first companion for tracking spiritual deeds and fostering mindful practice.**
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=for-the-badge)](https://opensource.org/licenses/MIT)
