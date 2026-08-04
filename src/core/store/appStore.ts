@@ -277,7 +277,7 @@ const useAppStore = create<AppState & AppActions>((set, get) => ({
   setTheme: (theme) => {
     set((state) => ({ settings: { ...state.settings, theme } }));
     if (theme === 'system') {
-      Appearance.setColorScheme(null);
+      Appearance.setColorScheme('unspecified');
     } else {
       Appearance.setColorScheme(theme);
     }
@@ -338,7 +338,7 @@ const useAppStore = create<AppState & AppActions>((set, get) => ({
     set(initialState);
     const theme = initialState.settings.theme;
     if (theme === 'system') {
-      Appearance.setColorScheme(null);
+      Appearance.setColorScheme('unspecified');
     } else {
       Appearance.setColorScheme(theme);
     }
