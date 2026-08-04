@@ -9,7 +9,7 @@ import { useTheme } from '@/core/theme/ThemeContext';
 import { triggerHaptic } from '@/core/utils/haptics';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { formatISO } from 'date-fns';
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import {
   Modal,
   ScrollView,
@@ -54,11 +54,17 @@ export const LogGoalModal = ({
     return allLogs.filter((log) => log.date === dateString);
   }, [date, allLogs]);
 
-  useEffect(() => {
+  // The modal stays mounted while hidden, so the counter has to be seeded from
+  // the existing log each time it opens (and whenever that log changes while
+  // open). Done during render rather than in an effect:
+  // https://react.dev/learn/you-might-not-need-an-effect
+  const [seededFrom, setSeededFrom] = useState({ isVisible, log });
+  if (seededFrom.isVisible !== isVisible || seededFrom.log !== log) {
+    setSeededFrom({ isVisible, log });
     if (isVisible) {
       setValue(log?.value || 0);
     }
-  }, [isVisible, log]);
+  }
 
   if (!deed || !deed.goal) return null;
 

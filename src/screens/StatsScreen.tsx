@@ -30,9 +30,9 @@ const StatsScreen = () => {
 
   const { isInitialized, deeds, logs } = useAppStore();
   const [interval, setInterval] = useState<TimeInterval>('week');
-  const [isLoading, setIsLoading] = useState(true);
-
-  const [displayData, setDisplayData] = useState<{
+  const [result, setResult] = useState<{
+    interval: TimeInterval;
+    logs: typeof logs;
     filteredLogs: any[];
     stats: any;
   } | null>(null);
@@ -58,10 +58,8 @@ const StatsScreen = () => {
 
   // --- Data for all other stats (affected by interval switcher) ---
   useEffect(() => {
-    setIsLoading(true);
-    InteractionManager.runAfterInteractions(() => {
-      if (!isInitialized) return;
-
+    if (!isInitialized) return;
+    const task = InteractionManager.runAfterInteractions(() => {
       const today = new Date();
       let dateRangeForFilter;
       if (interval === 'all') {
@@ -111,13 +109,22 @@ const StatsScreen = () => {
         },
       };
 
-      setDisplayData({
+      setResult({
+        interval,
+        logs,
         filteredLogs: filtered,
         stats: calculatedStats,
       });
-      setIsLoading(false);
     });
+    return () => task.cancel();
   }, [isInitialized, interval, logs]);
+
+  // Derived rather than stored. A result computed for a different interval or an
+  // older log set counts as "still loading", which is what the synchronous
+  // setIsLoading(true) at the top of the effect used to express.
+  const displayData =
+    result && result.interval === interval && result.logs === logs ? result : null;
+  const isLoading = displayData === null;
 
   const segmentedOptions = [
     { label: i18n.t('intervals.week'), value: 'week' as TimeInterval },

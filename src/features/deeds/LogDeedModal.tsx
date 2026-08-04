@@ -54,11 +54,16 @@ export const LogDeedModal = ({
     return childDeeds.every((child) => logsForDate.some((log) => log.deedId === child.id));
   }, [childDeeds, logsForDate]);
 
-  useEffect(() => {
+  // The modal stays mounted while hidden, so opening it again would otherwise
+  // reuse the previous session's state. Reset during render rather than in an
+  // effect: https://react.dev/learn/you-might-not-need-an-effect
+  const [wasVisible, setWasVisible] = useState(isVisible);
+  if (wasVisible !== isVisible) {
+    setWasVisible(isVisible);
     if (!isVisible) {
       setIsAwaitingChildLogs(false);
     }
-  }, [isVisible]);
+  }
 
   useEffect(() => {
     if (!isVisible || !isAwaitingChildLogs) return;

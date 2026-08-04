@@ -7,11 +7,6 @@
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "automatic",
-    "splash": {
-      "image": "./assets/splash-icon.png",
-      "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
-    },
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.uwayss.muhsin"
@@ -37,7 +32,9 @@
         }
       ],
       "expo-font",
-      "expo-asset"
+      "expo-asset",
+      "@react-native-community/datetimepicker",
+      "expo-status-bar"
     ]
   }
 }
